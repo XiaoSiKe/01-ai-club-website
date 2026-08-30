@@ -1,0 +1,30 @@
+{
+  "name": "01-ai-club-homepage",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "face-api.js": "^0.22.2",
+    "gsap": "^3.13.0",
+    "ogl": "^1.0.11",
+    "postprocessing": "^6.36.0",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "6.1.0",
+    "vite": "8.2.2"
+  },
+  "overrides": {
+    "node-fetch": "2.6.7"
+  }
+}

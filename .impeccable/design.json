@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-31T00:32:00+08:00",
+  "title": "Design System: 零一 AI 日新社｜01AIClub",
+  "extensions": {
+    "colorMeta": {
+      "canvas-black": {
+        "role": "neutral",
+        "displayName": "深空画布",
+        "canonical": "#090909",
+        "tonalRamp": ["#090909", "#151515", "#262626", "#404040", "#666666", "#949494", "#c7c7c7", "#f5f5f5"]
+      },
+      "menu-transparent": {
+        "role": "neutral",
+        "displayName": "透明菜单起点",
+        "canonical": "#00000000",
+        "tonalRamp": ["#090909", "#151515", "#262626", "#404040", "#666666", "#949494", "#c7c7c7", "#f5f5f5"]
+      },
+      "ink-white": {
+        "role": "primary",
+        "displayName": "扫描白",
+        "canonical": "#f5f5f5",
+        "tonalRamp": ["#171717", "#2c2c2c", "#474747", "#696969", "#909090", "#b8b8b8", "#dedede", "#f5f5f5"]
+      },
+      "scan-blue": {
+        "role": "secondary",
+        "displayName": "探索蓝",
+        "canonical": "#3b82f6",
+        "tonalRamp": ["#071a36", "#0c2e60", "#12458f", "#1d5fc0", "#3b82f6", "#72a7f8", "#aecdfa", "#edf5ff"]
+      },
+      "iteration-violet": {
+        "role": "tertiary",
+        "displayName": "迭代紫",
+        "canonical": "#7c3aed",
+        "tonalRamp": ["#1a0738", "#2f0d63", "#47128f", "#611cbe", "#7c3aed", "#a276f3", "#cbb0f8", "#f3ebff"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "回声展示", "purpose": "首屏品牌名和核心口号。" },
+      "headline": { "displayName": "章节标题", "purpose": "页面叙事节点。" },
+      "body": { "displayName": "正文", "purpose": "社团介绍与方向说明。" },
+      "label": { "displayName": "方向标签", "purpose": "胶囊、状态和导航。" }
+    },
+    "shadows": [
+      { "name": "button-near-field", "value": "0 8px 24px rgba(0,0,0,0.25)", "purpose": "描边高光按钮的近场深度。" }
+    ],
+    "motion": [
+      { "name": "menu-stagger", "value": "720ms power3.out · 100ms stagger · 650ms power2.inOut fade", "purpose": "每次重置颜色层 opacity 后，纯白/中灰/纯黑预层平滑进入并淡出；支持连续和快速重复开关。" },
+      { "name": "gridscan-calm", "value": "3.1s scan · 0.8s delay · 0.32 bloom", "purpose": "进一步降低首页 WebGL 背景强度并放慢扫描节奏。" },
+      { "name": "smooth-anchor", "value": "0.8–1.35s power3.inOut", "purpose": "所有站内导航与行动按钮按滚动距离自适应过渡。" },
+      { "name": "section-reveal", "value": "720–950ms power3/power4.out", "purpose": "标题、内容组与行动区使用不同方向和节奏进入，未触发内容保持低透明可见。" },
+      { "name": "state-fast", "value": "240ms power4.out", "purpose": "按钮按压与释放反馈。" }
+    ],
+    "breakpoints": [
+      { "name": "navigation-collapse", "value": "900px" },
+      { "name": "mobile", "value": "620px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Specular Button",
+      "kind": "button",
+      "refersTo": "button-specular",
+      "description": "透明底、扫描白文字与方向性描边高光的主行动按钮。",
+      "html": "<button class=\"ds-specular-button\">加入日新社</button>",
+      "css": ".ds-specular-button{color:#f5f5f5;background:transparent;padding:18px 40px;border:1px solid rgba(255,255,255,.25);border-radius:18px;font:500 1.15rem/1 sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform 240ms cubic-bezier(.16,1,.3,1)}.ds-specular-button:hover{border-color:#fff}.ds-specular-button:focus-visible{outline:3px solid #fff;outline-offset:3px}.ds-specular-button:active{transform:scale(.97);transition-duration:90ms}"
+    },
+    {
+      "name": "Release Pill",
+      "kind": "chip",
+      "description": "首屏方向标识。",
+      "html": "<span class=\"ds-release-pill\"><b>01</b> FZU AI CLUB</span>",
+      "css": ".ds-release-pill{display:inline-flex;align-items:center;gap:10px;color:rgba(245,245,245,.58);background:rgba(42,42,42,.2);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:5px 14px 5px 6px;font:600 15px/1 sans-serif}.ds-release-pill b{display:grid;place-items:center;height:31px;padding:0 13px;color:#f5f5f5;background:rgba(245,245,245,.2);border-radius:999px}"
+    },
+    {
+      "name": "Staggered Club Menu",
+      "kind": "nav",
+      "refersTo": "navigation-staggered",
+      "description": "由淡出的黑白灰预层与六段透明渐变组成的编号社团菜单。",
+      "html": "<nav class=\"ds-staggered-menu\"><button>关闭 ×</button><a href=\"#hero-title\">首页 <small>01</small></a><a href=\"#about\">关于日新社 <small>02</small></a><a href=\"#directions\">我们会做什么 <small>03</small></a></nav>",
+      "css": ".ds-staggered-menu{display:flex;flex-direction:column;width:420px;min-height:100vh;padding:96px 32px 32px 80px;color:#f5f5f5;background:linear-gradient(90deg,rgba(9,9,9,0) 0%,rgba(9,9,9,.035) 16%,rgba(9,9,9,.09) 36%,rgba(9,9,9,.16) 58%,rgba(9,9,9,.24) 78%,rgba(9,9,9,.32) 100%);font-family:sans-serif}.ds-staggered-menu button{align-self:flex-end;color:#f5f5f5;background:transparent;border:0;font-weight:600}.ds-staggered-menu a{display:inline-flex;align-items:flex-start;gap:12px;color:rgba(255,255,255,.88);font-size:40.8px;font-weight:600;line-height:1;letter-spacing:.1em;white-space:nowrap;text-decoration:none;text-shadow:0 2px 18px rgba(0,0,0,.92)}.ds-staggered-menu a:hover{color:#fff}.ds-staggered-menu a:focus-visible{outline:3px solid #fff;outline-offset:3px}.ds-staggered-menu small{font-size:18px;font-weight:400}.ds-staggered-menu footer{margin-top:auto;color:rgba(255,255,255,.68)}"
+    },
+    {
+      "name": "Carbon Direction Card",
+      "kind": "card",
+      "refersTo": "card-carbon",
+      "description": "课程、指导与项目方向的半透明内容容器。",
+      "html": "<article class=\"ds-card\"><span>LEARN · 公益教学</span><h3>AI 入门课程</h3><p>从理解模型到完成第一个作品。</p></article>",
+      "css": ".ds-card{color:#f5f5f5;background:rgba(21,21,21,.58);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:28px;font-family:sans-serif}.ds-card span{color:#93c5fd;font-size:12px;font-weight:800}.ds-card h3{font-size:24px}.ds-card p{color:rgba(245,245,245,.62);line-height:1.75}.ds-card:focus-within{outline:3px solid #fff;outline-offset:3px}"
+    },
+    {
+      "name": "Journey Step",
+      "kind": "custom",
+      "description": "以白色序号建立学习与共建的真实顺序。",
+      "html": "<div class=\"ds-step\"><b>1</b><span>从一个真正能完成的小目标开始</span></div>",
+      "css": ".ds-step{display:flex;align-items:center;gap:18px;color:#f5f5f5;background:rgba(18,18,18,.58);border:1px solid rgba(255,255,255,.13);border-radius:14px;padding:20px 22px;font-family:sans-serif}.ds-step b{display:grid;place-items:center;width:34px;height:34px;color:#090909;background:#f5f5f5;border-radius:999px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "零一之间的扫描实验室",
+    "overview": "界面像一间仍在运行的黑色实验室：透视网格给出方向，白色扫描光标记正在发生的探索，内容悬浮在空间中但始终保持清晰。技术感来自真实空间、精确线条和响应式交互，而不是堆叠装饰。",
+    "keyCharacteristics": [
+      "黑白为主，蓝紫只用于章节标题与方向标签。",
+      "WebGL 透视网格是品牌签名。",
+      "动效服务于探索与扫描，并支持减少动态效果偏好。"
+    ],
+    "rules": [
+      { "name": "The Sparse Accent Rule", "body": "蓝紫只能用于章节标题、状态徽章和必要强调。", "section": "colors" },
+      { "name": "The Echo Ceiling Rule", "body": "回声文字只用于首屏品牌名和一句核心口号。", "section": "typography" },
+      { "name": "The Layered Space Rule", "body": "先用空间、透明度和边界建立深度；只有交互层才能获得阴影。", "section": "elevation" }
+    ],
+    "dos": [
+      "Do 原样保留深空画布、透视扫描网格、回声标题和描边高光按钮。",
+      "Do 用真实、早期、可共建的语言表达社团状态。"
+    ],
+    "donts": [
+      "Don't 做成传统培训机构式的销售页面。",
+      "Don't 虚构课程规模、合作企业、成员数量或成功案例。",
+      "Don't 使用与社团无关的 API 检测业务文案。",
+      "Don't 偏离用户指定的 5173 黑白科技视觉母版。"
+    ]
+  }
+}
