@@ -293,7 +293,7 @@ export default function App() {
             <div className="hero-lower">
               <div className="hero-meta-row">
                 <a className="hero-affiliation-link" href="#about">福州大学</a>
-                <a className="hero-license-link" href="#about">成立于 · 2026.08</a>
+                <a className="hero-license-link" href="#about">成立于 · 2026.09.01</a>
               </div>
 
               <div className="hero-proof">
@@ -331,7 +331,7 @@ export default function App() {
             <div className="home-trust-panel">
               <p className="home-trust-intro">
                 这里是「<strong>零一 AI 日新社｜01AIClub</strong>」，一个专属于 AI 开源探索者的知识库与交流社区。<br />
-                社团成立于 2026 年 8 月，由<strong>零一扬</strong>担任社长，以公益教学为核心，一切仍在从零开始。
+                社团成立于 2026 年 9 月 1 日，由<strong>零一扬</strong>担任社长，以公益教学为核心，一切仍在从零开始。
               </p>
 
               <div className="home-trust-cards">
@@ -478,7 +478,7 @@ export default function App() {
               <h3>发起人</h3>
               <ul>
                 <li><a href="#about">社长 · 零一扬</a></li>
-                <li><a href="#about">成立于 2026 年 8 月</a></li>
+                <li><a href="#about">成立于 2026 年 9 月 1 日</a></li>
               </ul>
             </div>
           </div>
