@@ -22,7 +22,7 @@ printf '%s\n' "$CLUB_DEPLOY_SSH_KEY" > "$ci_ssh_dir/key"
 unset CLUB_DEPLOY_SSH_KEY
 chmod 600 "$ci_ssh_dir/key"
 archive="$ci_ssh_dir/release.tgz"
-tar -czf "$archive" -C dist .
+COPYFILE_DISABLE=1 tar -czf "$archive" -C dist .
 printf '日新社官网制品 SHA-256：'
 sha256sum "$archive" | cut -d ' ' -f 1
 ssh -T -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \

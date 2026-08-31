@@ -42,12 +42,24 @@ async function main() {
   if (!/^[a-zA-Z0-9]+$/.test(org ?? '') || !/^\d+$/.test(pipeline ?? '')) throw new Error('云效组织或流水线 ID 未配置。');
   const suffix = command === 'status' ? '/runs/latestPipelineRun' : command === 'runs' ? '/runs?page=1&perPage=5' : null;
   if (!suffix) throw new Error('未知运维命令。');
-  const response = await fetch(`${domain}/oapi/v1/flow/organizations/${org}/pipelines/${pipeline}${suffix}`, {
+  const base = `${domain}/oapi/v1/flow/organizations/${org}/pipelines/${pipeline}`;
+  const response = await fetch(`${base}${suffix}`, {
     headers: { 'x-yunxiao-token': readToken(config) },
     signal: AbortSignal.timeout(15000),
   });
+  if (command === 'status' && response.status === 404) {
+    const target = await fetch(base, {
+      headers: { 'x-yunxiao-token': readToken(config) },
+      signal: AbortSignal.timeout(15000),
+    });
+    if (target.ok && (await target.json()).name === '01aiclub-website-prod') {
+      console.log('日新社官网流水线存在，尚无运行记录。');
+      return;
+    }
+  }
   if (!response.ok) throw new Error(`云效请求失败：HTTP ${response.status}`);
   const data = await response.json();
+  if (Array.isArray(data) && data.length === 0) console.log('日新社官网流水线尚无运行记录。');
   for (const run of Array.isArray(data) ? data : [data]) {
     console.log(JSON.stringify({ runId: run.id ?? run.pipelineRunId, status: run.status, triggerMode: run.triggerMode, startTime: run.startTime, endTime: run.endTime }));
   }

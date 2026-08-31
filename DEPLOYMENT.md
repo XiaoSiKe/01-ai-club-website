@@ -85,11 +85,13 @@ TLS 脚本会签发 `club.01aiedu.com` 证书、切换到 HTTPS 配置并启用�
 ## 云效 CI/CD
 
 - 流水线名称：`01aiclub-website-prod`
+- 流水线 ID：`5236605`
 - 版本化配置：`deploy/aliyun-flow.yml`
 - 代码源：公共 GitHub 仓库 `XiaoSiKe/01-ai-club-website`
 - 触发条件：`main` 分支 push
 - 构建集群：云效香港公共集群
 - 私密变量组：`01aiclub-website-prod-secrets`
+- 变量组 ID：`aiclubprodsecret`
 - 唯一密文变量：`CLUB_DEPLOY_SSH_KEY`
 
 CI 私钥只对应服务器上的强制命令 `receive-release.sh`，无法打开任意 shell、转发端口或修改其它站点。云效个人访问令牌不得写入流水线 YAML，也不参与生产发布。
