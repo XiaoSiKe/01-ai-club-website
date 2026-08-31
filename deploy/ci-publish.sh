@@ -3,7 +3,7 @@ set +x
 set -euo pipefail
 umask 077
 
-test -n "${CLUB_DEPLOY_SSH_KEY:-}"
+test -n "${CLUB_DEPLOY_SSH_KEY_B64:-}"
 test -f dist/SHA256SUMS
 test -f deploy/known_hosts
 
@@ -18,9 +18,14 @@ trap 'exit 143' TERM
 trap 'exit 129' HUP
 trap 'exit 130' INT
 
-printf '%s\n' "$CLUB_DEPLOY_SSH_KEY" > "$ci_ssh_dir/key"
-unset CLUB_DEPLOY_SSH_KEY
+if printf '' | base64 --decode > /dev/null 2>&1; then
+  printf '%s' "$CLUB_DEPLOY_SSH_KEY_B64" | base64 --decode > "$ci_ssh_dir/key"
+else
+  printf '%s' "$CLUB_DEPLOY_SSH_KEY_B64" | base64 -D > "$ci_ssh_dir/key"
+fi
+unset CLUB_DEPLOY_SSH_KEY_B64
 chmod 600 "$ci_ssh_dir/key"
+ssh-keygen -yf "$ci_ssh_dir/key" > /dev/null
 archive="$ci_ssh_dir/release.tgz"
 COPYFILE_DISABLE=1 tar -czf "$archive" -C dist .
 printf '日新社官网制品 SHA-256：'
