@@ -13,7 +13,7 @@ sources:
 defaultWorkspace: website
 
 # 私密变量通过独立通用变量组 01aiclub-website-prod-secrets 关联：
-# CLUB_DEPLOY_SSH_KEY。不要在 YAML 中写入私钥或云效个人访问令牌。
+# CLUB_DEPLOY_SSH_KEY_B64（CI 私钥的单行 Base64）。不要在 YAML 中写入私钥或云效个人访问令牌。
 
 stages:
   release_stage:

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # 构建阶段不持有发布密钥。
-unset CLUB_DEPLOY_SSH_KEY
+unset CLUB_DEPLOY_SSH_KEY_B64
 test "$(cat .nvmrc)" = '24.16.0'
 
 node_runtime=$(mktemp -d)

@@ -107,7 +107,7 @@ certbot certificates --config-dir /etc/letsencrypt-01aiclub
 1. 在本机生成新的 Ed25519 密钥。
 2. 把新公钥加上相同的 `restrict,command=...` 前缀。
 3. 通过受控初始化更新 `authorized_keys`。
-4. 在云效独立变量组更新 `CLUB_DEPLOY_SSH_KEY`。
+4. 将新私钥编码为单行 Base64，并在云效独立变量组更新 `CLUB_DEPLOY_SSH_KEY_B64`。
 5. 运行一次流水线并确认成功后撤销旧公钥。
 
 ### 云效只读 PAT
@@ -139,7 +139,7 @@ dig @1.1.1.1 +short A club.01aiedu.com
 ### 流水线无法发布
 
 - 构建失败：先看固定 Node 下载校验、`npm ci` 与 `npm run build`。
-- SSH 失败：核对 `deploy/known_hosts` 指纹与变量组中的 CI 私钥。
+- SSH 失败：核对 `deploy/known_hosts` 指纹、变量组中的 Base64 CI 私钥和流水线解码日志。
 - 服务器拒绝：确认公钥带强制命令前缀，且用户为 `01aiclub-deploy`。
 - 健康检查失败：查看流水线输出和独立 Nginx 错误日志，线上会自动回滚。
 
