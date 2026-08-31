@@ -1,0 +1,7 @@
+[Unit]
+Description=Renew TLS certificate for club.01aiedu.com
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/certbot renew --quiet --config-dir /etc/letsencrypt-01aiclub --work-dir /var/lib/letsencrypt-01aiclub --logs-dir /var/log/letsencrypt-01aiclub --deploy-hook "/usr/sbin/nginx -t && /usr/bin/systemctl reload nginx"

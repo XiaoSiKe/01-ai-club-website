@@ -26,7 +26,7 @@
 要求：Node.js `^20.19.0` 或 `>=22.12.0`，并使用随 Node.js 提供的新版 npm。
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
@@ -45,7 +45,10 @@ npm run preview
 
 ```text
 .
+├── deploy/                 # 云效、Nginx、TLS 与原子发布脚本
+├── docs/                   # 运维文档
 ├── public/                 # 静态资源与自定义域名文件
+├── scripts/                # 构建清单、产物校验和只读运维工具
 ├── src/
 │   ├── App.jsx             # 页面内容、导航与滚动编排
 │   ├── GridScan.jsx        # WebGL 透视扫描背景
@@ -73,10 +76,11 @@ npm run preview
 - [DESIGN.md](./DESIGN.md)：颜色、字体、组件、动效和响应式设计规范。
 - [CONTRIBUTING.md](./CONTRIBUTING.md)：开发流程、代码约束与提交检查。
 - [DEPLOYMENT.md](./DEPLOYMENT.md)：`club.01aiedu.com` 的构建、DNS 与发布检查。
+- [docs/OPERATIONS.md](./docs/OPERATIONS.md)：线上健康检查、日志、回滚、证书与密钥轮换。
 
 ## 域名说明
 
-项目的正式域名固定为 `club.01aiedu.com`。仓库已包含 `public/CNAME`，构建时会复制到 `dist/CNAME`。DNS 解析与托管平台绑定仍需在对应服务商后台完成，详见 [DEPLOYMENT.md](./DEPLOYMENT.md)。
+项目的正式域名固定为 `club.01aiedu.com`，部署在独立的阿里云 ECS 目录和 Nginx server 块中。`main` 更新由云效流水线构建并通过受限 SSH 密钥原子发布，详见 [DEPLOYMENT.md](./DEPLOYMENT.md)。
 
 ## 许可证
 

@@ -1,0 +1,1 @@
+restrict,command="/usr/local/lib/01aiclub/receive-release.sh" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEXzbtaVqYk1bk+LQa8Q785w2o2c2BaU9O4s6ZFPsXOq 01aiclub-yunxiao-ci-20260901
