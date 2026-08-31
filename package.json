@@ -8,8 +8,13 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "vite build && node scripts/finalize-build.mjs && node scripts/verify-dist.mjs",
+    "preview": "vite preview",
+    "verify:dist": "node scripts/verify-dist.mjs",
+    "release:package": "bash deploy/package-release.sh",
+    "ops:check": "node scripts/ops.mjs check",
+    "ops:status": "node scripts/ops.mjs status",
+    "ops:runs": "node scripts/ops.mjs runs"
   },
   "dependencies": {
     "face-api.js": "^0.22.2",

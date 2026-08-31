@@ -124,18 +124,18 @@ export const StaggeredMenu = ({
 
     const tl = gsap.timeline({ paused: true });
 
-    const layerStagger = 0.1;
+    const layerStagger = 0.075;
     layerStates.forEach((ls, i) => {
       tl.fromTo(
         ls.el,
         { xPercent: ls.start },
-        { xPercent: 0, duration: 0.72, ease: 'power3.out' },
+        { xPercent: 0, duration: 0.54, ease: 'power3.out' },
         i * layerStagger
       );
     });
     const lastTime = layerStates.length ? (layerStates.length - 1) * layerStagger : 0;
-    const panelInsertTime = lastTime + (layerStates.length ? 0.14 : 0);
-    const panelDuration = 0.8;
+    const panelInsertTime = lastTime + (layerStates.length ? 0.105 : 0);
+    const panelDuration = 0.6;
     tl.fromTo(
       panel,
       { xPercent: panelStart },
@@ -147,9 +147,9 @@ export const StaggeredMenu = ({
         layers,
         {
           opacity: 0,
-          duration: 0.65,
+          duration: 0.49,
           ease: 'power2.inOut',
-          stagger: { each: 0.06, from: 'start' }
+          stagger: { each: 0.045, from: 'start' }
         },
         panelInsertTime + panelDuration * 0.62
       );
@@ -163,9 +163,9 @@ export const StaggeredMenu = ({
         {
           yPercent: 0,
           rotate: 0,
-          duration: 0.9,
+          duration: 0.675,
           ease: 'power3.out',
-          stagger: { each: 0.085, from: 'start' }
+          stagger: { each: 0.064, from: 'start' }
         },
         itemsStart
       );
@@ -173,10 +173,10 @@ export const StaggeredMenu = ({
         tl.to(
           numberEls,
           {
-            duration: 0.55,
+            duration: 0.41,
             ease: 'power2.out',
             '--sm-num-opacity': 1,
-            stagger: { each: 0.08, from: 'start' }
+            stagger: { each: 0.06, from: 'start' }
           },
           itemsStart + 0.1
         );
@@ -190,7 +190,7 @@ export const StaggeredMenu = ({
           socialTitle,
           {
             opacity: 1,
-            duration: 0.5,
+            duration: 0.375,
             ease: 'power2.out'
           },
           socialsStart
@@ -202,14 +202,14 @@ export const StaggeredMenu = ({
           {
             y: 0,
             opacity: 1,
-            duration: 0.55,
+            duration: 0.41,
             ease: 'power3.out',
-            stagger: { each: 0.08, from: 'start' },
+            stagger: { each: 0.06, from: 'start' },
             onComplete: () => {
               gsap.set(socialLinks, { clearProps: 'opacity' });
             }
           },
-          socialsStart + 0.04
+          socialsStart + 0.03
         );
       }
     }
@@ -250,7 +250,7 @@ export const StaggeredMenu = ({
     }
     closeTweenRef.current = gsap.to(all, {
       xPercent: offscreen,
-      duration: 0.45,
+      duration: 0.34,
       ease: 'power3.inOut',
       overwrite: 'auto',
       onComplete: () => {
@@ -280,9 +280,9 @@ export const StaggeredMenu = ({
       return;
     }
     if (opening) {
-      spinTweenRef.current = gsap.to(icon, { rotate: 225, duration: 0.65, ease: 'power3.out', overwrite: 'auto' });
+      spinTweenRef.current = gsap.to(icon, { rotate: 225, duration: 0.49, ease: 'power3.out', overwrite: 'auto' });
     } else {
-      spinTweenRef.current = gsap.to(icon, { rotate: 0, duration: 0.45, ease: 'power3.inOut', overwrite: 'auto' });
+      spinTweenRef.current = gsap.to(icon, { rotate: 0, duration: 0.34, ease: 'power3.inOut', overwrite: 'auto' });
     }
   }, []);
 
@@ -299,8 +299,8 @@ export const StaggeredMenu = ({
         const targetColor = opening ? openMenuButtonColor : menuButtonColor;
         colorTweenRef.current = gsap.to(btn, {
           color: targetColor,
-          delay: 0.12,
-          duration: 0.35,
+          delay: 0.09,
+          duration: 0.26,
           ease: 'power2.inOut'
         });
       } else {
@@ -355,7 +355,7 @@ export const StaggeredMenu = ({
     const finalShift = ((lineCount - 1) / lineCount) * 100;
     textCycleAnimRef.current = gsap.to(inner, {
       yPercent: -finalShift,
-      duration: 0.45 + lineCount * 0.06,
+      duration: 0.34 + lineCount * 0.045,
       ease: 'power3.inOut',
       onComplete: () => setTextLines([targetLabel])
     });

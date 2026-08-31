@@ -1,0 +1,39 @@
+name: 01aiclub-website-prod
+
+sources:
+  website:
+    type: git
+    name: 日新社官网公共源码
+    endpoint: https://github.com/XiaoSiKe/01-ai-club-website.git
+    branch: main
+    branchesFilter: ^main$
+    triggerEvents:
+      - push
+
+defaultWorkspace: website
+
+# 私密变量通过独立通用变量组 01aiclub-website-prod-secrets 关联：
+# CLUB_DEPLOY_SSH_KEY。不要在 YAML 中写入私钥或云效个人访问令牌。
+
+stages:
+  release_stage:
+    name: 检查、构建与独立发布
+    jobs:
+      build_job:
+        name: 云端构建与日新社官网受限 SSH 发布
+        runsOn:
+          group: public/cn-hongkong
+          container: build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alinux3:latest
+          instanceType: MEDIUM_2C4G
+        timeoutMinutes: 20
+        steps:
+          build_step:
+            name: 固定环境、检查与构建
+            step: Command
+            with:
+              run: bash deploy/ci-build.sh
+          publish_step:
+            name: 校验后发布日新社官网
+            step: Command
+            with:
+              run: bash deploy/ci-publish.sh

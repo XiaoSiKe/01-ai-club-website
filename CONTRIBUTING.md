@@ -34,6 +34,8 @@ npm run dev
 npm run build
 ```
 
+若修改 `deploy/`、`scripts/` 或运维文档，还应确认没有提交真实令牌、私钥或本地私有配置，并运行 `bash -n deploy/*.sh`。
+
 ## 提交信息建议
 
 使用简短、可检索的提交信息，例如：
@@ -53,4 +55,3 @@ docs: document custom domain deployment
 - [ ] 键盘焦点和减少动态效果模式正常。
 - [ ] 文案没有引入未经确认的事实或承诺。
 - [ ] 相关文档已同步更新。
-

@@ -1,5 +1,7 @@
 node_modules/
 dist/
+artifacts/
+.artifacts/
 
 .env
 .env.*
@@ -13,4 +15,3 @@ yarn-error.log*
 pnpm-debug.log*
 
 preview-*.png
-
