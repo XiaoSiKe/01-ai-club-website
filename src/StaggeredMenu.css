@@ -170,6 +170,7 @@
   bottom: 0;
   width: clamp(260px, 38vw, 420px);
   pointer-events: none;
+  overflow: hidden;
   z-index: 5;
   opacity: 0;
 }
@@ -187,6 +188,7 @@
   width: 100%;
   transform: translateX(0);
   opacity: 0;
+  will-change: transform;
 }
 
 .sm-panel-inner {
@@ -285,6 +287,8 @@
 
 .sm-panel-item {
   position: relative;
+  display: block;
+  width: 100%;
   color: rgba(255, 255, 255, 0.88);
   text-shadow:
     0 2px 18px rgba(0, 0, 0, 0.92),
@@ -299,7 +303,6 @@
   transition:
     background 0.25s,
     color 0.25s;
-  display: inline-block;
   text-decoration: none;
   padding-right: 1.4em;
 }
@@ -365,10 +368,48 @@
 }
 
 @media (max-width: 640px) {
+  .staggered-menu-header {
+    padding: 1.25em;
+  }
+
   .staggered-menu-panel {
-    width: 100%;
-    left: 0;
+    top: 68px;
+    right: 16px;
+    left: auto;
+    width: min(280px, calc(100% - 32px));
+    height: 164px;
+    padding: 16px 14px 18px;
+    overflow: hidden;
+  }
+
+  .sm-prelayers {
+    top: 68px;
+    right: 16px;
+    bottom: auto;
+    left: auto;
+    width: min(280px, calc(100% - 32px));
+    height: 164px;
+  }
+
+  .sm-panel-inner {
+    gap: 0.75rem;
+  }
+
+  .sm-panel-list {
+    gap: 0.4rem;
+  }
+
+  .sm-panel-item {
+    padding-right: 1.8em;
+    font-size: 1.35rem;
+    line-height: 1.12;
+    letter-spacing: 0.06em;
+  }
+
+  .sm-panel-list[data-numbering] .sm-panel-item::after {
+    top: 0.18em;
     right: 0;
+    font-size: 12px;
   }
 
   .staggered-menu-wrapper[data-open] .sm-logo-img {

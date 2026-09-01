@@ -2,15 +2,19 @@ import { useCallback, useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { SiNextdotjs, SiReact, SiTailwindcss, SiTypescript } from 'react-icons/si';
 import GridScan from './GridScan';
 import EchoText from './EchoText';
 import SpecularButton from './SpecularButton';
 import StaggeredMenu from './StaggeredMenu';
+import BorderGlow from './BorderGlow';
+import LogoLoop from './LogoLoop';
 
 gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
 
 const PRODUCT_NAME = '零一 AI 日新社';
 const SLOGAN = '以 AI 为引擎，于零一之间探索，在日新之中迭代。';
+const LEARNING_WIKI_URL = 'https://scn96l2kzmbn.feishu.cn/wiki/DDaiw0qKoifo7jkd2H2c9mxhnYe';
 const ECHO_TEXT_PROPS = {
   echoes: 12,
   lag: 0.24,
@@ -45,12 +49,26 @@ const SPECULAR_BUTTON_PROPS = {
   proximity: 250,
   autoAnimate: false,
 };
+const BORDER_GLOW_PROPS = {
+  edgeSensitivity: 30,
+  backgroundColor: '#000000',
+  borderRadius: 28,
+  glowRadius: 40,
+  glowIntensity: 1.0,
+  coneSpread: 25,
+  animated: false,
+};
+const TECH_LOGOS = [
+  { node: <SiReact />, title: 'React', href: 'https://react.dev' },
+  { node: <SiNextdotjs />, title: 'Next.js', href: 'https://nextjs.org' },
+  { node: <SiTypescript />, title: 'TypeScript', href: 'https://www.typescriptlang.org' },
+  { node: <SiTailwindcss />, title: 'Tailwind CSS', href: 'https://tailwindcss.com' },
+];
 const MENU_ITEMS = [
   { label: '首页', ariaLabel: '返回首页', link: '#hero-title' },
   { label: '关于日新社', ariaLabel: '了解零一 AI 日新社', link: '#about' },
-  { label: '我们会做什么', ariaLabel: '了解社团发展方向', link: '#directions' },
-  { label: '成长路径', ariaLabel: '查看社团成长路径', link: '#journey' },
-  { label: '加入日新社', ariaLabel: '查看加入日新社说明', link: '#join' },
+  { label: '我们在做什么', ariaLabel: '了解社团正在开展的方向', link: '#directions' },
+  { label: '加入我们', ariaLabel: '查看加入我们的说明', link: '#join' },
 ];
 export default function App() {
   const pageRef = useRef(null);
@@ -61,6 +79,10 @@ export default function App() {
     if (!target) return;
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const targetY = target.getBoundingClientRect().top + window.scrollY;
+    const destinationY = id === 'hero-title' || id === 'top'
+      ? 0
+      : Math.max(0, targetY - 88);
     const finishNavigation = () => {
       if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
       target.focus({ preventScroll: true });
@@ -69,17 +91,16 @@ export default function App() {
 
     scrollTweenRef.current?.kill();
     if (reduceMotion) {
-      target.scrollIntoView({ block: 'start' });
+      window.scrollTo({ top: destinationY });
       finishNavigation();
       return;
     }
 
-    const targetY = target.getBoundingClientRect().top + window.scrollY;
-    const distance = Math.abs(targetY - window.scrollY);
-    const duration = gsap.utils.clamp(0.8, 1.35, 0.72 + distance / 2200);
+    const distance = Math.abs(destinationY - window.scrollY);
+    const duration = gsap.utils.clamp(0.62, 1.05, 0.56 + distance / 2600);
 
     scrollTweenRef.current = gsap.to(window, {
-      scrollTo: { y: target, autoKill: true },
+      scrollTo: { y: destinationY, autoKill: true },
       duration,
       ease: 'power3.inOut',
       overwrite: 'auto',
@@ -145,20 +166,20 @@ export default function App() {
       })
         .fromTo(
           '#about-title',
-          { opacity: 0.18, x: -32, clipPath: 'inset(0 100% 0 0)' },
-          { opacity: 1, x: 0, clipPath: 'inset(0 0% 0 0)', duration: 0.9, ease: 'power4.out', clearProps: 'opacity,transform,clip-path' }
+          { opacity: 0.42, x: -22, clipPath: 'inset(0 100% 0 0)' },
+          { opacity: 1, x: 0, clipPath: 'inset(0 0% 0 0)', duration: 0.58, ease: 'power4.out', clearProps: 'opacity,transform,clip-path' }
         )
         .fromTo(
-          '.home-trust-panel',
-          { opacity: 0.16, y: 42, filter: 'blur(8px)' },
-          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.95, ease: 'power3.out', clearProps: 'opacity,transform,filter' },
-          '-=0.55'
+          '.home-trust-glow',
+          { opacity: 0.4, y: 28 },
+          { opacity: 1, y: 0, duration: 0.58, ease: 'power4.out', clearProps: 'opacity,transform' },
+          '-=0.36'
         )
         .fromTo(
           '.home-trust-card',
-          { opacity: 0.14, y: 28 },
-          { opacity: 1, y: 0, duration: 0.72, stagger: 0.11, ease: 'power3.out', clearProps: 'opacity,transform' },
-          '-=0.58'
+          { opacity: 0.38, y: 20 },
+          { opacity: 1, y: 0, duration: 0.5, stagger: 0.07, ease: 'power4.out', clearProps: 'opacity,transform' },
+          '-=0.42'
         );
 
       gsap.timeline({
@@ -166,26 +187,14 @@ export default function App() {
       })
         .fromTo(
           '#directions-title',
-          { opacity: 0.18, x: 34, clipPath: 'inset(0 0 0 100%)' },
-          { opacity: 1, x: 0, clipPath: 'inset(0 0 0 0%)', duration: 0.9, ease: 'power4.out', clearProps: 'opacity,transform,clip-path' }
+          { opacity: 0.42, x: 22, clipPath: 'inset(0 0 0 100%)' },
+          { opacity: 1, x: 0, clipPath: 'inset(0 0 0 0%)', duration: 0.58, ease: 'power4.out', clearProps: 'opacity,transform,clip-path' }
         )
         .fromTo(
-          '#journey > li',
-          { opacity: 0.16, y: 28 },
-          { opacity: 1, y: 0, duration: 0.72, ease: 'power3.out', clearProps: 'opacity,transform' },
-          '-=0.5'
-        )
-        .fromTo(
-          '.home-protocol-card',
-          { opacity: 0.14, y: 48, scale: 0.985, filter: 'blur(6px)' },
-          { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 0.86, stagger: 0.12, ease: 'power3.out', clearProps: 'opacity,transform,filter' },
+          '.home-protocol-glow',
+          { opacity: 0.38, y: 28, scale: 0.99 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.56, stagger: 0.08, ease: 'power4.out', clearProps: 'opacity,transform' },
           '-=0.38'
-        )
-        .fromTo(
-          '.home-how-steps-continuation > li',
-          { opacity: 0.16, x: -26 },
-          { opacity: 1, x: 0, duration: 0.72, stagger: 0.1, ease: 'power3.out', clearProps: 'opacity,transform' },
-          '-=0.48'
         );
 
       gsap.timeline({
@@ -193,14 +202,14 @@ export default function App() {
       })
         .fromTo(
           '.home-note .home-flow-title',
-          { opacity: 0.18, y: 34, clipPath: 'inset(0 0 100% 0)' },
-          { opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)', duration: 0.88, ease: 'power4.out', clearProps: 'opacity,transform,clip-path' }
+          { opacity: 0.42, y: 22, clipPath: 'inset(0 0 100% 0)' },
+          { opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)', duration: 0.58, ease: 'power4.out', clearProps: 'opacity,transform,clip-path' }
         )
         .fromTo(
           '.home-note > p',
-          { opacity: 0.16, y: 24, filter: 'blur(6px)' },
-          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.82, ease: 'power3.out', clearProps: 'opacity,transform,filter' },
-          '-=0.48'
+          { opacity: 0.4, y: 18 },
+          { opacity: 1, y: 0, duration: 0.5, ease: 'power4.out', clearProps: 'opacity,transform' },
+          '-=0.36'
         );
 
       gsap.timeline({
@@ -243,14 +252,14 @@ export default function App() {
           linesColor="#000000"
           gridScale={0.1}
           scanColor="#ffffff"
-          scanOpacity={0.24}
-          scanDuration={3.1}
-          scanDelay={0.8}
+          scanOpacity={0.21}
+          scanDuration={3.6}
+          scanDelay={0.9}
           enablePost
-          bloomIntensity={0.32}
+          bloomIntensity={0.28}
           chromaticAberration={0.0009}
           noiseIntensity={0.005}
-          scanGlow={0.29}
+          scanGlow={0.26}
         />
       </div>
 
@@ -292,7 +301,7 @@ export default function App() {
 
             <div className="hero-lower">
               <div className="hero-meta-row">
-                <a className="hero-affiliation-link" href="#about">福州大学</a>
+                <a className="hero-affiliation-link" href="#about">福州大学学生社团</a>
                 <a className="hero-license-link" href="#about">成立于 · 2026.09.01</a>
               </div>
 
@@ -308,14 +317,14 @@ export default function App() {
                   className="hero-button"
                   onClick={() => scrollToSection('about')}
                 >
-                  关于零一
+                  关于日新社
                 </SpecularButton>
                 <SpecularButton
                   {...SPECULAR_BUTTON_PROPS}
                   className="hero-button"
                   onClick={() => scrollToSection('join')}
                 >
-                  加入日新社
+                  加入我们
                 </SpecularButton>
               </div>
             </div>
@@ -325,120 +334,146 @@ export default function App() {
         <div className="home-sections">
           <section className="home-section home-trust-section" id="about" aria-labelledby="about-title">
             <h2 className="home-flow-title" id="about-title" tabIndex="-1">
-              从零开始，也由我们共同定义
+              关于日新社
             </h2>
 
-            <div className="home-trust-panel">
-              <p className="home-trust-intro">
-                这里是「<strong>零一 AI 日新社｜01AIClub</strong>」，一个专属于 AI 开源探索者的知识库与交流社区。<br />
-                社团成立于 2026 年 9 月 1 日，由<strong>零一扬</strong>担任社长，以公益教学为核心，一切仍在从零开始。
-              </p>
+            <BorderGlow {...BORDER_GLOW_PROPS} className="home-trust-glow">
+              <div className="home-trust-panel">
+                <div className="home-trust-intro">
+                <h3 className="home-trust-subtitle">从零到一，日新月异</h3>
+                <p>
+                  这里是「<strong>零一 AI 日新社｜01 AI Club</strong>」，一个立足福州大学，以开源知识库与交流社区为载体的 AI 学生社团。<br />
+                  我们以公益教学为核心，帮助真正想学习 AI 的人找到起点，<br />
+                  在交流与实践中迈出第一步，完成属于自己的<strong>从零到一</strong>。
+                </p>
+                <p>
+                  零一日新社面向全社会 AI 爱好者开放，不限身份、专业与基础。<br />
+                  只要保持好奇、愿意学习与实践，都欢迎加入我们！
+                </p>
+                <p>
+                  <strong>以 AI 为引擎，于零一之间探索，在日新之中迭代！</strong><br />
+                  我们相信，成长不必一蹴而就。每天多理解一点、多实践一步、多进步一点，这便是“<strong>日新</strong>”的意义。
+                </p>
+                <p>零一日新社成立于 2026 年 9 月 1 日，由 <strong>零一扬</strong> 担任社长。</p>
+                </div>
 
-              <div className="home-trust-cards">
+                <div className="home-trust-cards">
                 <article className="home-trust-card">
                   <span className="home-card-index" aria-hidden="true">01</span>
-                  <h3>公益教学</h3>
-                  <p>陆续提供清晰、可实践的 AI 入门课程，让真正想学的人找到起点，也找到同行者。</p>
-                  <SpecularButton {...SPECULAR_BUTTON_PROPS} size="md" className="home-trust-button" onClick={() => scrollToSection('directions')}>
-                    看看我们会做什么 →
-                  </SpecularButton>
+                  <h3>开源共享</h3>
+                  <p>零一日新社 坚持 零一精神，<br />是敢于从零开始，也愿意把走过的路开源给后来者。</p>
+                  <p>我们将持续沉淀并开放课程、经验与优质资源，<br />让一次从零到一的探索成为更多人的起点。</p>
                 </article>
 
                 <article className="home-trust-card">
                   <span className="home-card-index" aria-hidden="true">02</span>
-                  <h3>成长指导<br /><em>走得更稳</em></h3>
-                  <p>围绕转专业与就业提供经验和方向支持，帮助大家理解选择，也承担自己的选择。</p>
-                  <SpecularButton {...SPECULAR_BUTTON_PROPS} size="md" className="home-trust-button" onClick={() => scrollToSection('journey')}>
-                    了解成长路径 →
-                  </SpecularButton>
+                  <h3>探索实践</h3>
+                  <p>零一日新社 相信，真正的能力始于探索，成于实践。</p>
+                  <p>我们陪伴每一位探索者从理解第一个概念、完成第一个作品，到参与真实项目，让想法在行动中落地，<br />让每个人都有完成从零到一的勇气与能力。</p>
                 </article>
 
                 <article className="home-trust-card">
                   <span className="home-card-index" aria-hidden="true">03</span>
-                  <h3>真实项目</h3>
-                  <p>分发具体、可落地的项目，尝试帮助企业解决真实问题，让所学在实践中产生价值。</p>
-                  <SpecularButton {...SPECULAR_BUTTON_PROPS} size="md" className="home-trust-button" onClick={() => scrollToSection('join')}>
-                    和我们一起建设 →
-                  </SpecularButton>
+                  <h3>长期共建</h3>
+                  <p>
+                    零一日新社 坚持用长期主义建设一个开源社区。<br />
+                    从零到一需要迈出第一步，<br />日新则来自每一天的学习、实践与积累。
+                  </p>
+                  <p>我们期待每一位成员既是学习者，也是建设者。</p>
                 </article>
+                </div>
               </div>
-            </div>
+            </BorderGlow>
           </section>
 
           <section className="home-section home-how-section" id="directions" aria-labelledby="directions-title">
-            <h2 className="home-flow-title" id="directions-title" tabIndex="-1">我们会做什么？</h2>
-            <ol className="home-how-steps" id="journey">
-              <li>
-                <span className="home-step-number">1</span>
-                <div>
-                  <h3>从一个真正能完成的小目标开始</h3>
-                </div>
-              </li>
-            </ol>
+            <h2 className="home-flow-title" id="directions-title" tabIndex="-1">我们在做什么？</h2>
 
             <div className="home-protocol-grid" role="region" aria-label="零一 AI 日新社的发展方向">
-              <article className="home-protocol-card">
-                <div className="home-protocol-top">
-                  <span className="home-protocol-kicker">LEARN</span>
-                  <span className="home-tier-badge home-tier-crypto">公益教学</span>
-                </div>
-                <h2>AI 入门课程</h2>
-                <p>从基础概念到工具使用，从理解模型到完成第一个作品。内容会随着社区实践持续补充，而不是一次写完后停止更新。</p>
-                <SpecularButton {...SPECULAR_BUTTON_PROPS} size="md" className="home-protocol-button" onClick={() => scrollToSection('join')}>
-                  一起开始学习 →
-                </SpecularButton>
-              </article>
+              <BorderGlow {...BORDER_GLOW_PROPS} className="home-protocol-glow">
+                <article className="home-protocol-card">
+                  <div className="home-protocol-top">
+                    <span className="home-protocol-kicker">LEARN</span>
+                    <span className="home-tier-badge home-tier-crypto">公益教学</span>
+                  </div>
+                  <h2>AI 入门课程</h2>
+                  <p>
+                    围绕人工智能基础概念、工具应用、模型理解与项目实践，<br />
+                    逐步构建系统、清晰、可实践的学习路径。<br />
+                    课程内容将随技术发展与社区实践持续更新，帮助社团成员从零到一。
+                  </p>
+                  <SpecularButton
+                    {...SPECULAR_BUTTON_PROPS}
+                    size="md"
+                    className="home-protocol-button"
+                    href={LEARNING_WIKI_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    一起开始学习 →
+                  </SpecularButton>
+                </article>
+              </BorderGlow>
 
-              <article className="home-protocol-card">
-                <div className="home-protocol-top">
-                  <span className="home-protocol-kicker">GROW</span>
-                  <span className="home-tier-badge home-tier-behavioral">成长支持</span>
-                </div>
-                <h2>转专业与就业指导</h2>
-                <p>分享路径选择、能力建设和求职准备中的真实经验，少一些信息差，多一些基于自身节奏的长期积累。</p>
-                <SpecularButton {...SPECULAR_BUTTON_PROPS} size="md" className="home-protocol-button" onClick={() => scrollToSection('join')}>
-                  找到同行伙伴 →
-                </SpecularButton>
-              </article>
+              <BorderGlow {...BORDER_GLOW_PROPS} className="home-protocol-glow">
+                <article className="home-protocol-card">
+                  <div className="home-protocol-top">
+                    <span className="home-protocol-kicker">GROW</span>
+                    <span className="home-tier-badge home-tier-behavioral">成长支持</span>
+                  </div>
+                  <h2>转专业与就业指导</h2>
+                  <p>
+                    围绕专业方向选择、能力体系建设与职业发展规划，分享基于真实经历的经验与方法。<br />
+                    我们尊重每一位成员的选择与成长节奏，<br />
+                    致力于减少信息差，帮助大家建立清晰、稳健、可持续的发展路径。
+                  </p>
+                  <SpecularButton {...SPECULAR_BUTTON_PROPS} size="md" className="home-protocol-button" onClick={() => scrollToSection('join')}>
+                    找到同行伙伴 →
+                  </SpecularButton>
+                </article>
+              </BorderGlow>
 
-              <article className="home-protocol-card">
-                <div className="home-protocol-top">
-                  <span className="home-protocol-kicker">BUILD</span>
-                  <span className="home-tier-badge home-tier-protocol">项目实践</span>
-                </div>
-                <h2>可落地的真实项目</h2>
-                <p>把具体问题拆成能够协作完成的任务，在解决真实需求的过程中学习，让作品、经验与贡献一同沉淀下来。</p>
-                <SpecularButton {...SPECULAR_BUTTON_PROPS} size="md" className="home-protocol-button" onClick={() => scrollToSection('join')}>
-                  参与项目共建 →
-                </SpecularButton>
-              </article>
+              <BorderGlow {...BORDER_GLOW_PROPS} className="home-protocol-glow">
+                <article className="home-protocol-card">
+                  <div className="home-protocol-top">
+                    <span className="home-protocol-kicker">BUILD</span>
+                    <span className="home-tier-badge home-tier-protocol">项目实践</span>
+                  </div>
+                  <h2>可落地的真实项目</h2>
+                  <p>
+                    面向真实需求开展项目实践，将复杂问题拆解为目标明确、责任清晰、成果可交付的协作任务。<br />
+                    成员将在完整的项目过程中锻炼专业能力、解决问题的能力与团队协作意识，<br />
+                    让所学转化为经得起实践检验的作品与贡献！
+                  </p>
+                  <SpecularButton {...SPECULAR_BUTTON_PROPS} size="md" className="home-protocol-button" onClick={() => scrollToSection('join')}>
+                    参与项目共建 →
+                  </SpecularButton>
+                </article>
+              </BorderGlow>
             </div>
 
-            <ol className="home-how-steps home-how-steps-continuation" start={2}>
-              <li>
-                <span className="home-step-number">2</span>
-                <div>
-                  <h3>在交流与实践中持续迭代</h3>
-                  <p>学习不是独自收集资料。我们会把问题带进社区、把想法带进项目，让每一次讨论都尽量向行动靠近。</p>
-                </div>
-              </li>
-              <li>
-                <span className="home-step-number">3</span>
-                <div>
-                  <h3>参与社团，也参与它的成长</h3>
-                  <p>社团仍处在最早期。每一位加入的同学，都有机会参与建设，和我们一起定义它未来的样子。</p>
-                </div>
-              </li>
-            </ol>
           </section>
 
           <section className="home-note" id="join" aria-labelledby="join-title" tabIndex="-1">
-            <h2 className="home-flow-title" id="join-title">欢迎来到零一 AI 日新社</h2>
+            <h2 className="home-flow-title" id="join-title">欢迎加入零一 AI 日新社</h2>
             <p>
-              如果你也认可这种长期主义的节奏，欢迎加入，一起把这件事做下去。<br />
-              目前很多事情都还在从零开始，但也正因为如此，你可以和我们一起参与它的成长。<br />
-              <strong>一切才刚刚开始，朋友们。</strong>
+              如果你对 AI 技术保持好奇，愿意持续探索、实践与创造，欢迎加入零一 AI 日新社！<br />
+              <strong>期待与你从零开始，一起创造更多可能。</strong>
             </p>
+            <BorderGlow
+              {...BORDER_GLOW_PROPS}
+              className="home-join-qr-glow"
+            >
+              <img
+                className="home-join-qr"
+                src="/join-qq-qr.png"
+                alt="零一 AI 日新社 QQ 群二维码"
+                width="1254"
+                height="1254"
+                loading="lazy"
+                decoding="async"
+              />
+            </BorderGlow>
           </section>
         </div>
       </main>
@@ -448,9 +483,21 @@ export default function App() {
           <div className="home-footer-brand">
             <strong>零一 AI 日新社｜01AIClub</strong>
             <p>
-              以 AI 为引擎，于零一之间探索，<br />
-              在日新之中迭代。
+              以 AI 为引擎，于零一之间探索，在日新之中迭代。
             </p>
+            <LogoLoop
+              logos={TECH_LOGOS}
+              speed={90}
+              direction="left"
+              logoHeight={48}
+              gap={40}
+              hoverSpeed={0}
+              scaleOnHover
+              fadeOut
+              fadeOutColor="#0d0d0d"
+              ariaLabel="技术栈"
+              className="home-footer-logo-loop"
+            />
           </div>
 
           <div className="home-footer-links">
@@ -459,13 +506,12 @@ export default function App() {
               <ul>
                 <li><a href="#about">关于我们</a></li>
                 <li><a href="#directions">发展方向</a></li>
-                <li><a href="#journey">成长路径</a></li>
-                <li><a href="#join">加入日新社</a></li>
+                <li><a href="#join">加入我们</a></li>
               </ul>
             </div>
 
             <div className="home-footer-column">
-              <h3>我们会做</h3>
+              <h3>我们在做</h3>
               <ul>
                 <li><a href="#directions">AI 入门课程</a></li>
                 <li><a href="#directions">转专业指导</a></li>
@@ -485,9 +531,12 @@ export default function App() {
         </div>
 
         <div className="home-footer-copyright">
-          <span>© 2026 零一 AI 日新社 · 01AIClub</span>
-          <a href="#hero-title" aria-label="返回零一 AI 日新社首页">
-            <span>从零到一 · 日新又新</span>
+          <span>版权所有 © 2026 福州大学 学生 零一 AI 日新社</span>
+          <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">
+            ICP备案号：闽ICP备2026024313号-3
+          </a>
+          <a href="https://beian.mps.gov.cn/#/query/webSearch?code=35011102351280" target="_blank" rel="noopener noreferrer">
+            闽公网安备35011102351280号
           </a>
         </div>
       </footer>

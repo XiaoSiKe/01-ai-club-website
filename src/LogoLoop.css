@@ -1,0 +1,119 @@
+.logo-loop {
+  --logo-loop-distance: 360px;
+  --logo-loop-duration: 3s;
+  --logo-loop-hover-duration: 18s;
+  position: relative;
+  width: 100%;
+  height: calc(var(--logo-loop-height) + 16px);
+  overflow: hidden;
+}
+
+.logo-loop-track {
+  display: flex;
+  width: max-content;
+  min-width: 100%;
+  height: 100%;
+  animation: logo-loop-scroll var(--logo-loop-duration) linear infinite;
+  will-change: transform;
+}
+
+.logo-loop[data-direction='right'] .logo-loop-track {
+  animation-direction: reverse;
+}
+
+.logo-loop[data-pause-on-hover='true']:hover .logo-loop-track {
+  animation-play-state: paused;
+}
+
+.logo-loop:not([data-pause-on-hover='true']):hover .logo-loop-track {
+  animation-duration: var(--logo-loop-hover-duration);
+}
+
+.logo-loop-group {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--logo-loop-gap);
+  padding-right: var(--logo-loop-gap);
+}
+
+.logo-loop-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  height: var(--logo-loop-height);
+  color: rgba(245, 245, 245, 0.76);
+  text-decoration: none;
+  transition: color 180ms ease-out, transform 180ms ease-out;
+}
+
+.logo-loop-item:hover {
+  color: #f5f5f5;
+}
+
+.logo-loop-scale .logo-loop-item:hover {
+  transform: scale(1.08);
+}
+
+.logo-loop-item:focus-visible {
+  color: #ffffff;
+  outline: 2px solid #ffffff;
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+.logo-loop-node {
+  display: inline-flex;
+  font-size: var(--logo-loop-height);
+  line-height: 1;
+}
+
+.logo-loop-node svg,
+.logo-loop-image {
+  display: block;
+  width: auto;
+  height: var(--logo-loop-height);
+}
+
+.logo-loop-fade::before,
+.logo-loop-fade::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 48px;
+  content: '';
+  pointer-events: none;
+}
+
+.logo-loop-fade::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--logo-loop-fade-color), transparent);
+}
+
+.logo-loop-fade::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--logo-loop-fade-color), transparent);
+}
+
+@keyframes logo-loop-scroll {
+  to {
+    transform: translate3d(calc(-1 * var(--logo-loop-distance)), 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-loop {
+    overflow-x: auto;
+  }
+
+  .logo-loop-track {
+    animation: none;
+    transform: none;
+  }
+
+  .logo-loop-group[aria-hidden='true'] {
+    display: none;
+  }
+}

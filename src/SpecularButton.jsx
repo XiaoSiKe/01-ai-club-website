@@ -78,6 +78,9 @@ const SpecularButton = ({
   autoAnimate = false,
   disabled = false,
   onClick,
+  href,
+  target,
+  rel,
   className = '',
   type = 'button'
 }) => {
@@ -214,11 +217,13 @@ const SpecularButton = ({
     };
   }, []);
 
+  const Element = href ? 'a' : 'button';
+
   return (
-    <button
+    <Element
       ref={btnRef}
-      type={type}
-      disabled={disabled}
+      {...(href ? { href, target, rel } : { type, disabled })}
+      aria-disabled={href && disabled ? true : undefined}
       onClick={onClick}
       className={`specular-button specular-button--${size}${className ? ` ${className}` : ''}`}
       style={{
@@ -231,7 +236,7 @@ const SpecularButton = ({
     >
       <span ref={fxRef} className="specular-button__fx" aria-hidden="true" />
       <span className="specular-button__label">{children}</span>
-    </button>
+    </Element>
   );
 };
 
