@@ -16,6 +16,7 @@ brand
 
 - 正式域名：`club.01aiedu.com`
 - 所属标识：FZU AI CLUB · 福州大学
+- Mentor：柴琴琴（副教授，电气工程与自动化学院）
 - 当前阶段：官网与社团均处于早期建设阶段
 
 ## Brand Personality
