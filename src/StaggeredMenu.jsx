@@ -106,6 +106,7 @@ export const StaggeredMenu = ({
     }
 
     const offscreen = position === 'left' ? -100 : 100;
+    const sweepExit = -offscreen;
     const layerStates = layers.map(el => ({ el, start: offscreen }));
     const panelStart = offscreen;
 
@@ -146,13 +147,14 @@ export const StaggeredMenu = ({
       tl.to(
         layers,
         {
-          opacity: 0,
+          xPercent: sweepExit,
           duration: 0.49,
-          ease: 'power2.inOut',
+          ease: 'power3.inOut',
           stagger: { each: 0.045, from: 'start' }
         },
         panelInsertTime + panelDuration * 0.62
       );
+      tl.set(layers, { opacity: 0 });
     }
 
     if (itemEls.length) {
@@ -240,20 +242,17 @@ export const StaggeredMenu = ({
     const layers = preLayerElsRef.current;
     if (!panel) return;
 
-    const all = [...layers, panel];
     closeTweenRef.current?.kill();
     const offscreen = position === 'left' ? -100 : 100;
     if (shouldReduceMotion()) {
-      gsap.set(all, { xPercent: offscreen });
+      gsap.set(panel, { xPercent: offscreen });
+      gsap.set(layers, { xPercent: offscreen, opacity: 0 });
       busyRef.current = false;
       return;
     }
-    closeTweenRef.current = gsap.to(all, {
-      xPercent: offscreen,
-      duration: 0.34,
-      ease: 'power3.inOut',
-      overwrite: 'auto',
+    closeTweenRef.current = gsap.timeline({
       onComplete: () => {
+        gsap.set(layers, { xPercent: offscreen, opacity: 0 });
         const itemEls = Array.from(panel.querySelectorAll('.sm-panel-itemLabel'));
         if (itemEls.length) {
           gsap.set(itemEls, { yPercent: 140, rotate: 10 });
@@ -268,7 +267,9 @@ export const StaggeredMenu = ({
         if (socialLinks.length) gsap.set(socialLinks, { y: 25, opacity: 0 });
         busyRef.current = false;
       }
-    });
+    })
+      .to(layers, { opacity: 0, duration: 0.16, ease: 'power2.out', overwrite: 'auto' }, 0)
+      .to(panel, { xPercent: offscreen, duration: 0.34, ease: 'power3.inOut', overwrite: 'auto' }, 0);
   }, [position]);
 
   const animateIcon = useCallback(opening => {
