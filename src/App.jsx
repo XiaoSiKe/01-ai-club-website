@@ -9,6 +9,8 @@ import SpecularButton from './SpecularButton';
 import StaggeredMenu from './StaggeredMenu';
 import BorderGlow from './BorderGlow';
 import LogoLoop from './LogoLoop';
+import joinQrAvif from './assets/join-qq-qr.avif';
+import joinQrPng from './assets/join-qq-qr.png';
 
 gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
 
@@ -464,15 +466,18 @@ export default function App() {
               {...BORDER_GLOW_PROPS}
               className="home-join-qr-glow"
             >
-              <img
-                className="home-join-qr"
-                src="/join-qq-qr.png"
-                alt="零一 AI 日新社 QQ 群二维码"
-                width="1254"
-                height="1254"
-                loading="lazy"
-                decoding="async"
-              />
+              <picture className="home-join-qr-media">
+                <source srcSet={joinQrAvif} type="image/avif" />
+                <img
+                  className="home-join-qr"
+                  src={joinQrPng}
+                  alt="零一 AI 日新社 QQ 群二维码"
+                  width="640"
+                  height="640"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
             </BorderGlow>
           </section>
         </div>
