@@ -254,14 +254,14 @@ export default function App() {
           linesColor="#000000"
           gridScale={0.1}
           scanColor="#ffffff"
-          scanOpacity={0.21}
-          scanDuration={3.6}
-          scanDelay={0.9}
+          scanOpacity={0.19}
+          scanDuration={3.9}
+          scanDelay={1.0}
           enablePost
-          bloomIntensity={0.28}
+          bloomIntensity={0.25}
           chromaticAberration={0.0009}
           noiseIntensity={0.005}
-          scanGlow={0.26}
+          scanGlow={0.23}
         />
       </div>
 
@@ -357,6 +357,10 @@ export default function App() {
                   我们相信，成长不必一蹴而就。每天多理解一点、多实践一步、多进步一点，这便是“<strong>日新</strong>”的意义。
                 </p>
                 <p>零一日新社成立于 2026 年 9 月 1 日，由 <strong>零一扬</strong> 担任社长。</p>
+                <div className="home-trust-mentor">
+                  <h4>Mentor</h4>
+                  <p>柴琴琴（副教授，电气工程与自动化学院）</p>
+                </div>
                 </div>
 
                 <div className="home-trust-cards">
@@ -400,9 +404,9 @@ export default function App() {
                   </div>
                   <h2>AI 入门课程</h2>
                   <p>
-                    围绕人工智能基础概念、工具应用、模型理解与项目实践，<br />
-                    逐步构建系统、清晰、可实践的学习路径。<br />
-                    课程内容将随技术发展与社区实践持续更新，帮助社团成员从零到一。
+                    围绕人工智能基础概念、常用工具应用、模型原理理解与真实项目实践，<br />
+                    逐步地构建系统、清晰且可落地的学习路径。<br />
+                    课程内容将随技术发展与社区实践持续更新，帮助社团成员在实践中成长，真正实现从零到一。
                   </p>
                   <SpecularButton
                     {...SPECULAR_BUTTON_PROPS}
@@ -427,7 +431,7 @@ export default function App() {
                   <p>
                     围绕专业方向选择、能力体系建设与职业发展规划，分享基于真实经历的经验与方法。<br />
                     我们尊重每一位成员的选择与成长节奏，<br />
-                    致力于减少信息差，帮助大家建立清晰、稳健、可持续的发展路径。
+                    致力于减少信息差，<br />帮助大家建立清晰、稳健、可持续的发展路径。
                   </p>
                   <SpecularButton {...SPECULAR_BUTTON_PROPS} size="md" className="home-protocol-button" onClick={() => scrollToSection('join')}>
                     找到同行伙伴 →
