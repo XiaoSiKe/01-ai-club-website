@@ -9,7 +9,7 @@ import SpecularButton from './SpecularButton';
 import StaggeredMenu from './StaggeredMenu';
 import BorderGlow from './BorderGlow';
 import LogoLoop from './LogoLoop';
-import joinQrAvif from './assets/join-qq-qr.avif';
+import joinQrJpeg from './assets/join-qq-qr.jpg';
 import joinQrPng from './assets/join-qq-qr.png';
 
 gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
@@ -467,7 +467,7 @@ export default function App() {
               className="home-join-qr-glow"
             >
               <picture className="home-join-qr-media">
-                <source srcSet={joinQrAvif} type="image/avif" />
+                <source srcSet={joinQrJpeg} type="image/jpeg" />
                 <img
                   className="home-join-qr"
                   src={joinQrPng}
