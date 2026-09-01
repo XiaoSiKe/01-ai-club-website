@@ -751,6 +751,11 @@ a {
   margin-top: 24px;
 }
 
+.home-join-qr-media {
+  display: block;
+  width: 100%;
+}
+
 .home-join-qr {
   display: block;
   width: 100%;
