@@ -563,23 +563,6 @@ a {
   margin-top: 12px;
 }
 
-.home-trust-mentor {
-  margin-top: 20px;
-}
-
-.home-trust-mentor h4 {
-  margin: 0 0 7px;
-  color: #f5f5f5;
-  font-size: clamp(19px, 2vw, 24px);
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: 0.06em;
-}
-
-.home-trust-mentor p {
-  color: rgba(245, 245, 245, 0.66);
-}
-
 .home-trust-intro strong,
 .home-note strong {
   color: #f5f5f5;
