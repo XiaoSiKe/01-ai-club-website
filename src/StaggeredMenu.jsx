@@ -4,6 +4,7 @@ import './StaggeredMenu.css';
 
 const MENU_LABEL = '社团导航';
 const CLOSE_LABEL = '关闭';
+const OFFSCREEN_PERCENT = 110;
 const shouldReduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export const StaggeredMenu = ({
@@ -61,7 +62,7 @@ export const StaggeredMenu = ({
       }
       preLayerElsRef.current = preLayers;
 
-      const offscreen = position === 'left' ? -100 : 100;
+      const offscreen = position === 'left' ? -OFFSCREEN_PERCENT : OFFSCREEN_PERCENT;
       gsap.set([panel, ...preLayers], { xPercent: offscreen, opacity: 1 });
       if (preContainer) {
         gsap.set(preContainer, { xPercent: 0, opacity: 1 });
@@ -105,7 +106,7 @@ export const StaggeredMenu = ({
       return null;
     }
 
-    const offscreen = position === 'left' ? -100 : 100;
+    const offscreen = position === 'left' ? -OFFSCREEN_PERCENT : OFFSCREEN_PERCENT;
     const sweepExit = -offscreen;
     const layerStates = layers.map(el => ({ el, start: offscreen }));
     const panelStart = offscreen;
@@ -243,7 +244,7 @@ export const StaggeredMenu = ({
     if (!panel) return;
 
     closeTweenRef.current?.kill();
-    const offscreen = position === 'left' ? -100 : 100;
+    const offscreen = position === 'left' ? -OFFSCREEN_PERCENT : OFFSCREEN_PERCENT;
     if (shouldReduceMotion()) {
       gsap.set(panel, { xPercent: offscreen });
       gsap.set(layers, { xPercent: offscreen, opacity: 0 });
