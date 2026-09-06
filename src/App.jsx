@@ -249,19 +249,19 @@ export default function App() {
 
       <div className="homepage-background" aria-hidden="true">
         <GridScan
-          sensitivity={0.38}
+          sensitivity={0.43}
           lineThickness={1}
           linesColor="#000000"
           gridScale={0.1}
           scanColor="#ffffff"
-          scanOpacity={0.19}
-          scanDuration={3.9}
-          scanDelay={1.0}
+          scanOpacity={0.22}
+          scanDuration={3.7}
+          scanDelay={0.9}
           enablePost
-          bloomIntensity={0.25}
+          bloomIntensity={0.29}
           chromaticAberration={0.0009}
           noiseIntensity={0.005}
-          scanGlow={0.23}
+          scanGlow={0.26}
         />
       </div>
 
