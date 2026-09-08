@@ -563,6 +563,19 @@ a {
   margin-top: 12px;
 }
 
+.home-mentor {
+  margin-top: 28px;
+}
+
+.home-mentor p {
+  line-height: 1.65;
+  letter-spacing: 0;
+}
+
+.home-mentor p + p {
+  margin-top: 0;
+}
+
 .home-trust-intro strong,
 .home-note strong {
   color: #f5f5f5;
