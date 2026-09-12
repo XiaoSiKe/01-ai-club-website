@@ -359,7 +359,6 @@ export default function App() {
                 <p>零一日新社成立于 2026 年 9 月 1 日，由 <strong>零一扬</strong> 担任社长。</p>
                 <div className="home-mentor">
                   <h3 className="home-trust-subtitle">Mentor</h3>
-                  <p>吴运兵（副教授，现任计算机科学系副主任）</p>
                   <p>刘洋（某省政府数据智囊团成员、曾就职于中科院数据部门、资深AI政务研讨学者）</p>
                 </div>
                 </div>
