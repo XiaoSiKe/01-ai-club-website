@@ -360,6 +360,7 @@ export default function App() {
                 <div className="home-mentor">
                   <h3 className="home-trust-subtitle">Mentor</h3>
                   <p>刘洋（某省政府数据智囊团成员、曾就职于中科院数据部门、资深AI政务研讨学者）</p>
+                  <p>安瑟（教育科技公司创始人、青少年 AI 商业化导师、15年互联网产品运营与增长经验）</p>
                 </div>
                 </div>
 
