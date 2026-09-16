@@ -13,6 +13,16 @@
 
 这些资源只属于日新社官网。不得修改或复用现有的 `000-25thgame.conf`、`010-01yang-company-website.conf`、`/var/www/25thgame`、`/var/www/01yang-company-website`。
 
+### 网络与 SSH 安全基线
+
+- 公网入方向只允许网站端口 `80/tcp`、`443/tcp` 面向 `0.0.0.0/0`。
+- `22/tcp` 不得面向 `0.0.0.0/0`；仅允许阿里云 Workbench 私网段 `100.104.0.0/16`、云效中国香港构建集群官方出口 IP，以及当前管理员的独立 `/32` 地址。
+- 云效中国香港构建集群出口 IP 为 `47.57.70.87/32`、`47.242.65.197/32`、`47.90.29.115/32`、`47.57.136.136/32`。变更前应再次核对[阿里云构建集群文档](https://help.aliyun.com/zh/yunxiao/user-guide/build-a-cluster)。
+- 管理员公网 IP 属于私有运维信息，只在 ECS 安全组中维护，不写入仓库。
+- Ubuntu 实例不开放 `3389/tcp`；不得恢复系统初始创建的公网 RDP 规则。
+- SSH 仅允许公钥认证：`PasswordAuthentication no`、`KbdInteractiveAuthentication no`、`PermitRootLogin prohibit-password`、`MaxAuthTries 3`。
+- 云效发布密钥必须继续使用 `restrict,command=...` 强制命令；不得换成可交互登录密钥。
+
 ## DNS
 
 阿里云云解析 DNS 中为 `01aiedu.com` 添加：
