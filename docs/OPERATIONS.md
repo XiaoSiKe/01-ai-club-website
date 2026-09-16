@@ -153,3 +153,72 @@ dig @1.1.1.1 +short A club.01aiedu.com
 - [ ] `version.json` 与 Git 提交一致。
 - [ ] 另外两个站点仍正常。
 - [ ] 未提交任何私钥、PAT、Cookie 或真实 `.env`。
+
+## 11. 安全组与 SSH 基线
+
+### 安全组
+
+- `80/tcp`、`443/tcp`：网站公网入口，允许 `0.0.0.0/0`。
+- `22/tcp`：只允许 Workbench `100.104.0.0/16`、云效中国香港构建集群四个官方 `/32` 出口，以及当前管理员的独立 `/32` 地址。
+- `3389/tcp`：Ubuntu 不使用，必须保持关闭。
+- 管理员公网 IP 变化时，先通过 Workbench 登录并添加新的 `/32`，验证后再撤销旧地址；不要临时恢复 `22/tcp` 的 `0.0.0.0/0`。
+- 云效中国香港构建集群出口以[阿里云官方构建集群文档](https://help.aliyun.com/zh/yunxiao/user-guide/build-a-cluster)为准。当前基线为 `47.57.70.87/32`、`47.242.65.197/32`、`47.90.29.115/32`、`47.57.136.136/32`。
+
+### SSH
+
+修改 SSH 前先备份 `/etc/ssh/sshd_config`，并始终先验证再平滑加载：
+
+```bash
+sshd -t
+systemctl reload ssh
+sshd -T | grep -E '^(maxauthtries|permitrootlogin|pubkeyauthentication|passwordauthentication|kbdinteractiveauthentication|permitemptypasswords) '
+```
+
+有效策略应包含：
+
+```text
+maxauthtries 3
+permitrootlogin without-password
+pubkeyauthentication yes
+passwordauthentication no
+kbdinteractiveauthentication no
+permitemptypasswords no
+```
+
+日新社受限密钥的连通性可用非发布命令验证；预期结果是成功建立 SSH 后由强制命令主动拒绝，且不上传任何制品：
+
+```bash
+ssh -T -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+  -o UserKnownHostsFile=deploy/known_hosts \
+  -i ~/.ssh/id_ed25519_01aiclub_ci_20260901 \
+  01aiclub-deploy@47.106.14.254 noop
+```
+
+预期输出为“此密钥仅允许日新社官网制品发布。”且退出码非零。不要使用真实 `publish` 命令做空载测试。
+
+云安全中心的“使用 SSH 密钥对登录”检查只识别 ECS 控制台绑定的密钥对。本实例使用手工维护的 `authorized_keys`，已基于实际配置做实例级例外；不得改成全局加白。公网 IP 同样只做当前实例的风险接受，因为该 ECS 承载三个公网网站。
+
+## 12. 免费主机监控与报警
+
+本实例使用基础云监控的免费主机监控能力，不开通电话报警、站点监控、自定义监控、Prometheus 或应用监控专家版。
+
+- C++ 云监控 Agent：`argusagent 4.0.0`，服务为 `cloudmonitor.service`。
+- 主机指标采集：`loongcollector 3.3.2`，服务为 `loongcollectord.service`。
+- 云监控服务关联角色：`AliyunServiceRoleForCloudMonitor`。
+- 报警联系组：`日新社ECS免费告警`；只配置邮件联系人，不配置手机、短信或电话。
+- CPU 使用率：连续 5 分钟达到 `80%` 为警告，达到 `90%` 为严重。
+- 内存使用率：连续 5 分钟达到 `80%` 为警告，达到 `90%` 为严重。
+- 磁盘使用率：连续 5 分钟达到 `80%` 为警告，达到 `90%` 为严重。
+- 实例运行状态：连续 3 分钟监控值大于等于 `1` 为严重；该指标以 `0` 表示正常、非零表示异常。
+- 无监控数据：发送报警，避免 Agent 离线或采集链路中断时静默失效。
+- 通道沉默周期：`24 小时`，避免持续异常造成报警风暴。
+
+服务器侧检查：
+
+```bash
+systemctl is-active cloudmonitor loongcollectord
+/usr/local/cloudmonitor/bin/argusagent -v
+ps -eo pid,%cpu,%mem,cmd | grep -E '(argusagent|loongcollector)' | grep -v grep
+```
+
+控制台侧应确认 Agent 状态为“运行中”，并能看到 CPU、内存和磁盘使用率。邮件联系人必须完成阿里云激活邮件验证；在激活前规则正常计算，但邮件不会送达。首次配置后应在报警历史中确认联系组出现“邮件”通知记录，并确认规则恢复为“正常”。

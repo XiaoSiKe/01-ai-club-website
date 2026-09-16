@@ -15,3 +15,8 @@ yarn-error.log*
 pnpm-debug.log*
 
 preview-*.png
+
+# 本地工作区与临时产物
+.workbuddy/
+output/
+tmp/
