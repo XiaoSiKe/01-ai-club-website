@@ -362,6 +362,7 @@ export default function App() {
                 <p>零一日新社成立于 2026 年 9 月 1 日，由 <strong>零一扬</strong> 担任社长。</p>
                 <div className="home-mentor">
                   <h3 className="home-trust-subtitle">Mentor</h3>
+                  <p>林杰（福州福瑞智联创始人、MoneyAI Agent 创始人、曾发起福州首届“AI 造物黑客松”）</p>
                   <p>刘洋（某省政府数据智囊团成员、曾就职于中科院数据部门、资深AI政务研讨学者）</p>
                   <p>安瑟（教育科技公司创始人、青少年 AI 商业化导师、15年互联网产品运营与增长经验）</p>
                 </div>
