@@ -1,0 +1,24 @@
+.shutter-wordmark { width: min(100%, 1184px); margin: clamp(40px, 5vw, 72px) auto 0; color: var(--site-ink, #f5f5f5); }
+.shutter-wordmark > svg { display: block; width: 100%; height: auto; fill: currentColor; overflow: hidden; }
+.shutter-wordmark__glyph,
+.shutter-wordmark__club-logo { cursor: pointer; outline: none; -webkit-tap-highlight-color: transparent; }
+.shutter-wordmark__hit { fill: transparent; stroke: transparent; stroke-width: 1; }
+.shutter-wordmark__glyph:focus-visible > .shutter-wordmark__hit,
+.shutter-wordmark__club-logo:focus-visible > .shutter-wordmark__hit { stroke: currentColor; stroke-dasharray: 3 3; }
+.shutter-wordmark__logo-parts { visibility: hidden; }
+.shutter-wordmark__half { transition: transform 450ms cubic-bezier(.2,.9,.25,1); }
+.shutter-wordmark__glyph:is(:hover,:focus-visible) .shutter-wordmark__up { transform: translate(5px, -1.5px); }
+.shutter-wordmark__glyph:is(:hover,:focus-visible) .shutter-wordmark__down { transform: translate(-5px, 1.5px); }
+.shutter-wordmark__flip { transform-box: fill-box; transform-origin: center; }
+.shutter-wordmark__flip.is-flipping { animation: wordmark-flip 700ms cubic-bezier(.2,.8,.2,1); }
+.shutter-wordmark.is-seen .shutter-wordmark__rise { animation: wordmark-rise 950ms cubic-bezier(.16,.84,.2,1) var(--glyph-delay,0ms) backwards; }
+@keyframes wordmark-rise { from { transform: translateY(112px); } to { transform: translateY(0); } }
+@keyframes wordmark-flip { 0%,100% { transform: scaleY(1); } 45% { transform: scaleY(-1); } }
+@media (prefers-reduced-motion: reduce) {
+  .shutter-wordmark.is-seen .shutter-wordmark__rise,
+  .shutter-wordmark .shutter-wordmark__flip { animation: none; }
+  .shutter-wordmark__half { transition: none; }
+  .shutter-wordmark__glyph:is(:hover,:focus-visible) .shutter-wordmark__half { transform: none; }
+  .shutter-wordmark__glyph,
+  .shutter-wordmark__club-logo { cursor: default; }
+}

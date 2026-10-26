@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import './LogoLoop.css';
 
 const EMPTY_LOGOS = [];
@@ -14,10 +14,12 @@ export default function LogoLoop({
   fadeOut = false,
   fadeOutColor = '#ffffff',
   ariaLabel = 'Logo loop',
+  tabIndex,
   className = ''
 }) {
   const rootRef = useRef(null);
   const groupRef = useRef(null);
+  const [groupCount, setGroupCount] = useState(2);
 
   useLayoutEffect(() => {
     const root = rootRef.current;
@@ -26,14 +28,17 @@ export default function LogoLoop({
 
     const updateDurations = () => {
       const distance = group.getBoundingClientRect().width;
+      if (!distance) return;
       root.style.setProperty('--logo-loop-distance', `${distance}px`);
       root.style.setProperty('--logo-loop-duration', `${distance / Math.max(speed, 1)}s`);
       root.style.setProperty('--logo-loop-hover-duration', `${distance / Math.max(hoverSpeed, 1)}s`);
+      setGroupCount(Math.max(2, Math.ceil(root.clientWidth / distance) + 1));
     };
 
     updateDurations();
     const observer = new ResizeObserver(updateDurations);
     observer.observe(group);
+    observer.observe(root);
     return () => observer.disconnect();
   }, [gap, hoverSpeed, logoHeight, logos, speed]);
 
@@ -44,13 +49,15 @@ export default function LogoLoop({
       <img className="logo-loop-image" src={logo.src} alt={duplicate ? '' : logo.alt} loading="lazy" />
     );
 
-    if (logo.href && !duplicate) {
+    if (logo.href) {
+      const external = !logo.href.startsWith('#');
       return (
         <a
           className="logo-loop-item"
           href={logo.href}
-          target="_blank"
-          rel="noopener noreferrer"
+          target={external ? '_blank' : undefined}
+          rel={external ? 'noopener noreferrer' : undefined}
+          tabIndex={duplicate ? -1 : undefined}
           aria-label={logo.title || logo.alt}
           title={logo.title || logo.alt}
           key={`${logo.title || logo.alt || index}-${index}`}
@@ -63,6 +70,8 @@ export default function LogoLoop({
     return (
       <span
         className="logo-loop-item"
+        role={duplicate ? undefined : 'img'}
+        aria-label={duplicate ? undefined : logo.title || logo.alt}
         title={duplicate ? undefined : logo.title || logo.alt}
         key={`${duplicate ? 'duplicate' : 'logo'}-${logo.title || logo.alt || index}-${index}`}
       >
@@ -79,6 +88,7 @@ export default function LogoLoop({
       data-pause-on-hover={hoverSpeed === 0 || undefined}
       role="group"
       aria-label={ariaLabel}
+      tabIndex={tabIndex}
       style={{
         '--logo-loop-height': `${logoHeight}px`,
         '--logo-loop-gap': `${gap}px`,
@@ -89,9 +99,11 @@ export default function LogoLoop({
         <div ref={groupRef} className="logo-loop-group">
           {logos.map((logo, index) => renderLogo(logo, index))}
         </div>
-        <div className="logo-loop-group" aria-hidden="true">
-          {logos.map((logo, index) => renderLogo(logo, index, true))}
-        </div>
+        {Array.from({ length: groupCount - 1 }, (_, groupIndex) => (
+          <div className="logo-loop-group" aria-hidden="true" key={groupIndex}>
+            {logos.map((logo, index) => renderLogo(logo, index, true))}
+          </div>
+        ))}
       </div>
     </div>
   );

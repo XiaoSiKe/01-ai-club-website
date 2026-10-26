@@ -1,0 +1,118 @@
+/* React Bits MagicBento optical layers; source and license in the sibling JSX. */
+.magic-bento {
+  --mb-surface: var(--site-surface, rgba(10, 10, 12, .82));
+  --mb-ink: var(--site-ink, #f5f5f5);
+  --mb-glow-rgb: 255, 255, 255;
+  --mb-glow-alpha: .95;
+  --mb-spot-alpha: .07;
+  --mb-edge: var(--site-border, #ffffff26);
+  --mb-highlight: #ffffff0f;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--mb-columns, 4), minmax(0, 1fr));
+  grid-auto-rows: minmax(var(--mb-row-height, 200px), auto);
+  gap: var(--mb-gap, 12px);
+  width: 100%;
+  min-width: 0;
+  color: var(--mb-ink);
+  box-sizing: border-box;
+}
+.magic-bento__card {
+  position: relative;
+  isolation: isolate;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  border-radius: var(--mb-radius, 20px);
+  background: var(--mb-surface);
+  color: var(--mb-ink);
+}
+.magic-bento__card:focus-within { z-index: 2; }
+.magic-bento__card:focus-within > .magic-bento__rim { box-shadow: inset 0 0 0 1px var(--site-ink, #f5f5f5); }
+html[data-theme='light'] .magic-bento,
+.magic-bento[data-theme='light'] {
+  --mb-glow-rgb: 0, 0, 0;
+  --mb-glow-alpha: 1;
+  --mb-spot-alpha: .075;
+  --mb-edge: var(--site-border, #20202433);
+  --mb-highlight: #ffffff80;
+}
+
+
+.magic-bento__light {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  background: radial-gradient(
+    var(--mb-spot-size) circle at var(--mb-x, -999px) var(--mb-y, -999px),
+    rgba(var(--mb-glow-rgb), calc(var(--mb-spot-alpha) * var(--mb-hot, 0) * 1)) 0%,
+    rgba(var(--mb-glow-rgb), calc(var(--mb-spot-alpha) * var(--mb-hot, 0) * 0.973)) 15%,
+    rgba(var(--mb-glow-rgb), calc(var(--mb-spot-alpha) * var(--mb-hot, 0) * 0.837)) 30%,
+    rgba(var(--mb-glow-rgb), calc(var(--mb-spot-alpha) * var(--mb-hot, 0) * 0.593)) 45%,
+    rgba(var(--mb-glow-rgb), calc(var(--mb-spot-alpha) * var(--mb-hot, 0) * 0.317)) 60%,
+    rgba(var(--mb-glow-rgb), calc(var(--mb-spot-alpha) * var(--mb-hot, 0) * 0.104)) 75%,
+    rgba(var(--mb-glow-rgb), calc(var(--mb-spot-alpha) * var(--mb-hot, 0) * 0.009)) 90%,
+    rgba(var(--mb-glow-rgb), 0) 100%
+  );
+  pointer-events: none;
+}
+
+.magic-bento__rim {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px var(--mb-edge),
+    inset 0 1px 0 var(--mb-highlight);
+  pointer-events: none;
+}
+
+.magic-bento__border {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  box-sizing: border-box;
+  padding: 1px;
+  border-radius: inherit;
+  background:
+    radial-gradient(
+      var(--mb-border-size) circle at var(--mb-x, -999px) var(--mb-y, -999px),
+      rgba(var(--mb-glow-rgb), calc(var(--mb-glow-alpha) * var(--mb-near, 0) * 1)) 0%,
+      rgba(var(--mb-glow-rgb), calc(var(--mb-glow-alpha) * var(--mb-near, 0) * 0.973)) 15%,
+      rgba(var(--mb-glow-rgb), calc(var(--mb-glow-alpha) * var(--mb-near, 0) * 0.837)) 30%,
+      rgba(var(--mb-glow-rgb), calc(var(--mb-glow-alpha) * var(--mb-near, 0) * 0.593)) 45%,
+      rgba(var(--mb-glow-rgb), calc(var(--mb-glow-alpha) * var(--mb-near, 0) * 0.317)) 60%,
+      rgba(var(--mb-glow-rgb), calc(var(--mb-glow-alpha) * var(--mb-near, 0) * 0.104)) 75%,
+      rgba(var(--mb-glow-rgb), calc(var(--mb-glow-alpha) * var(--mb-near, 0) * 0.009)) 90%,
+      rgba(var(--mb-glow-rgb), 0) 100%
+    ),
+    radial-gradient(
+      circle at var(--mb-wx, -999px) var(--mb-wy, -999px),
+      rgba(var(--mb-glow-rgb), 0) calc(var(--mb-wr, 0px) - 110px),
+      rgba(var(--mb-glow-rgb), calc(var(--mb-glow-alpha) * var(--mb-wa, 0) * 0.1)) calc(var(--mb-wr, 0px) - 80px),
+      rgba(var(--mb-glow-rgb), calc(var(--mb-glow-alpha) * var(--mb-wa, 0) * 0.32)) calc(var(--mb-wr, 0px) - 52px),
+      rgba(var(--mb-glow-rgb), calc(var(--mb-glow-alpha) * var(--mb-wa, 0) * 0.68)) calc(var(--mb-wr, 0px) - 28px),
+      rgba(var(--mb-glow-rgb), calc(var(--mb-glow-alpha) * var(--mb-wa, 0) * 0.94)) calc(var(--mb-wr, 0px) - 10px),
+      rgba(var(--mb-glow-rgb), calc(var(--mb-glow-alpha) * var(--mb-wa, 0))) calc(var(--mb-wr, 0px) - 3px),
+      rgba(var(--mb-glow-rgb), 0) var(--mb-wr, 0px)
+    );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+/* Parent card rules own column/row spans and responsive breakpoints. */
+.magic-bento__light { z-index: -1; }
+.magic-bento__border { padding: 1.25px; }
+html[data-theme='light'] .magic-bento__border,
+.magic-bento[data-theme='light'] .magic-bento__border { padding: 1.5px; }
+@media (prefers-contrast: more) {
+  .magic-bento__rim { box-shadow: inset 0 0 0 1px var(--site-ink, #f5f5f5); }
+}

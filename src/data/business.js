@@ -1,0 +1,48 @@
+import { ezcutBusinessMembers, exdrinkBusinessMembers, smartbotBusinessMembers, timetableBusinessMembers } from './business-members';
+
+export const businesses = [
+  {
+    id: 'ezcut',
+    src: '/images/business-ezcut.png',
+    alt: '零一快剪 Logo',
+    title: '零一快剪',
+    imageScale: 0.84,
+    subtitle: '把交付质量立住，客户看了不烧心！',
+    href: 'https://ezcut.01aiedu.com/',
+    members: ezcutBusinessMembers,
+    membersExample: false,
+  },
+  {
+    id: 'exdrink',
+    src: '/images/business-exdrink.png',
+    alt: '零一拓饮 Logo',
+    title: '零一拓饮',
+    subtitle: '从一杯好味道，到生活的小美好！',
+    href: 'https://exdrink.01aiedu.com/',
+    members: exdrinkBusinessMembers,
+    membersExample: false,
+  },
+  {
+    id: 'smartbot',
+    src: '/images/business-smartbot.png',
+    alt: '零一智械 Logo',
+    title: '零一智械',
+    subtitle: '让 AI 触手可及，让好奇得到回应！',
+    captionCredit: '零一 AI 日新社｜福理工分社',
+    href: 'https://smartbot.01aiedu.com/',
+    members: smartbotBusinessMembers,
+    membersExample: false,
+  },
+  {
+    id: 'timetable',
+    src: '/images/business-timetable.png',
+    alt: '零一课表 Logo',
+    title: '零一课表',
+    imageScale: 0.76,
+    subtitle: '课表，本该如此简单。',
+    captionCredit: '零一 AI 日新社｜闽江分社',
+    href: 'https://www.weiyanglab.cn',
+    members: timetableBusinessMembers,
+    membersExample: false,
+  },
+];

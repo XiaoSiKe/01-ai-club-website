@@ -1,0 +1,37 @@
+{
+  "retrieved": "2026-10-24",
+  "note": "Official assets retain their original colors and pixels. SVG viewBox isolates each circular seal; CSS clips the outside corners without redrawing the crest.",
+  "fzu": {
+    "page": "https://www.fzu.edu.cn/xxgk/xbxx.htm",
+    "asset": "https://www.fzu.edu.cn/__local/B/00/85/7E40A9947CCADB9BCCF7F6A8AA0_9BDD11BE_23796.png"
+  },
+  "fjut": {
+    "page": "https://www.fjut.edu.cn/426/list.htm",
+    "asset": "https://www.fjut.edu.cn/_upload/tpl/05/b6/1462/template1462/assets/dist/images/college-logo4.png",
+    "viewBox": "57 5 143 143"
+  },
+  "mju": {
+    "page": "https://www.mju.edu.cn/xb/list.htm",
+    "asset": "https://www.mju.edu.cn/_upload/tpl/01/39/313/template313/images/logo.svg",
+    "viewBox": "3 5 390 390",
+    "colorAsset": "https://www.mju.edu.cn/_upload/article/images/9a/b2/8723127b4c6b848d13f9687cefca/10d92fcc-1729-46e2-b2c4-7a85b166c2d3.jpg"
+  },
+  "fjnu": {
+    "page": "https://office.fjnu.edu.cn/8d/c5/c810a36293/page.htm",
+    "asset": "https://office.fjnu.edu.cn/_upload/article/images/e8/44/3115bea94bdbb0079b61c89d52db/4d9e9eca-8914-4e0a-97b7-394956c37a29.jpg",
+    "retrieved": "2026-10-25",
+    "viewBox": "145 121 787 787"
+  },
+  "fuzc": {
+    "page": "https://zsb.fdzcxy.edu.cn/article/678.html",
+    "asset": "https://zsb.fdzcxy.edu.cn/uploads/ueditor/image/20240416/1713232751580474.png",
+    "retrieved": "2026-10-26",
+    "note": "Original 737 x 737 color PNG, unchanged."
+  },
+  "fit": {
+    "page": "https://www.fit.edu.cn/About/Badgemotto/",
+    "asset": "https://www.fit.edu.cn/images/image/20210524092676507650.png",
+    "retrieved": "2026-10-26",
+    "note": "Original 587x587 color PNG, unchanged; displayed on a white disk to preserve contrast on the dark page."
+  }
+}

@@ -8,9 +8,10 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/finalize-build.mjs && node scripts/verify-dist.mjs",
+    "build": "node scripts/build-branch-atlas.mjs && node scripts/verify-branch-atlas.mjs && node scripts/verify-atlas-reveal.mjs && vite build && node scripts/finalize-build.mjs && node scripts/verify-dist.mjs",
     "preview": "vite preview",
     "verify:dist": "node scripts/verify-dist.mjs",
+    "verify:atlas": "node scripts/verify-branch-atlas.mjs",
     "release:package": "bash deploy/package-release.sh",
     "ops:check": "node scripts/ops.mjs check",
     "ops:status": "node scripts/ops.mjs status",
@@ -18,6 +19,7 @@
   },
   "dependencies": {
     "face-api.js": "^0.22.2",
+    "framer-motion": "^14.6.0",
     "gsap": "^3.13.0",
     "ogl": "^1.0.11",
     "postprocessing": "^6.36.0",
@@ -28,7 +30,10 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "6.1.0",
-    "vite": "8.2.2"
+    "d3-geo": "^3.1.1",
+    "topojson-client": "^3.1.0",
+    "vite": "8.2.2",
+    "world-atlas": "^2.0.2"
   },
   "overrides": {
     "node-fetch": "2.6.7"

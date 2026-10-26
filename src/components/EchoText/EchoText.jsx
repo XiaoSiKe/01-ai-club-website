@@ -88,7 +88,15 @@ const EchoText = ({
     };
 
     let canHover = false;
+    let inView = false;
+    let restedOffscreen = false;
+    let visibilityFrame = 0;
     let cleanupPointer = () => {};
+    const requestRender = () => {
+      if (frameRef.current || !inView || document.hidden) return;
+      root.dataset.echoAnimating = 'true';
+      frameRef.current = requestAnimationFrame(renderFrame);
+    };
 
     if (pointerEnabled && window.matchMedia) {
       const hoverMedia = window.matchMedia('(hover: hover) and (pointer: fine)');
@@ -97,7 +105,7 @@ const EchoText = ({
 
     const handlePointerMove = event => {
       const state = stateRef.current;
-      if (!state) return;
+      if (!state || !inView || document.hidden) return;
 
       const rect = root.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
@@ -113,6 +121,7 @@ const EchoText = ({
 
       state.targetX = dirX * reach * safeOffset;
       state.targetY = dirY * reach * safeOffset * 0.72;
+      requestRender();
     };
 
     const handlePointerLeave = () => {
@@ -120,6 +129,7 @@ const EchoText = ({
       if (!state) return;
       state.targetX = 0;
       state.targetY = 0;
+      requestRender();
     };
 
     if (canHover) {
@@ -132,8 +142,9 @@ const EchoText = ({
     }
 
     const renderFrame = now => {
+      frameRef.current = null;
       const state = stateRef.current;
-      if (!state) return;
+      if (!state || !inView || document.hidden) return;
 
       const elapsed = now - state.startTime;
       const entranceProgress = entranceEnabled && safeDuration > 0 ? clamp(elapsed / safeDuration, 0, 1) : 1;
@@ -145,6 +156,7 @@ const EchoText = ({
       state.lastTargetY = state.targetY;
 
       let maxSeparation = 0;
+      let maxError = 0;
 
       for (let index = 0; index <= echoCount; index += 1) {
         const copy = copyRefs.current[index];
@@ -158,6 +170,7 @@ const EchoText = ({
 
         current.x += (desiredX - current.x) * lerp;
         current.y += (desiredY - current.y) * lerp;
+        maxError = Math.max(maxError, Math.abs(desiredX - current.x), Math.abs(desiredY - current.y));
 
         copy.style.transform = `translate3d(${current.x.toFixed(3)}px, ${current.y.toFixed(3)}px, 0)`;
 
@@ -165,8 +178,6 @@ const EchoText = ({
           const front = state.positions[0];
           const separation = front ? Math.hypot(current.x - front.x, current.y - front.y) : 0;
           maxSeparation = Math.max(maxSeparation, separation);
-          const depth = echoCount ? index / echoCount : 0;
-          copy.style.filter = safeBlur > 0 ? `blur(${(safeBlur * depth).toFixed(2)}px)` : 'none';
         }
       }
 
@@ -183,22 +194,58 @@ const EchoText = ({
 
       const stillMoving =
         state.activity > 0.002 ||
-        Math.abs(state.targetX) > 0.01 ||
-        Math.abs(state.targetY) > 0.01 ||
-        entranceProgress < 1 ||
-        canHover;
+        maxError > 0.01 ||
+        entranceProgress < 1;
 
       if (stillMoving) {
-        frameRef.current = requestAnimationFrame(renderFrame);
+        requestRender();
       } else {
-        frameRef.current = null;
+        root.dataset.echoAnimating = 'false';
       }
     };
 
-    frameRef.current = requestAnimationFrame(renderFrame);
+    for (let index = 1; index <= echoCount; index++) {
+      const copy = copyRefs.current[index];
+      if (copy) copy.style.filter = safeBlur > 0 ? `blur(${(safeBlur * index / echoCount).toFixed(2)}px)` : 'none';
+    }
+    const syncVisibility = () => {
+      visibilityFrame = 0;
+      if (!stateRef.current) return;
+      const rect = root.getBoundingClientRect();
+      inView = !document.hidden && rect.bottom > 0 && rect.top < innerHeight && rect.right > 0 && rect.left < innerWidth;
+      if (inView) { restedOffscreen = false; requestRender(); }
+      else {
+        cancelAnimationFrame(frameRef.current);
+        frameRef.current = null;
+        root.dataset.echoAnimating = 'false';
+        if (!restedOffscreen) {
+          const state = stateRef.current;
+          state.targetX = state.targetY = state.lastTargetX = state.lastTargetY = state.activity = 0;
+          state.startTime = performance.now() - safeDuration;
+          state.positions.forEach((position, index) => {
+            position.x = position.y = 0;
+            const copy = copyRefs.current[index];
+            if (copy) { copy.style.transform = 'translate3d(0, 0, 0)'; if (index) copy.style.opacity = '0'; }
+          });
+          restedOffscreen = true;
+        }
+      }
+    };
+    const scheduleVisibility = () => { if (!visibilityFrame) visibilityFrame = requestAnimationFrame(syncVisibility); };
+    const observer = new IntersectionObserver(syncVisibility);
+    observer.observe(root);
+    window.addEventListener('scroll', scheduleVisibility, { passive: true });
+    window.addEventListener('resize', scheduleVisibility);
+    document.addEventListener('visibilitychange', syncVisibility);
+    syncVisibility();
 
     return () => {
       cleanupPointer();
+      observer.disconnect();
+      cancelAnimationFrame(visibilityFrame);
+      window.removeEventListener('scroll', scheduleVisibility);
+      window.removeEventListener('resize', scheduleVisibility);
+      document.removeEventListener('visibilitychange', syncVisibility);
       if (frameRef.current) cancelAnimationFrame(frameRef.current);
       frameRef.current = null;
       stateRef.current = null;

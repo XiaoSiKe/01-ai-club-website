@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useId, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import './StaggeredMenu.css';
 
@@ -16,16 +16,20 @@ export const StaggeredMenu = ({
   displayItemNumbering = true,
   className,
   logoUrl = '/src/assets/logos/reactbits-gh-white.svg',
+  logoHref = '#top',
   menuButtonColor = '#fff',
   openMenuButtonColor = '#fff',
   accentColor = '#ffffff',
   changeMenuColorOnOpen = true,
   isFixed = false,
   closeOnClickAway = true,
+  headerActions,
   onMenuOpen,
   onMenuClose
 }) => {
   const [open, setOpen] = useState(false);
+  const panelId = useId();
+  const keyboardOpenRef = useRef(false);
   const openRef = useRef(false);
   const panelRef = useRef(null);
   const preLayersRef = useRef(null);
@@ -82,6 +86,7 @@ export const StaggeredMenu = ({
     if (!panel) return null;
 
     openTlRef.current?.kill();
+    const interruptedClose = closeTweenRef.current?.isActive();
     if (closeTweenRef.current) {
       closeTweenRef.current.kill();
       closeTweenRef.current = null;
@@ -109,22 +114,20 @@ export const StaggeredMenu = ({
     const offscreen = position === 'left' ? -OFFSCREEN_PERCENT : OFFSCREEN_PERCENT;
     const sweepExit = -offscreen;
     const layerStates = layers.map(el => ({ el, start: offscreen }));
-    const panelStart = offscreen;
-
-    if (itemEls.length) {
+    if (itemEls.length && !interruptedClose) {
       gsap.set(itemEls, { yPercent: 140, rotate: 10 });
     }
-    if (numberEls.length) {
+    if (numberEls.length && !interruptedClose) {
       gsap.set(numberEls, { '--sm-num-opacity': 0 });
     }
-    if (socialTitle) {
+    if (socialTitle && !interruptedClose) {
       gsap.set(socialTitle, { opacity: 0 });
     }
-    if (socialLinks.length) {
+    if (socialLinks.length && !interruptedClose) {
       gsap.set(socialLinks, { y: 25, opacity: 0 });
     }
 
-    const tl = gsap.timeline({ paused: true });
+    const tl = gsap.timeline({ paused: true }).timeScale(1.08);
 
     const layerStagger = 0.075;
     layerStates.forEach((ls, i) => {
@@ -138,11 +141,11 @@ export const StaggeredMenu = ({
     const lastTime = layerStates.length ? (layerStates.length - 1) * layerStagger : 0;
     const panelInsertTime = lastTime + (layerStates.length ? 0.105 : 0);
     const panelDuration = 0.6;
-    tl.fromTo(
+    // A reversal begins at the panel's current presentation position.
+    tl.to(
       panel,
-      { xPercent: panelStart },
       { xPercent: 0, duration: panelDuration, ease: 'power3.out' },
-      panelInsertTime
+      interruptedClose ? 0 : panelInsertTime
     );
     if (layers.length) {
       tl.to(
@@ -219,7 +222,7 @@ export const StaggeredMenu = ({
 
     openTlRef.current = tl;
     return tl;
-  }, []);
+  }, [position]);
 
   const playOpen = useCallback(() => {
     busyRef.current = true;
@@ -363,8 +366,9 @@ export const StaggeredMenu = ({
     });
   }, []);
 
-  const toggleMenu = useCallback(() => {
+  const toggleMenu = useCallback(event => {
     const target = !openRef.current;
+    keyboardOpenRef.current = target && event?.detail === 0;
     openRef.current = target;
     setOpen(target);
     if (target) {
@@ -379,8 +383,11 @@ export const StaggeredMenu = ({
     animateText(target);
   }, [playOpen, playClose, animateIcon, animateColor, animateText, onMenuOpen, onMenuClose]);
 
-  const closeMenu = useCallback(() => {
+  const closeMenu = useCallback((restoreFocus = false) => {
     if (openRef.current) {
+      if (restoreFocus && panelRef.current?.contains(document.activeElement)) {
+        toggleBtnRef.current?.focus({ preventScroll: true });
+      }
       openRef.current = false;
       setOpen(false);
       onMenuClose?.();
@@ -401,24 +408,87 @@ export const StaggeredMenu = ({
         toggleBtnRef.current &&
         !toggleBtnRef.current.contains(event.target)
       ) {
-        closeMenu();
+        closeMenu(true);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('pointerdown', handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('pointerdown', handleClickOutside);
     };
   }, [closeOnClickAway, open, closeMenu]);
 
   React.useEffect(() => {
     if (!open) return;
     const handleEscape = event => {
-      if (event.key === 'Escape') closeMenu();
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeMenu(true);
+      }
     };
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
   }, [open, closeMenu]);
+
+  React.useEffect(() => {
+    if (!open) return;
+    if (keyboardOpenRef.current) {
+      panelRef.current?.querySelector('a[href]')?.focus({ preventScroll: true });
+      keyboardOpenRef.current = false;
+    }
+    // This is a navigation disclosure, so Tab can leave it naturally.
+    const handleFocus = event => {
+      if (!panelRef.current?.contains(event.target) && !toggleBtnRef.current?.contains(event.target)) {
+        closeMenu();
+      }
+    };
+    document.addEventListener('focusin', handleFocus);
+    return () => document.removeEventListener('focusin', handleFocus);
+  }, [open, closeMenu]);
+
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+    if (!panel) return;
+    const measurePanel = () => {
+      preLayersRef.current?.style.setProperty('--sm-panel-height', `${panel.offsetHeight}px`);
+    };
+    const observer = new ResizeObserver(measurePanel);
+    observer.observe(panel);
+    measurePanel();
+    return () => observer.disconnect();
+  }, []);
+
+  React.useEffect(() => {
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const settleMotion = event => {
+      if (!event.matches) return;
+      [openTlRef, closeTweenRef, spinTweenRef, textCycleAnimRef, colorTweenRef, itemEntranceTweenRef]
+        .forEach(ref => { ref.current?.kill(); ref.current = null; });
+      const panel = panelRef.current;
+      if (!panel) return;
+      const isOpen = openRef.current;
+      const offscreen = position === 'left' ? -OFFSCREEN_PERCENT : OFFSCREEN_PERCENT;
+      gsap.set(panel, { xPercent: isOpen ? 0 : offscreen, opacity: 1 });
+      gsap.set(preLayerElsRef.current, { xPercent: offscreen, opacity: 0 });
+      const itemLabels = panel.querySelectorAll('.sm-panel-itemLabel');
+      const menuItems = panel.querySelectorAll('.sm-panel-item');
+      const socials = panel.querySelectorAll('.sm-socials-title, .sm-socials-link');
+      if (itemLabels.length) gsap.set(itemLabels, { yPercent: 0, rotate: 0 });
+      if (menuItems.length) gsap.set(menuItems, { '--sm-num-opacity': 1 });
+      if (socials.length) gsap.set(socials, { y: 0, opacity: 1 });
+      gsap.set(iconRef.current, { rotate: isOpen ? 225 : 0 });
+      gsap.set(textInnerRef.current, { yPercent: 0 });
+      gsap.set(toggleBtnRef.current, { color: isOpen && changeMenuColorOnOpen ? openMenuButtonColor : menuButtonColor });
+      setTextLines([isOpen ? CLOSE_LABEL : MENU_LABEL]);
+      busyRef.current = false;
+    };
+    preference.addEventListener('change', settleMotion);
+    return () => {
+      preference.removeEventListener('change', settleMotion);
+      [openTlRef, closeTweenRef, spinTweenRef, textCycleAnimRef, colorTweenRef, itemEntranceTweenRef]
+        .forEach(ref => ref.current?.kill());
+    };
+  }, [position, menuButtonColor, openMenuButtonColor, changeMenuColorOnOpen]);
 
   return (
     <div
@@ -436,7 +506,7 @@ export const StaggeredMenu = ({
         })()}
       </div>
       <header className="staggered-menu-header" aria-label="零一 AI 日新社导航">
-        <a className="sm-logo" href="#top" aria-label="返回零一 AI 日新社首页顶部">
+        <a className="sm-logo" href={logoHref} aria-label="返回零一 AI 日新社首页顶部">
           <img
             src={logoUrl || '/src/assets/logos/reactbits-gh-white.svg'}
             alt="零一 AI 日新社"
@@ -446,33 +516,36 @@ export const StaggeredMenu = ({
             height={24}
           />
         </a>
-        <button
-          ref={toggleBtnRef}
-          className="sm-toggle"
-          aria-label={open ? '关闭社团菜单' : '打开社团菜单'}
-          aria-expanded={open}
-          aria-controls="staggered-menu-panel"
-          onClick={toggleMenu}
-          type="button"
-        >
-          <span ref={textWrapRef} className="sm-toggle-textWrap" aria-hidden="true">
-            <span ref={textInnerRef} className="sm-toggle-textInner">
-              {textLines.map((l, i) => (
-                <span className="sm-toggle-line" key={i}>
-                  {l}
-                </span>
-              ))}
+        <div className="sm-header-actions">
+          {headerActions}
+          <button
+            ref={toggleBtnRef}
+            className="sm-toggle"
+            aria-label={open ? '关闭社团菜单' : '打开社团菜单'}
+            aria-expanded={open}
+            aria-controls={panelId}
+            onClick={toggleMenu}
+            type="button"
+          >
+            <span ref={textWrapRef} className="sm-toggle-textWrap" aria-hidden="true">
+              <span ref={textInnerRef} className="sm-toggle-textInner">
+                {textLines.map((l, i) => (
+                  <span className="sm-toggle-line" key={i}>
+                    {l}
+                  </span>
+                ))}
+              </span>
             </span>
-          </span>
-          <span ref={iconRef} className="sm-icon" aria-hidden="true">
-            <span ref={plusHRef} className="sm-icon-line" />
-            <span ref={plusVRef} className="sm-icon-line sm-icon-line-v" />
-          </span>
-        </button>
+            <span ref={iconRef} className="sm-icon" aria-hidden="true">
+              <span ref={plusHRef} className="sm-icon-line" />
+              <span ref={plusVRef} className="sm-icon-line sm-icon-line-v" />
+            </span>
+          </button>
+        </div>
       </header>
 
       <aside
-        id="staggered-menu-panel"
+        id={panelId}
         ref={panelRef}
         className="staggered-menu-panel"
         aria-label="社团导航"
@@ -489,7 +562,7 @@ export const StaggeredMenu = ({
                     href={it.link}
                     aria-label={it.ariaLabel}
                     data-index={idx + 1}
-                    onClick={closeMenu}
+                    onClick={() => closeMenu(true)}
                   >
                     <span className="sm-panel-itemLabel">{it.label}</span>
                   </a>
@@ -509,7 +582,7 @@ export const StaggeredMenu = ({
               <ul className="sm-socials-list" role="list">
                 {socialItems.map((s, i) => (
                   <li key={s.label + i} className="sm-socials-item">
-                    <a href={s.link} target="_blank" rel="noopener noreferrer" className="sm-socials-link">
+                    <a href={s.link} target="_blank" rel="noopener noreferrer" className="sm-socials-link" onClick={() => closeMenu(true)}>
                       {s.label}
                     </a>
                   </li>

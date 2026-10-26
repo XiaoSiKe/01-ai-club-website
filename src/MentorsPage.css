@@ -1,0 +1,20 @@
+.mentors-page { min-height: 100svh; padding: 112px 24px 64px; color: var(--site-ink); background: var(--site-background); }
+.mentors-page__content { width: min(100%, 1184px); margin-inline: auto; animation: mentors-enter 650ms cubic-bezier(.23,1,.32,1) both; }
+.mentors-page .team-showcase { margin: 0; }
+.mentors-page .team-showcase__title { font-size: var(--people-title-size); line-height: 1; margin-bottom: 48px; }
+.mentors-page .team-showcase__layout { grid-template-columns: minmax(0, 2fr) minmax(280px, .95fr); gap: clamp(32px, 4vw, 56px); align-items: center; }
+.mentors-page .team-showcase__portraits { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.mentors-page .team-showcase__portrait { aspect-ratio: 1; }
+.mentors-page .team-showcase__members { gap: 28px; }
+.mentors-page .team-showcase__member-name strong { font-size: 24px; }
+.mentors-page .team-showcase__role, .mentors-page .team-showcase__description { font-size: 13px; }
+@keyframes mentors-enter { from { transform: translateY(16px); } to { transform: translateY(0); } }
+@media (max-width: 700px) {
+  .mentors-page { padding: 104px 24px 48px; }
+  .mentors-page .team-showcase { margin-top: 24px; }
+  .mentors-page .team-showcase__title { margin-bottom: 32px; }
+  .mentors-page .team-showcase__layout { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .mentors-page .team-showcase__portraits { width: 100%; gap: 12px; }
+  .mentors-page .team-showcase__members { gap: 28px; }
+}
+@media (prefers-reduced-motion: reduce) { .mentors-page__content { animation: none; } }
