@@ -44,7 +44,7 @@ export default function PioneersPage() {
           preset="mono"
           palette={theme === 'light' ? LIGHT_PALETTE : DARK_PALETTE}
           columns={4}
-          driftSeconds={9}
+          driftSeconds={7.2}
           targetMemberId={targetMemberId}
           height="calc(100svh - var(--pioneers-header-clearance))"
           fontFamily="var(--site-font-family)"

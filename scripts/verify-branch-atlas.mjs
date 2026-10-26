@@ -113,7 +113,7 @@ for (const branch of branches) {
   assert(branch.crest && !branch.image, 'Branch presentation uses an official crest instead of a photo');
   assert(readFileSync(new URL(`../public${branch.crest}`, import.meta.url)).length > 1000, 'Crest must be bundled locally');
 }
-for (const [width, height, padding] of [[804, 984, 64], [286, 400, 42]]) {
+for (const [width, height, padding] of [[804, 776, 64], [286, 400, 42]]) {
   for (const [from, to] of [['fzu', 'fit'], ['fit', 'fzu']]) {
     const start = fitAtlasCamera(atlas.campusViews[from], width, height, padding);
     const target = fitAtlasCamera(atlas.campusViews[to], width, height, padding);
