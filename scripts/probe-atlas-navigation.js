@@ -90,7 +90,7 @@
       movingFrames: samples.filter(item => item.moving).length,
       maxZoomStepRatio: Math.round(maxZoomStepRatio * 1000) / 1000,
       listLabel, visibleSchools, labelOverlaps,
-      pass: distinctPoses > 12 && settledMs >= 180 && maxZoomStepRatio < .25 && listLabel === expectedLabel && markersVisible && !labelOverlaps,
+      pass: first.height === last.height && distinctPoses > 12 && settledMs >= 180 && maxZoomStepRatio < .25 && listLabel === expectedLabel && markersVisible && !labelOverlaps,
     });
   }
   renderTimes.sort((a, b) => a - b);

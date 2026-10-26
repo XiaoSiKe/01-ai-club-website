@@ -116,11 +116,14 @@ export default function BranchAtlas({ buttonProps, borderGlowProps }) {
     <button type="button" key={branch.id} className={`branch-atlas__school-row${selected?.id === branch.id ? ' is-selected' : ''}`} onClick={follow(`school:${branch.id}`)} onPointerEnter={() => setHovered(branch.id)} onPointerLeave={() => setHovered(null)} onFocus={() => setHovered(branch.id)} onBlur={() => setHovered(null)} aria-label={`查看${branch.school}${branch.role}`} aria-describedby={`${id}-founded-${branch.id}${branch.leader ? ` ${id}-leader-${branch.id}` : ''}`}>
       <img src={branch.crest} alt="" className="branch-atlas__crest" decoding="async" style={{ backgroundColor: branch.crestBackground }} />
       <span>
-        <span className="branch-atlas__school-name"><strong>{branch.school}</strong><span className={`branch-atlas__tag${branch.role === '总社' ? ' is-head' : ''}`}>{branch.role === '总社' ? '零一AI日新社' : branch.name}</span></span>
-        {branch.leader && <span className="branch-atlas__leader-summary" id={`${id}-leader-${branch.id}`}>
-          <img src={branch.leader.avatar} alt="" width="24" height="24" loading="lazy" decoding="async" />
-          <span>{branch.leader.title} · {branch.leader.name}</span>
-        </span>}
+        <span className="branch-atlas__school-name">
+          <strong>{branch.school}</strong>
+          {branch.leader && <span className="branch-atlas__leader-summary" id={`${id}-leader-${branch.id}`}>
+            <span className="branch-atlas__sr-only">{branch.leader.title} · </span>
+            <img src={branch.leader.avatar} alt="" width="20" height="20" loading="lazy" decoding="async" />
+            <span>{branch.leader.name}</span>
+          </span>}
+        </span>
         <span className="branch-atlas__founded" id={`${id}-founded-${branch.id}`}><span>成立于</span><time dateTime={branch.founded}>{foundedLabel(branch.founded)}</time></span>
       </span>
       <span className="branch-atlas__row-end"><Chevron /></span>

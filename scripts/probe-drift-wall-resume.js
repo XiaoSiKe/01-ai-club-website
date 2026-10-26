@@ -25,5 +25,18 @@
     const moved = positions().map((value, index) => value !== before[index]);
     cases.push({ exit, moved, closed: !document.querySelector('dialog[open]') });
   }
-  return { cases, pass: cases.every(item => item.closed && item.moved.every(Boolean)) };
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  await frames(6);
+  const offscreenBounds = wall.getBoundingClientRect();
+  const offscreen = offscreenBounds.top >= innerHeight || offscreenBounds.bottom <= 0;
+  const paused = positions();
+  await frames(6);
+  const pausedOffscreen = offscreen && positions().every((value, index) => value === paused[index]);
+  wall.scrollIntoView({ block: 'center', behavior: 'instant' });
+  await frames(2);
+  const beforeReturn = positions();
+  await frames(36);
+  const resumed = positions().map((value, index) => value !== beforeReturn[index]);
+  return { cases, visibility: { pausedOffscreen, resumed },
+    pass: pausedOffscreen && resumed.every(Boolean) && cases.every(item => item.closed && item.moved.every(Boolean)) };
 })()

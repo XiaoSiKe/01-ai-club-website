@@ -129,7 +129,11 @@ export default function DriftWall({
     const root = containerRef.current;
     if (reduced || !items.length) return undefined;
     let raf = null, last = null, alive = true;
-    let inView = root.getBoundingClientRect().bottom > 0 && root.getBoundingClientRect().top < innerHeight;
+    const inViewport = () => {
+      const rect = root.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.top < innerHeight && rect.right > 0 && rect.left < innerWidth;
+    };
+    let inView = inViewport();
     const frame = time => {
       raf = null;
       if (!alive || !inView || document.hidden) return;
@@ -151,14 +155,29 @@ export default function DriftWall({
       });
       if (moving) raf = requestAnimationFrame(frame); else last = null;
     };
-    const wake = () => { if (alive && inView && !document.hidden && raf === null) { last = null; raf = requestAnimationFrame(frame); } };
+    const wake = () => {
+      if (!alive || document.hidden || raf !== null) return;
+      inView = inViewport();
+      if (inView) { last = null; raf = requestAnimationFrame(frame); }
+    };
     const stop = () => { if (raf !== null) cancelAnimationFrame(raf); raf = null; last = null; };
-    const observer = new IntersectionObserver(([entry]) => { inView = entry.isIntersecting; if (inView) wake(); else stop(); });
+    // Fragment restoration and dialog closing can outrun observer callbacks.
+    // Read the current geometry instead of accepting a delayed visibility flag.
+    const checkVisibility = () => { inView = inViewport(); if (inView) wake(); else stop(); };
+    const observer = new IntersectionObserver(checkVisibility);
     observer.observe(root);
-    const visibility = () => document.hidden ? stop() : wake();
+    const visibility = () => document.hidden ? stop() : checkVisibility();
     document.addEventListener('visibilitychange', visibility);
+    window.addEventListener('scroll', checkVisibility, { passive: true });
+    window.addEventListener('resize', checkVisibility);
     wakeRef.current = wake; wake();
-    return () => { alive = false; stop(); observer.disconnect(); document.removeEventListener('visibilitychange', visibility); wakeRef.current = null; };
+    return () => {
+      alive = false; stop(); observer.disconnect();
+      document.removeEventListener('visibilitychange', visibility);
+      window.removeEventListener('scroll', checkVisibility);
+      window.removeEventListener('resize', checkVisibility);
+      wakeRef.current = null;
+    };
   }, [columnMeta, reduced, items.length, entrance]);
 
   useLayoutEffect(() => {

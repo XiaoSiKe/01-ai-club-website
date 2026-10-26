@@ -12,7 +12,7 @@ export default function ResearchSection({ buttonProps }) {
     </div>
     <div className="research-section__wall">
       <DriftWall items={competitionItems} columns={5} tileWidth={220} tileHeight={275} gap={18} fillContainer entrance
-        tilt={12} turn={-8} perspective={1500} depth={100} speed={38} direction="up"
+        tilt={12} turn={-8} perspective={1500} depth={100} speed={44} direction="up"
         variance={0.3} lift={0} fade={0.25} dim={0.9} brightness={0.8} grayscale={0}
         lightboxButtonProps={buttonProps} ariaLabel="科研与竞赛证书及赛场照片墙"
         overlayColor={theme === 'light' ? '#f4f4f2' : '#090909'} />
