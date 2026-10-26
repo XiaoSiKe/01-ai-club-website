@@ -21,8 +21,14 @@
   animation-direction: reverse;
 }
 
-.logo-loop[data-pause-on-hover='true']:hover .logo-loop-track {
+.logo-loop[data-pause-on-hover='true']:hover .logo-loop-track,
+.logo-loop:focus-within .logo-loop-track {
   animation-play-state: paused;
+}
+
+.logo-loop:has(.logo-loop-item:focus-visible) .logo-loop-track {
+  animation: none;
+  transform: none;
 }
 
 .logo-loop:not([data-pause-on-hover='true']):hover .logo-loop-track {
@@ -43,13 +49,22 @@
   justify-content: center;
   flex: 0 0 auto;
   height: var(--logo-loop-height);
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
   color: rgba(245, 245, 245, 0.76);
+  cursor: default;
   text-decoration: none;
   transition: color 180ms ease-out, transform 180ms ease-out;
 }
 
 .logo-loop-item:hover {
   color: #f5f5f5;
+}
+
+a.logo-loop-item {
+  cursor: pointer;
 }
 
 .logo-loop-scale .logo-loop-item:hover {
@@ -104,6 +119,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .logo-loop-scale .logo-loop-item:hover { transform: none; }
   .logo-loop {
     overflow-x: auto;
   }

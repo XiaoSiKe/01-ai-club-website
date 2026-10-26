@@ -1,0 +1,4 @@
+/* Isolate the outlined artwork from map/sidebar compositing invalidation. */
+.branch-flag { width: 100%; margin: 20px 0 0; overflow: hidden; border: 1px solid var(--atlas-border); border-radius: 12px; background: #000; transform: translateZ(0); }
+.branch-flag > svg { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; }
+@media (max-width: 760px) { .branch-flag { max-width: 280px; margin-inline: auto; } }

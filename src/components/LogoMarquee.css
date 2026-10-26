@@ -1,0 +1,17 @@
+.logo-marquee { --partner-logo-scale: 1.05; width: 100%; min-width: 0; }
+.logo-marquee:focus-visible { outline: 2px solid currentColor; outline-offset: 6px; border-radius: 6px; }
+.logo-marquee__mark { display: inline-flex; align-items: center; justify-content: center; gap: calc(10px * var(--partner-logo-scale)); min-height: calc(64px * var(--partner-logo-scale)); color: var(--site-ink, #f5f5f5); opacity: .88; white-space: nowrap; transition: opacity 180ms ease-out; }
+.logo-marquee .logo-loop-item:hover .logo-marquee__mark { opacity: 1; }
+.logo-marquee__image { display: block; flex: 0 0 auto; max-width: calc(150px * var(--partner-logo-scale)); max-height: calc(64px * var(--partner-logo-scale)); object-fit: contain; user-select: none; -webkit-user-drag: none; }
+.logo-marquee__image--mask { color: var(--site-ink, #f5f5f5); }
+.logo-marquee__mark img { filter: grayscale(1); }
+.logo-marquee__mark--mono img { filter: brightness(0) invert(1); }
+html[data-theme='light'] .logo-marquee__mark--mono img,
+html[data-theme='light'] .logo-marquee__mark--light-ink img { filter: brightness(0); }
+.logo-marquee__name { display: block; font-family: inherit; font-size: calc(22px * var(--partner-logo-scale)); font-weight: 650; line-height: 1.2; letter-spacing: -.02em; }
+@media (max-width: 600px) {
+  .logo-marquee .logo-loop-group { gap: 32px; padding-right: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-marquee__mark { transition: none; }
+}

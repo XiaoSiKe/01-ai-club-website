@@ -1,0 +1,9 @@
+.unique-loading { position: relative; width: 48px; height: 48px; flex: 0 0 auto; }
+.unique-loading--sm { width: 32px; height: 32px; }
+.unique-loading--lg { width: 64px; height: 64px; }
+.unique-loading__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 4px; width: 100%; height: 100%; }
+.unique-loading__square { background: #e5e7eb; animation: unique-loading-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+html[data-theme='light'] .unique-loading__square { background: #000; }
+.unique-loading__label { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@keyframes unique-loading-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+@media (prefers-reduced-motion: reduce) { .unique-loading__square { animation: none; } }

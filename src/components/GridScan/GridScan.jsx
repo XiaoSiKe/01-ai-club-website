@@ -34,6 +34,7 @@ uniform float uScanSoftness;
 uniform float uPhaseTaper;
 uniform float uScanDuration;
 uniform float uScanDelay;
+uniform float uScanTimeOffset;
 varying vec2 vUv;
 
 uniform float uScanStarts[8];
@@ -201,13 +202,14 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float combinedAura = 0.0;
 
     float cycle = dur + del;
-    float tCycle = mod(iTime, cycle);
+    float scanTime = iTime + uScanTimeOffset;
+    float tCycle = mod(scanTime, cycle);
     float scanPhase = clamp((tCycle - del) / dur, 0.0, 1.0);
     float phase = scanPhase;
     if (uScanDirection > 0.5 && uScanDirection < 1.5) {
       phase = 1.0 - phase;
     } else if (uScanDirection > 1.5) {
-      float t2 = mod(max(0.0, iTime - del), 2.0 * dur);
+      float t2 = mod(max(0.0, scanTime - del), 2.0 * dur);
       phase = (t2 < dur) ? (t2 / dur) : (1.0 - (t2 - dur) / dur);
     }
     float scanZ = phase * scanZMax;
@@ -293,6 +295,7 @@ export const GridScan = ({
   scanPhaseTaper = 0.9,
   scanDuration = 2.0,
   scanDelay = 2.0,
+  scanTimeOffset = 0,
   enableGyro = false,
   scanOnClick = false,
   snapBackDelay = 250,
@@ -453,6 +456,7 @@ export const GridScan = ({
       uPhaseTaper: { value: scanPhaseTaper },
       uScanDuration: { value: scanDuration },
       uScanDelay: { value: scanDelay },
+      uScanTimeOffset: { value: scanTimeOffset },
       uScanDirection: { value: scanDirection === 'backward' ? 1 : scanDirection === 'pingpong' ? 2 : 0 },
       uScanStarts: { value: new Array(MAX_SCANS).fill(0) },
       uScanCount: { value: 0 }
@@ -587,6 +591,7 @@ export const GridScan = ({
     scanPhaseTaper,
     scanDuration,
     scanDelay,
+    scanTimeOffset,
     bloomThreshold,
     bloomSmoothing,
     chromaticAberration,
@@ -617,6 +622,7 @@ export const GridScan = ({
       u.uPhaseTaper.value = scanPhaseTaper;
       u.uScanDuration.value = Math.max(0.05, scanDuration);
       u.uScanDelay.value = Math.max(0.0, scanDelay);
+      u.uScanTimeOffset.value = scanTimeOffset;
     }
     if (bloomRef.current) {
       bloomRef.current.blendMode.opacity.value = Math.max(0, bloomIntensity);
@@ -644,7 +650,8 @@ export const GridScan = ({
     scanSoftness,
     scanPhaseTaper,
     scanDuration,
-    scanDelay
+    scanDelay,
+    scanTimeOffset
   ]);
 
   useEffect(() => {

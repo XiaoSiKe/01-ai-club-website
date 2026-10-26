@@ -1,0 +1,9 @@
+.brand-title {
+  display: inline-block;
+  vertical-align: top;
+  font-family: var(--site-font-family);
+  font-size: var(--people-title-size);
+  font-weight: 800;
+  line-height: .9;
+  letter-spacing: -.04em;
+}

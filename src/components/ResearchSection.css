@@ -1,0 +1,11 @@
+.research-section .home-flow-title.research-section__title { margin-bottom: 0; }
+.research-section__heading { margin-bottom: 36px; }
+.research-section__intro { margin: 22px 0 0; color: var(--site-ink); font-size: clamp(19px, 2vw, 24px); font-weight: 700; line-height: 1.5; text-wrap: pretty; }
+.research-section__wall { --dw-photo-overlay-opacity: 0; position: relative; width: 100%; min-width: 0; height: 720px; overflow: hidden; }
+.research-section__wall .drift-wall__tile--certificate .drift-wall__inner { background: #eeedeb; }
+.research-section__wall .drift-wall__tile--certificate img { object-fit: contain; }
+@media (max-width: 760px) {
+  .research-section__wall { height: 580px; }
+  .research-section__heading { margin-bottom: 24px; }
+}
+@media (prefers-reduced-motion: reduce) { .research-section__wall { height: auto; overflow: visible; } }

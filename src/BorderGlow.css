@@ -1,12 +1,13 @@
 .border-glow {
   --edge-proximity: 0;
   --cursor-angle: 45deg;
+  --border-glow-rgb: 255 255 255;
+  --border-glow-alpha-scale: 1;
   position: relative;
   isolation: isolate;
   display: grid;
   overflow: visible;
   color: inherit;
-  background: var(--border-glow-background);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: var(--border-glow-radius);
   transform: translate3d(0, 0, 0.01px);
@@ -20,36 +21,39 @@
   content: '';
   pointer-events: none;
   border-radius: inherit;
-  opacity: calc(
+  opacity: clamp(0, calc(
     (var(--edge-proximity) - var(--border-glow-sensitivity)) /
-    (100 - var(--border-glow-sensitivity))
-  );
+    (100 - var(--border-glow-sensitivity)) * var(--border-glow-intensity, 1)
+  ), 1);
   transition: opacity 250ms ease-out;
 }
 
-.border-glow:not(:hover)::before,
-.border-glow:not(:hover) > .border-glow-edge {
+.border-glow:not(:hover):not([data-pointer-active])::before,
+.border-glow:not(:hover):not([data-pointer-active]) > .border-glow-edge {
   opacity: 0;
   transition-duration: 500ms;
 }
 
+/* Paint only the rim: the highlight must never overlay the card's text. */
 .border-glow::before {
-  border: 2px solid transparent;
-  background:
-    linear-gradient(var(--border-glow-background) 0 100%) padding-box,
-    linear-gradient(#ffffff 0 100%) border-box;
-  mask-image: conic-gradient(
+  padding: 2px;
+  background: conic-gradient(
     from var(--cursor-angle) at center,
-    #000 calc(var(--border-glow-cone) * 1%),
+    #fff calc(var(--border-glow-cone) * 1%),
     transparent calc((var(--border-glow-cone) + 15) * 1%),
     transparent calc((100 - var(--border-glow-cone) - 15) * 1%),
-    #000 calc((100 - var(--border-glow-cone)) * 1%)
+    #fff calc((100 - var(--border-glow-cone)) * 1%)
   );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
 }
 
 .border-glow > .border-glow-edge {
   inset: calc(var(--border-glow-padding) * -1);
   z-index: 3;
+  border-radius: calc(var(--border-glow-radius) + var(--border-glow-padding));
   mix-blend-mode: plus-lighter;
   mask-image: conic-gradient(
     from var(--cursor-angle) at center,
@@ -60,26 +64,39 @@
   );
 }
 
-.border-glow > .border-glow-edge::before {
+/* Exclude the card interior so light cannot wash through a translucent surface. */
+.border-glow-halo {
+  position: absolute;
+  inset: 0;
+  padding: var(--border-glow-padding);
+  border-radius: inherit;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}
+
+.border-glow-halo::before {
   position: absolute;
   inset: var(--border-glow-padding);
   content: '';
-  border-radius: inherit;
+  border-radius: var(--border-glow-radius);
   box-shadow:
-    inset 0 0 0 2px rgb(255 255 255 / 100%),
-    inset 0 0 3px rgb(255 255 255 / 72%),
-    inset 0 0 8px rgb(255 255 255 / 52%),
-    inset 0 0 18px rgb(255 255 255 / 34%),
-    inset 0 0 36px 2px rgb(255 255 255 / 18%),
-    0 0 3px rgb(255 255 255 / 72%),
-    0 0 8px rgb(255 255 255 / 52%),
-    0 0 18px rgb(255 255 255 / 34%),
-    0 0 36px 2px rgb(255 255 255 / 18%);
+    inset 0 0 0 2px rgb(var(--border-glow-rgb) / calc(1 * var(--border-glow-intensity, 1) * var(--border-glow-alpha-scale))),
+    inset 0 0 3px rgb(var(--border-glow-rgb) / calc(0.72 * var(--border-glow-intensity, 1) * var(--border-glow-alpha-scale))),
+    inset 0 0 8px rgb(var(--border-glow-rgb) / calc(0.52 * var(--border-glow-intensity, 1) * var(--border-glow-alpha-scale))),
+    inset 0 0 18px rgb(var(--border-glow-rgb) / calc(0.34 * var(--border-glow-intensity, 1) * var(--border-glow-alpha-scale))),
+    inset 0 0 36px 2px rgb(var(--border-glow-rgb) / calc(0.18 * var(--border-glow-intensity, 1) * var(--border-glow-alpha-scale))),
+    0 0 3px rgb(var(--border-glow-rgb) / calc(0.72 * var(--border-glow-intensity, 1) * var(--border-glow-alpha-scale))),
+    0 0 8px rgb(var(--border-glow-rgb) / calc(0.52 * var(--border-glow-intensity, 1) * var(--border-glow-alpha-scale))),
+    0 0 18px rgb(var(--border-glow-rgb) / calc(0.34 * var(--border-glow-intensity, 1) * var(--border-glow-alpha-scale))),
+    0 0 36px 2px rgb(var(--border-glow-rgb) / calc(0.18 * var(--border-glow-intensity, 1) * var(--border-glow-alpha-scale)));
 }
 
 .border-glow-content {
   position: relative;
-  z-index: 1;
+  z-index: 4;
+  background: var(--border-glow-background);
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -87,6 +104,15 @@
   overflow: hidden;
   border-radius: inherit;
 }
+
+.media-edge-glow.border-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  transform: none;
+}
+.media-edge-glow.border-glow::before { z-index: 5; }
 
 @media (prefers-reduced-motion: reduce) {
   .border-glow::before,

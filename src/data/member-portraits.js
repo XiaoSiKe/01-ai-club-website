@@ -1,0 +1,23 @@
+// User-supplied avatars shared by project teams and the pioneers roster.
+export const memberPortraits = {
+  '玉华': '/images/business-members-ezcut/01-yuhua.webp',
+  '徐裕恒': '/images/business-members-ezcut/02-xuyuheng.webp',
+  '吴耀辉': '/images/business-members-ezcut/03-wuyaohui.webp',
+  '零一扬': '/images/business-members-exdrink/04-lingyiyang.jpg',
+  '王云重': '/images/business-members-exdrink/01-wangyunzhong.jpg',
+  San: '/images/business-members-exdrink/02-san.jpg',
+  Miracle: '/images/business-members-exdrink/03-miracle.jpg',
+  '黄铉': '/images/business-members-smartbot/01-huangxuan.jpg',
+  '方钰鑫': '/images/pioneers/fang-yuxin.jpg',
+  '杨晗': '/images/pioneers/yang-han.jpg',
+  '顾星宇': '/images/pioneers/gu-xingyu.jpg',
+  DH: '/images/pioneers/dh.jpg',
+  Eug: '/images/pioneers/eug.jpg',
+  Melon: '/images/pioneers/melon.png',
+  Sora: '/images/pioneers/sora.jpg',
+  '刘韦辰': '/images/pioneers/liu-weichen.jpg',
+  KevenChen: '/images/pioneers/kevenchen.jpg',
+  zsq: '/images/pioneers/zsq.jpg',
+  Spark: '/images/pioneers/spark.jpg',
+  '郑航': '/images/pioneers/zheng-hang.jpg',
+};

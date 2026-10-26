@@ -1,0 +1,58 @@
+/* React Bits InfiniteSpiral. Full license and commit provenance in InfiniteSpiral.jsx. */
+.infinite-spiral {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 380px;
+  overflow: hidden;
+  isolation: isolate;
+  color: var(--site-ink, #f5f5f5);
+  touch-action: pan-y;
+}
+.infinite-spiral[data-draggable] { cursor: grab; user-select: none; }
+.infinite-spiral[data-dragging] { cursor: grabbing; }
+.infinite-spiral__stage { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; transform-style: preserve-3d; }
+.infinite-spiral__item {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--infinite-spiral-card-width);
+  height: var(--infinite-spiral-card-height);
+  margin: 0;
+  padding: 0;
+  border-radius: var(--infinite-spiral-card-radius);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+.infinite-spiral__card {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  color: inherit;
+  background: var(--site-surface, #111111d1);
+  border: 1px solid var(--site-border, #ffffff3d);
+  border-radius: inherit;
+  box-shadow: 0 14px 38px #00000024;
+  font: inherit;
+  text-decoration: none;
+  cursor: inherit;
+}
+.infinite-spiral__card:focus-visible { outline: 3px solid var(--site-ink, #f5f5f5); outline-offset: 4px; }
+.infinite-spiral__card:active { box-shadow: inset 0 0 0 2px var(--site-ink, #f5f5f5); }
+.infinite-spiral__image { display: block; width: 100%; height: 100%; object-position: center; user-select: none; }
+.infinite-spiral__image-fallback { display: grid; place-items: center; width: 100%; height: 100%; padding: 8px; color: var(--site-muted, #b8b8bf); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; text-align: center; }
+.infinite-spiral__controls { position: absolute; top: 14px; right: 14px; z-index: 200001; }
+.infinite-spiral__controls button { min-height: 44px; padding: 9px 14px; color: var(--site-ink, #f5f5f5); background: var(--site-surface, #111111e8); border: 1px solid var(--site-border, #ffffff40); border-radius: 10px; font: inherit; font-size: 12px; cursor: pointer; touch-action: manipulation; transition: transform 120ms ease, border-color 160ms ease; }
+.infinite-spiral__controls button:hover { border-color: currentColor; }
+.infinite-spiral__controls button:active { transform: scale(.97); }
+.infinite-spiral__controls button:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.infinite-spiral--static { height: auto; min-height: 0; overflow: visible; }
+.infinite-spiral--static .infinite-spiral__stage { position: static; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 12px; transform-style: flat; }
+.infinite-spiral--static .infinite-spiral__item { position: static; width: auto; height: auto; aspect-ratio: 1; transform: none !important; opacity: 1 !important; filter: none !important; pointer-events: auto !important; }
+@media (max-width: 480px) { .infinite-spiral { min-height: 340px; } .infinite-spiral--static { min-height: 0; } .infinite-spiral__controls { top: 8px; right: 8px; } }
+@media (prefers-reduced-motion: reduce) { .infinite-spiral__controls button { transition: none; } .infinite-spiral__controls button:active { transform: none; } }
+@media (prefers-contrast: more) { .infinite-spiral__card, .infinite-spiral__controls button { border-color: currentColor; } }
