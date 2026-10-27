@@ -961,23 +961,23 @@ a {
 }
 
 .home-footer-feishu-mark {
-  -webkit-mask-image: url('/images/feishu-logo.png');
-  mask-image: url('/images/feishu-logo.png');
+  -webkit-mask-image: var(--brand-mask);
+  mask-image: var(--brand-mask);
   -webkit-mask-size: contain;
   mask-size: contain;
 }
 
 .home-footer-club-mark {
-  -webkit-mask-image: url('/lingyi-logo.jpg');
-  mask-image: url('/lingyi-logo.jpg');
+  -webkit-mask-image: var(--brand-mask);
+  mask-image: var(--brand-mask);
   -webkit-mask-size: 210%;
   mask-size: 210%;
   mask-mode: luminance;
 }
 
 .home-footer-lingyiyang-mark {
-  -webkit-mask-image: url('/images/lingyiyang-logo.jpg');
-  mask-image: url('/images/lingyiyang-logo.jpg');
+  -webkit-mask-image: var(--brand-mask);
+  mask-image: var(--brand-mask);
   -webkit-mask-size: 160%;
   mask-size: 160%;
   mask-mode: luminance;

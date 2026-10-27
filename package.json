@@ -8,7 +8,9 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/build-branch-atlas.mjs && node scripts/verify-branch-atlas.mjs && node scripts/verify-atlas-reveal.mjs && vite build && node scripts/finalize-build.mjs && node scripts/verify-dist.mjs",
+    "build": "node scripts/verify-image-assets.mjs && node scripts/build-branch-atlas.mjs && node scripts/verify-branch-atlas.mjs && node scripts/verify-atlas-reveal.mjs && vite build && node scripts/finalize-build.mjs && node scripts/verify-dist.mjs",
+    "images:build": "python3 scripts/build-image-variants.py",
+    "verify:images": "node scripts/verify-image-assets.mjs",
     "preview": "vite preview",
     "verify:dist": "node scripts/verify-dist.mjs",
     "verify:atlas": "node scripts/verify-branch-atlas.mjs",

@@ -1,5 +1,6 @@
 import React, { useCallback, useId, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import ResponsiveImage from './components/ResponsiveImage';
 import './StaggeredMenu.css';
 
 const MENU_LABEL = '社团导航';
@@ -507,7 +508,7 @@ export const StaggeredMenu = ({
       </div>
       <header className="staggered-menu-header" aria-label="零一 AI 日新社导航">
         <a className="sm-logo" href={logoHref} aria-label="返回零一 AI 日新社首页顶部">
-          <img
+          <ResponsiveImage eager
             src={logoUrl || '/src/assets/logos/reactbits-gh-white.svg'}
             alt="零一 AI 日新社"
             className="sm-logo-img"

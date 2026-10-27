@@ -1,4 +1,5 @@
 import { memo, useLayoutEffect, useRef, useState } from 'react';
+import { imageSource } from './imageSource';
 
 const images = new Map();
 export function prepareSchoolCrest(source) {
@@ -6,7 +7,7 @@ export function prepareSchoolCrest(source) {
   const item = {};
   item.promise = (async () => {
     const image = new Image();
-    image.src = source;
+    image.src = imageSource(source, 144, 144, 1);
     await image.decode();
     await new Promise(resolve => window.requestIdleCallback ? window.requestIdleCallback(resolve, { timeout: 500 }) : setTimeout(resolve, 0));
     const surface = document.createElement('canvas');
@@ -16,6 +17,8 @@ export function prepareSchoolCrest(source) {
     // Materialize the entire small crest, not just an SVG display list. Later
     // navigation copies pixels and cannot trigger another SVG decode/paint.
     item.pixels = context.getImageData(0, 0, 144, 144);
+    image.removeAttribute('src');
+    surface.width = surface.height = 0;
     return item.pixels;
   })();
   images.set(source, item);
@@ -40,7 +43,7 @@ export default memo(function SchoolCrest({ branch }) {
     return () => { active = false; };
   }, [branch]);
   return <span className="school-crest branch-atlas__crest" role="img" aria-label={`${branch.school}校徽`} style={{ backgroundColor: branch.crestBackground }}>
-    {!ready && <img src={branch.crest} alt="" />}
+    {!ready && <img src={imageSource(branch.crest, 144, 144, 1)} alt="" />}
     <canvas ref={ref} width="144" height="144" aria-hidden="true" />
   </span>;
 });

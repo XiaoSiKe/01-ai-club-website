@@ -1,6 +1,7 @@
 "use client";
 /** Adapted from the user-supplied DuotoneTeamRoster, with local placeholder portraits. */
 import * as React from "react";
+import ResponsiveImage from './ResponsiveImage';
 export const DEFAULT_LABELS = {
 	team: "Team",
 	openRole: "Open role",
@@ -248,13 +249,13 @@ function Portrait(props) {
 		releaseNudge(e.currentTarget);
 	}}>
       <div className="dtr-photo">
-        {photo && originalColor ? <img className="dtr-original" src={photo} alt="" width={720} height={960} loading="lazy" decoding="async" draggable={false}
+        {photo && originalColor ? <ResponsiveImage className="dtr-original" src={photo} alt="" width={720} height={960} draggable={false}
           style={{ objectPosition: focus, objectFit: member.photoFit }} onError={() => setFailed(true)} /> : photo ? <>
-            <img className="dtr-duo" src={photo} alt="" width={720} height={960} loading="lazy" decoding="async" draggable={false} style={{
+            <ResponsiveImage className="dtr-duo" src={photo} alt="" width={720} height={960} draggable={false} style={{
 		filter: (exposure !== 1 ? "brightness(" + exposure + ") " : "") + "url(#" + filterId + ")",
 		objectPosition: focus, objectFit: member.photoFit
 	}} onError={() => setFailed(true)} />
-            <img className="dtr-true" src={photo} alt="" width={720} height={960} loading="lazy" decoding="async" draggable={false} style={{ objectPosition: focus, objectFit: member.photoFit }} />
+            <ResponsiveImage className="dtr-true" src={photo} alt="" width={720} height={960} draggable={false} style={{ objectPosition: focus, objectFit: member.photoFit }} />
           </> : <div className="dtr-plate" aria-hidden="true">
             <span>{member ? initials(member.name) : role && role.mark || "You?"}</span>
             {role ? <em>{role.title}</em> : null}

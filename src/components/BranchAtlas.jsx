@@ -9,6 +9,8 @@ import SpecularButton from '../SpecularButton';
 import SchoolCrest, { prepareSchoolCrest } from './SchoolCrest';
 import BranchFlag from './BranchFlag';
 import UniqueLoading from './UniqueLoading';
+import ResponsiveImage from './ResponsiveImage';
+import useViewportReady from './useViewportReady';
 import { useTheme } from '../Theme';
 import { atlasPalettes, atlasStyles } from './atlasPalette';
 import './BranchAtlas.css';
@@ -21,6 +23,7 @@ const foundedLabel = date => date.split('-').map(Number).join('.');
 export default function BranchAtlas({ buttonProps, borderGlowProps }) {
   const id = useId();
   const rootRef = useRef(null);
+  const imageReady = useViewportReady(rootRef);
   const viewportRef = useRef(null);
   const layerRef = useRef(null);
   const painterRef = useRef(null);
@@ -56,8 +59,9 @@ export default function BranchAtlas({ buttonProps, borderGlowProps }) {
   }, []);
 
   useEffect(() => {
+    if (!imageReady) return;
     branches.forEach(branch => { prepareSchoolCrest(branch.crest).catch(() => {}); });
-  }, []);
+  }, [imageReady]);
 
 
   useEffect(() => {
@@ -114,13 +118,13 @@ export default function BranchAtlas({ buttonProps, borderGlowProps }) {
   const title = selected?.school || (view === 'china' ? '福建·福州：梦开始的地方' : view === 'fujian' ? '福建' : '福州');
   const schoolButton = branch => (
     <button type="button" key={branch.id} className={`branch-atlas__school-row${selected?.id === branch.id ? ' is-selected' : ''}`} onClick={follow(`school:${branch.id}`)} onPointerEnter={() => setHovered(branch.id)} onPointerLeave={() => setHovered(null)} onFocus={() => setHovered(branch.id)} onBlur={() => setHovered(null)} aria-label={`查看${branch.school}${branch.role}`} aria-describedby={`${id}-founded-${branch.id}${branch.leader ? ` ${id}-leader-${branch.id}` : ''}`}>
-      <img src={branch.crest} alt="" className="branch-atlas__crest" decoding="async" style={{ backgroundColor: branch.crestBackground }} />
+      <ResponsiveImage src={branch.crest} alt="" className="branch-atlas__crest" style={{ backgroundColor: branch.crestBackground }} />
       <span>
         <span className="branch-atlas__school-name">
           <strong>{branch.school}</strong>
           {branch.leader && <span className="branch-atlas__leader-summary" id={`${id}-leader-${branch.id}`}>
             <span className="branch-atlas__sr-only">{branch.leader.title} · </span>
-            <img src={branch.leader.avatar} alt="" width="20" height="20" loading="lazy" decoding="async" />
+            <ResponsiveImage src={branch.leader.avatar} alt="" width="20" height="20" fit="cover" />
             <span>{branch.leader.name}</span>
           </span>}
         </span>
@@ -195,7 +199,7 @@ export default function BranchAtlas({ buttonProps, borderGlowProps }) {
                 href={leaderMember ? `./?page=pioneers&member=${encodeURIComponent(leaderMember.id)}` : undefined}
                 role={leaderMember ? undefined : 'group'}
                 aria-label={leaderMember ? `查看${selected.leader.title}${selected.leader.name}的领航先锋介绍` : `${selected.school}${selected.leader.title}`}>
-                <img src={selected.leader.avatar} alt="" width="56" height="56" decoding="async" />
+                <ResponsiveImage src={selected.leader.avatar} alt="" width="56" height="56" fit="cover" />
                 <div><span>{selected.leader.title}</span><strong>{selected.leader.name}</strong></div>
                 {leaderMember && <span className="branch-atlas__leader-link-arrow" aria-hidden="true">→</span>}
               </LeaderProfile>}

@@ -26,6 +26,8 @@
   const background = document.querySelector('.homepage-background canvas');
   const backgroundPixels = background ? background.width * background.height : 0;
   const decodedBytes = [...images.values()].reduce((sum, bytes) => sum + bytes, 0);
+  const logo = document.querySelector('.sm-logo-img');
+  const criticalImageLoaded = Boolean(logo?.complete && logo.naturalWidth && logo.currentSrc);
   const deferred = !document.querySelector('.flex-carousel') && !document.querySelector('.drift-wall')
     && !document.querySelector('.folder-root');
   frames.sort((a, b) => a - b);
@@ -35,9 +37,10 @@
     frameP95Ms: frames[Math.floor(frames.length * .95)],
     estimatedDecodedImageMB: decodedBytes / 1e6,
     canvasCount: document.querySelectorAll('canvas').length, backgroundPixels,
-    initialTunnelImages: document.querySelectorAll('.tunnel-hero__card img').length,
+    initialTunnelImages: document.querySelectorAll('.tunnel-hero__card img[src]').length,
+    criticalImageLoaded,
     modelRequests: modelRequests.length, belowFoldDeferred: deferred,
     pass: modelRequests.length === 0 && backgroundPixels > 0 && backgroundPixels <= 1800000
-      && decodedBytes < 32000000 && deferred,
+      && decodedBytes < 1000000 && criticalImageLoaded && document.querySelectorAll('.tunnel-hero__card img[src]').length === 0 && deferred,
   };
 })()

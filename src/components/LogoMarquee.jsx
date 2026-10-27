@@ -1,6 +1,8 @@
 /** Partner marks use the footer's LogoLoop for matching motion and interaction. */
 import { useId, useMemo, useState } from 'react';
 import LogoLoop from '../LogoLoop';
+import ResponsiveImage from './ResponsiveImage';
+import { imageSource } from './imageSource';
 import { partners } from '../data/partners';
 import './LogoMarquee.css';
 
@@ -27,13 +29,13 @@ function PartnerMark({ logo }) {
               </feComponentTransfer>
             </filter>
             <mask id={`${id}-mask`} maskUnits="userSpaceOnUse" x="0" y="0" width={logo.mask.width} height={logo.mask.height} style={{ maskType: 'luminance' }}>
-              <image href={logo.src} width={logo.mask.width} height={logo.mask.height} filter={`url(#${id}-ink)`} onError={() => setFailedSource(logo.src)} />
+              <image href={imageSource(logo.src, 192, 192, 1)} width={logo.mask.width} height={logo.mask.height} filter={`url(#${id}-ink)`} onError={() => setFailedSource(logo.src)} />
             </mask>
           </defs>
           <rect width={logo.mask.width} height={logo.mask.height} fill="currentColor" mask={`url(#${id}-mask)`} />
         </svg>
       ) : (
-        <img className="logo-marquee__image" src={logo.src} alt="" width={logo.width || 120} height={logo.height || 36} loading="eager" decoding="async" draggable={false}
+        <ResponsiveImage className="logo-marquee__image" src={logo.src} alt="" width={logo.width || 120} height={logo.height || 36} draggable={false}
           style={imageStyle} onError={() => setFailedSource(logo.src)} />
       ))}
       {(!hasImage || logo.showName) && <span className="logo-marquee__name">{name}</span>}
