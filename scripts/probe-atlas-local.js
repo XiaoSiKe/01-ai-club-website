@@ -23,12 +23,12 @@
   };
   const actions=[
     ['fuzhou-to-fzu','[aria-label="查看福州大学总社"]'],
-    ['fzu-to-fjut','[aria-label="查看下一所高校"]'],
-    ['fjut-to-mju','[aria-label="查看下一所高校"]'],
-    ['mju-to-fuzhou','[aria-label="返回上一级地图"]'],
-    ['fuzhou-to-mju','[aria-label="查看闽江大学分社"]'],
-    ['mju-to-fjut','[aria-label="查看上一所高校"]'],
+    ['fzu-to-fjnu','[aria-label="查看下一所高校"]'],
+    ['fjnu-to-fjut','[aria-label="查看下一所高校"]'],
     ['fjut-to-fuzhou','[aria-label="返回上一级地图"]'],
+    ['fuzhou-to-fit','[aria-label="查看福州理工学院分社"]'],
+    ['fit-to-fuzc','[aria-label="查看上一所高校"]'],
+    ['fuzc-to-fuzhou','[aria-label="返回上一级地图"]'],
   ];
   for(let round=0;round<2;round++)for(const [label,selector]of actions){
     // Each round ends in the city overview.

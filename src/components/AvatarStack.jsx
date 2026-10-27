@@ -177,17 +177,20 @@ export function AvatarStack({
       }}
       onKeyDown={handleKeyDown}
     >
-      {shownItems.map((item, index) => (
+      {shownItems.map((item, index) => {
+        const Avatar = item.href ? 'a' : 'button';
+        return (
         <div
           key={`${index}-${item.name}`}
           className={`avatar-stack__item${activeIndex === index ? ' avatar-stack__item--active' : ''}${index >= visibleMax ? ' avatar-stack__item--extra' : ''}`}
           style={{ '--avatar-delay': `${Math.max(0, index - visibleMax) * 30}ms` }}
         >
-          <button
+          <Avatar
             ref={node => { avatarRefs.current[index] = node; }}
-            type="button"
+            type={item.href ? undefined : 'button'}
+            href={item.href}
             className="avatar-stack__avatar"
-            aria-label={item.name}
+            aria-label={item.href ? `查看${item.name}的领航先锋介绍` : item.name}
             tabIndex={roving === index ? 0 : -1}
             onPointerEnter={event => { if (event.pointerType !== 'touch') setActiveIndex(index); }}
             onPointerLeave={event => {
@@ -211,9 +214,10 @@ export function AvatarStack({
             }}
           >
             <AvatarImage item={item} />
-          </button>
+          </Avatar>
         </div>
-      ))}
+        );
+      })}
       {overflowCount > 0 && (pillIsInteractive ? (
         <button
           ref={pillRef}

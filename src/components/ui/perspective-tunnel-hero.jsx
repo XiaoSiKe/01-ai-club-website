@@ -38,10 +38,18 @@ function TunnelCard({ card, progress, pointer, total, stage, reduce }) {
   const start = (card.index / total) * (1 - staggerSpan);
   const end = start + staggerSpan;
   const localProgress = useTransform(progress, [start, end], [0, 1]);
+  const [loadImage, setLoadImage] = useState(false);
+  useEffect(() => {
+    if (loadImage) return undefined;
+    const prepare = value => { if (value >= Math.max(0, start - .12)) setLoadImage(true); };
+    prepare(progress.get());
+    return progress.on('change', prepare);
+  }, [progress, start, loadImage]);
   const farZ = stage.isMobile ? -1200 : -1700;
   const nearZ = stage.isMobile ? 350 : 500;
   const z = useTransform(localProgress, [0, 1], [farZ, nearZ]);
   const opacity = useTransform(localProgress, [0, 0.18, 0.82, 0.98], [0, 1, 1, 0]);
+  const visibility = useTransform(localProgress, value => value > .001 && value < .98 ? 'visible' : 'hidden');
   const cardWidth = stage.isMobile
     ? Math.max(130, Math.min(180, stage.width * 0.38))
     : Math.max(180, Math.min(270, stage.width * 0.18));
@@ -55,9 +63,9 @@ function TunnelCard({ card, progress, pointer, total, stage, reduce }) {
   });
 
   return <motion.div className="tunnel-hero__card"
-    style={{ width: cardWidth, aspectRatio: `${card.item.width} / ${card.item.height}`, transform, opacity, zIndex: card.index + 1 }}>
+    style={{ width: cardWidth, aspectRatio: `${card.item.width} / ${card.item.height}`, transform, opacity, visibility, zIndex: card.index + 1 }}>
     <div className="tunnel-hero__card-inner">
-      <img src={card.item.src} alt="" width={card.item.width} height={card.item.height} decoding="async" draggable={false} />
+      {loadImage && <img src={card.item.src} alt="" width={card.item.width} height={card.item.height} decoding="async" fetchPriority="low" draggable={false} />}
     </div>
     <BorderGlow as="span" className="media-edge-glow tunnel-hero__photo-glow" backgroundColor="transparent" borderRadius={16} glowRadius={24} glowIntensity={2.1} />
   </motion.div>;
@@ -89,7 +97,11 @@ export default function PerspectiveTunnelHero({ children }) {
       if (event.cancelable) event.preventDefault();
       rawProgress.set(Math.min(1, Math.max(0, current + delta * 0.0008)));
     };
-    const wheel = event => { if (!event.ctrlKey) advance(event.deltaY, event); };
+    const wheel = event => {
+      if (event.ctrlKey) return;
+      const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1;
+      advance(event.deltaY * unit, event);
+    };
     const touchStart = event => { touchY = event.touches.length === 1 ? event.touches[0].clientY : null; };
     const touchMove = event => {
       if (touchY === null || event.touches.length !== 1) return;

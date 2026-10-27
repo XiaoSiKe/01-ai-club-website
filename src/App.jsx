@@ -1,16 +1,16 @@
-import { useCallback, useLayoutEffect, useRef } from 'react';
+import { lazy, Suspense, useCallback, useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SiGithub, SiQq, SiX } from 'react-icons/si';
-import GridScan from './GridScan';
+import SiteBackground from './components/SiteBackground';
+import ViewportMount from './components/ViewportMount';
 import EchoText from './EchoText';
 import { BRAND_ECHO_PROPS as ECHO_TEXT_PROPS } from './components/EchoText/brandEchoProps';
 import SpecularButton from './SpecularButton';
 import SiteNavigation from './components/SiteNavigation';
 import BorderGlow from './BorderGlow';
 import LogoLoop from './LogoLoop';
-import FlexCarousel from './FlexCarousel';
 import ExploreSection from './components/ExploreSection';
 import LogoMarquee from './components/LogoMarquee';
 import BranchAtlas from './components/BranchAtlas';
@@ -26,6 +26,7 @@ import joinQrJpeg from './assets/join-qq-qr.jpg';
 import joinQrPng from './assets/join-qq-qr.png';
 
 gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
+const FlexCarousel = lazy(() => import('./FlexCarousel'));
 
 const PRODUCT_NAME = '零一 AI 日新社';
 const SLOGAN = '从零到一，让技术进步成为每个人的机会';
@@ -327,24 +328,7 @@ export default function App() {
     <div ref={pageRef} className="homepage" id="top" onClickCapture={handleInternalLinkClick}>
       <a className="skip-link" href="#introduction">跳到主要内容</a>
 
-      <div className="homepage-background" aria-hidden="true">
-        <GridScan
-          sensitivity={0.43}
-          lineThickness={1}
-          linesColor="#000000"
-          gridScale={0.1}
-          scanColor="#ffffff"
-          scanOpacity={theme === 'light' ? 0.27 : 0.22}
-          scanDuration={3.7}
-          scanDelay={0.9}
-          scanTimeOffset={1}
-          enablePost
-          bloomIntensity={theme === 'light' ? 0.34 : 0.29}
-          chromaticAberration={0.0009}
-          noiseIntensity={0.005}
-          scanGlow={theme === 'light' ? 0.30 : 0.26}
-        />
-      </div>
+      <SiteBackground />
 
       <SiteNavigation />
 
@@ -454,8 +438,10 @@ export default function App() {
             <h2 className="home-flow-title" id="business-title">零一商业</h2>
             <div className="home-business-intro">
               <h3 className="home-business-lead">用 AI 解决真实问题，让技术创造社会价值。</h3>
+              <p>我们是福州零一极致智能科技有限公司！</p>
             </div>
-            <div className="home-business-carousel">
+            <ViewportMount className="home-business-carousel" minHeight={640}>
+              <Suspense fallback={null}>
               <FlexCarousel
                 items={businesses}
                 preset="liquid"
@@ -470,7 +456,8 @@ export default function App() {
                 captureWheel
                 websiteButtonProps={buttonProps}
               />
-            </div>
+              </Suspense>
+            </ViewportMount>
           </section>
 
           <ResearchSection buttonProps={buttonProps} />

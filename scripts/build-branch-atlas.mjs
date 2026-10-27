@@ -14,7 +14,9 @@ const world = require('world-atlas/countries-110m.json');
 // floating-point shimmer when a highly magnified SVG reaches its destination.
 const projection = geoMercator().center([119.18, 26.05]).scale(200).translate([0, 0]);
 const path = geoPath(projection).digits(5);
-const campuses = JSON.parse(readFileSync(new URL('../src/data/maps/campus-outlines.json', import.meta.url), 'utf8'));
+const branchCampusIds = new Set(branches.map(branch => branch.osmId));
+const campuses = JSON.parse(readFileSync(new URL('../src/data/maps/campus-outlines.json', import.meta.url), 'utf8'))
+  .filter(item => branchCampusIds.has(item.osm_id));
 const campusCoordinates = campuses.flatMap(item => item.geojson.coordinates.flat(item.geojson.type === 'Polygon' ? 1 : 2));
 const localClipBounds = [
   projection([Math.min(119.10, ...campusCoordinates.map(p => p[0] - .015)), Math.max(26.13, ...campusCoordinates.map(p => p[1] + .015))]),

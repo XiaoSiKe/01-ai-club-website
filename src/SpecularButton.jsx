@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react';
+import useViewportReady from './components/useViewportReady';
 import { Renderer, Program, Mesh, Triangle, Color } from 'ogl';
 import './SpecularButton.css';
 
@@ -91,6 +92,7 @@ const SpecularButton = ({
   const fxRef = useRef(null);
   const propsRef = useRef({});
   const requestRenderRef = useRef(null);
+  const glReady = useViewportReady(btnRef, { margin: 200, enabled: renderMode !== 'css' });
   propsRef.current = {
     radius,
     lineColor,
@@ -109,6 +111,7 @@ const SpecularButton = ({
     const btn = btnRef.current;
     const fx = fxRef.current;
     if (!btn || !fx) return;
+    if (renderMode !== 'css' && !glReady) return;
 
     // Dense groups share the same rim and pointer response without allocating
     // a WebGL context per control. Keep the existing renderer for large CTAs.
@@ -329,7 +332,7 @@ const SpecularButton = ({
       program.remove();
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
-  }, [renderMode]);
+  }, [renderMode, glReady]);
 
   useEffect(() => {
     requestRenderRef.current?.();

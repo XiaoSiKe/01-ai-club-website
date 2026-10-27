@@ -185,6 +185,7 @@ uniform sampler2D tMap;
 uniform vec2 uSize;
 uniform vec2 uImage;
 uniform float uImageScale;
+uniform float uMonochrome;
 uniform float uRadius;
 uniform float uAlpha;
 uniform float uReady;
@@ -212,9 +213,11 @@ void main() {
   vec2 scale = imageAspect > cardAspect ? vec2(1.0, imageAspect / cardAspect) : vec2(cardAspect / imageAspect, 1.0);
   vec2 uv = (vec2(local.x, 1.0 - local.y) - 0.5) * scale / uImageScale + 0.5;
   float inside = step(0.0, uv.x) * step(uv.x, 1.0) * step(0.0, uv.y) * step(uv.y, 1.0);
-  vec3 image = texture(tMap, clamp(uv, 0.0, 1.0)).rgb;
+  vec4 texel = texture(tMap, clamp(uv, 0.0, 1.0));
+  vec3 image = mix(texel.rgb, texel.rgb * texel.a, uMonochrome);
   // Letterboxing stays black throughout the image-loading transition.
   vec3 color = mix(vec3(0.0), mix(uPlaceholder, image, uReady), inside);
+  color = mix(color, vec3(dot(color, vec3(0.2126, 0.7152, 0.0722))), uMonochrome);
   float alpha = mask * uAlpha;
   if (uGlow < 0.5) {
     fragColor = vec4(color * alpha, alpha);
@@ -470,6 +473,7 @@ const FlexCarousel = ({
         uSize: { value: [1, 1] },
         uImage: { value: [1, 1] },
         uImageScale: { value: 1 },
+        uMonochrome: { value: 0 },
         uRadius: { value: 16 },
         uAlpha: { value: 1 },
         uReady: { value: 0 },
@@ -1058,6 +1062,7 @@ const FlexCarousel = ({
           cardProgram.uniforms.uSize.value = [draw.cw, draw.ch];
           cardProgram.uniforms.uImage.value = slot.image;
           cardProgram.uniforms.uImageScale.value = imageScaleFor(itemsRef.current[draw.i]);
+          cardProgram.uniforms.uMonochrome.value = itemsRef.current[draw.i]?.monochrome ? 1 : 0;
           cardProgram.uniforms.uAlpha.value = draw.alpha;
           cardProgram.uniforms.uReady.value = slot.ready;
           cardProgram.uniforms.uShift.value = reducedMotion ? 0 : Math.max(-1, Math.min(1, draw.rel / (width * 0.75)));
@@ -1510,7 +1515,7 @@ const FlexCarousel = ({
           <div className="flex-carousel__fallback-image"
             onPointerMove={event => updateBorderGlow(event.currentTarget.querySelector('.border-glow'), event.clientX, event.clientY)}
             onPointerLeave={event => clearBorderGlow(event.currentTarget.querySelector('.border-glow'))}>
-            <img src={current.src} alt={current.alt || current.title || ''} loading="lazy" draggable="false" style={{ transform: `scale(${imageScaleFor(current)})` }} />
+            <img src={current.src} alt={current.alt || current.title || ''} loading="lazy" draggable="false" style={{ transform: `scale(${imageScaleFor(current)})`, filter: current.monochrome ? 'grayscale(1)' : undefined }} />
             <BorderGlow as="span" className="media-edge-glow" backgroundColor="transparent" borderRadius={20} glowRadius={24} glowIntensity={2.1} />
           </div>
         )}

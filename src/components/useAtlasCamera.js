@@ -38,10 +38,7 @@ export default function useAtlasCamera({ viewportRef, layerRef, painterRef, mark
       const markerBounds = renderOptions.current.markerBounds;
       const cityScale = markerBounds ? Math.exp(fitAtlasCamera(markerBounds, width, height, cameraPadding(width)).z) : 450;
       const markerMinScale = Math.min(450, cityScale * .95);
-      const local = renderOptions.current.view === 'fuzhou' || renderOptions.current.view.startsWith('school:');
-      const compact = local && cityScale < 450 && k < 450;
-      if (viewport.dataset.compactLabels !== String(compact)) viewport.dataset.compactLabels = String(compact);
-      const cacheKey = `${width}:${compact}`;
+      const cacheKey = width;
       const entries = [];
       for (const [id, item] of Object.entries(pointsRef.current || {})) {
         const node = markerRefs.current[id];

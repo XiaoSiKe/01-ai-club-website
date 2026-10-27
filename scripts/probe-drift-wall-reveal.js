@@ -1,9 +1,18 @@
 /* Run through CDP in a fresh homepage, before the photo wall enters. */
 (async () => {
-  const wall = document.querySelector('.drift-wall');
-  if (!wall || wall.classList.contains('drift-wall--reduced')) throw Error('A moving photo wall is required.');
   const frame = () => new Promise(requestAnimationFrame);
   const frames = async count => { for (let i = 0; i < count; i++) await frame(); };
+  const mount = document.querySelector('.research-section__wall');
+  if (!mount) throw Error('Open the homepage first.');
+  window.scrollTo({ top: scrollY + mount.getBoundingClientRect().top - innerHeight - 200, behavior: 'instant' });
+  const loadingStarted = performance.now();
+  let wall;
+  while (!(wall = mount.querySelector('.drift-wall'))) {
+    if (performance.now() - loadingStarted > 8000) throw Error('Photo wall did not mount near the viewport.');
+    await frame();
+  }
+  await frames(3);
+  if (wall.classList.contains('drift-wall--reduced')) throw Error('A moving photo wall is required.');
   const tracks = () => [...wall.querySelectorAll('.drift-wall__track')].map(track => track.style.transform);
   const opacity = tile => Number(getComputedStyle(tile).opacity);
   const top = scrollY + wall.getBoundingClientRect().top;
@@ -13,16 +22,18 @@
   window.scrollTo({ top: top - innerHeight - 90, behavior: 'instant' });
   await frames(3);
   const initialHidden = rows.flat().every(tile => opacity(tile) === 0);
-  const initialTracks = tracks();
   const samples = [];
-  let opacityDrops = 0, intermediateFrames = 0;
+  let opacityDrops = 0, intermediateFrames = 0, movingBeforeComplete = false;
   for (let row = 0; row < rows.length; row++) {
+    const initialTracks = tracks();
     window.scrollTo({ top: top + row * rowHeight - innerHeight * .88 + 12, behavior: 'instant' });
     const started = performance.now();
     let previous = rows[row].map(opacity);
     while (true) {
       await frame();
       const values = rows[row].map(opacity);
+      if (wall.dataset.entrance !== 'complete' && rows.flat().some(tile => opacity(tile) < .98)
+        && tracks().some((value, index) => value !== initialTracks[index])) movingBeforeComplete = true;
       values.forEach((value, index) => {
         if (value < previous[index] - .02) opacityDrops++;
         if (value > .02 && value < .98) intermediateFrames++;
@@ -34,7 +45,7 @@
     const laterRowsHidden = rows.slice(row + 1).flat().every(tile => opacity(tile) === 0);
     const earlierRowsVisible = rows.slice(0, row + 1).flat().every(tile => opacity(tile) > .98);
     samples.push({ row: row + 1, photos: rows[row].length, laterRowsHidden, earlierRowsVisible,
-      tracksHeld: row === 2 || tracks().every((value, index) => value === initialTracks[index]) });
+      tracksMoving: tracks().some((value, index) => value !== initialTracks[index]) });
   }
   const completionStart = performance.now();
   while (wall.dataset.entrance !== 'complete') {
@@ -50,7 +61,7 @@
   await frames(3);
   const remainsVisible = rows.flat().every(tile => opacity(tile) === 1 && !tile.hasAttribute('data-reveal'));
   const noOverflow = document.documentElement.scrollWidth <= innerWidth;
-  return { initialHidden, samples, opacityDrops, intermediateFrames, loopResumed, remainsVisible, noOverflow,
-    pass: initialHidden && samples.every(sample => sample.laterRowsHidden && sample.earlierRowsVisible && sample.tracksHeld)
+  return { initialHidden, samples, movingBeforeComplete, opacityDrops, intermediateFrames, loopResumed, remainsVisible, noOverflow,
+    pass: initialHidden && movingBeforeComplete && samples.every(sample => sample.laterRowsHidden && sample.earlierRowsVisible && sample.tracksMoving)
       && opacityDrops === 0 && intermediateFrames > 0 && loopResumed && remainsVisible && noOverflow };
 })()

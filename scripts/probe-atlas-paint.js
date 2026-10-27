@@ -33,7 +33,7 @@
   performance.mark('atlas-paint-probe-start');
   requestAnimationFrame(sample);
   phase = 'country-to-school';
-  click(root.querySelector('[aria-label="查看闽江大学分社"]'));
+  click(root.querySelector('[aria-label="查看福州理工学院分社"]'));
   await settle();
   for (let i = 0; i < 12; i++) {
     phase = 'school-switch';
@@ -44,7 +44,7 @@
   for (let cycle = 0; cycle < 2; cycle++) {
     for (let level = 0; level < 3; level++) { phase = `back-${level}`; click(root.querySelector('[aria-label="返回上一级地图"]')); await settle(); }
     phase = 'country-to-school';
-    click(root.querySelector('[aria-label="查看闽江大学分社"]'));
+    click(root.querySelector('[aria-label="查看福州理工学院分社"]'));
     await settle();
   }
   performance.mark('atlas-paint-probe-end');

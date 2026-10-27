@@ -141,7 +141,8 @@ export default function DriftWall({
       last = time;
       let moving = false;
       columnMeta.forEach((meta, c) => {
-        const paused = (entrance && !entrancePlayedRef.current) || lightboxOpenRef.current || keyboardFocusRef.current || (wallHoveredRef.current && Number(hoverTileRef.current?.dataset.col) === c);
+        const awaitingEntrance = entrance && !entrancePlayedRef.current && entranceRowsRef.current.size === 0;
+        const paused = awaitingEntrance || lightboxOpenRef.current || keyboardFocusRef.current || (wallHoveredRef.current && Number(hoverTileRef.current?.dataset.col) === c);
         const target = paused ? 0 : meta.velocity;
         let velocity = paused ? 0 : velocitiesRef.current[c] + (target - velocitiesRef.current[c]) * (1 - Math.exp(-dt / 0.2));
         if (Math.abs(velocity - target) < 0.01) velocity = target;
@@ -233,6 +234,7 @@ export default function DriftWall({
           entranceRowsRef.current.add(index);
           root.dataset.entrance = 'running';
           row.forEach(({ tile }) => { tile.dataset.reveal = 'visible'; });
+          wakeRef.current?.();
           if (allRowsEntered()) {
             const longestRow = Math.max(...rows.map(group => group.length));
             completionTimer = window.setTimeout(complete, 600 + (longestRow - 1) * 50);
@@ -254,6 +256,15 @@ export default function DriftWall({
     if (!item?.fullImage || warmedImagesRef.current.has(item.fullImage)) return;
     const image = new Image(); image.decoding = 'async'; image.src = item.fullImage;
     warmedImagesRef.current.set(item.fullImage, image);
+    while (warmedImagesRef.current.size > 2) {
+      const [source, oldest] = warmedImagesRef.current.entries().next().value;
+      oldest.removeAttribute('src');
+      warmedImagesRef.current.delete(source);
+    }
+  }, []);
+  useEffect(() => () => {
+    warmedImagesRef.current.forEach(image => image.removeAttribute('src'));
+    warmedImagesRef.current.clear();
   }, []);
   const activate = useCallback(tile => {
     if (hoverTileRef.current !== tile) clearBorderGlow(hoverTileRef.current?.querySelector('.drift-wall__glow'));
