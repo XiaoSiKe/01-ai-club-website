@@ -41,6 +41,8 @@ import { Color, Renderer, Program, Mesh, Triangle, Plane, Texture, RenderTarget 
 import SpecularButton from './SpecularButton';
 import BorderGlow, { clearBorderGlow, updateBorderGlow } from './BorderGlow';
 import AvatarStack from './components/AvatarStack';
+import { imageSource } from './components/imageSource';
+import ResponsiveImage from './components/ResponsiveImage';
 import './FlexCarousel.css';
 
 const DEFAULT_ITEMS = [];
@@ -597,8 +599,6 @@ const FlexCarousel = ({
       image.decoding = 'async';
       image.onload = () => {
         if (!alive || !slots.includes(slot)) return;
-        texture.image = image;
-        texture.update();
         slot.image = [image.naturalWidth || 1, image.naturalHeight || 1];
         slot.aspect = slot.image[0] / slot.image[1];
         try {
@@ -620,6 +620,17 @@ const FlexCarousel = ({
         } catch {
           slot.color = [0.5, 0.5, 0.5];
         }
+        // The GPU owns its pixels after upload. OGL's onUpdate runs before it
+        // records the source, so clearing it here also marks the upload settled;
+        // later draws reuse the texture without retaining a CPU decoded bitmap.
+        texture.onUpdate = () => {
+          texture.onUpdate = null;
+          texture.image = null;
+          image.onload = image.onerror = null;
+          image.removeAttribute('src');
+        };
+        texture.image = image;
+        texture.update();
         slot.loaded = true;
         dirty = true;
         start();
@@ -630,10 +641,12 @@ const FlexCarousel = ({
         dirty = true;
         start();
       };
-      image.src = item.src;
+      const imageEdge = 280 * imageScaleFor(item);
+      image.src = imageSource(item.src, imageEdge, imageEdge, Math.min(window.devicePixelRatio || 1, 1.5));
       slot.dispose = () => {
         image.onload = null;
         image.onerror = null;
+        image.removeAttribute('src');
         gl.deleteTexture(texture.texture);
       };
       return slot;
@@ -1515,7 +1528,7 @@ const FlexCarousel = ({
           <div className="flex-carousel__fallback-image"
             onPointerMove={event => updateBorderGlow(event.currentTarget.querySelector('.border-glow'), event.clientX, event.clientY)}
             onPointerLeave={event => clearBorderGlow(event.currentTarget.querySelector('.border-glow'))}>
-            <img src={current.src} alt={current.alt || current.title || ''} loading="lazy" draggable="false" style={{ transform: `scale(${imageScaleFor(current)})`, filter: current.monochrome ? 'grayscale(1)' : undefined }} />
+            <ResponsiveImage src={current.src} alt={current.alt || current.title || ''} draggable="false" style={{ transform: `scale(${imageScaleFor(current)})`, filter: current.monochrome ? 'grayscale(1)' : undefined }} />
             <BorderGlow as="span" className="media-edge-glow" backgroundColor="transparent" borderRadius={20} glowRadius={24} glowIntensity={2.1} />
           </div>
         )}

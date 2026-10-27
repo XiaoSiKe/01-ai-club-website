@@ -2,6 +2,7 @@
  * The closing emblem is the original club logo, with a gentle fragment interaction.
  */
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { imageSource } from './imageSource';
 import './ShutterWordmark.css';
 
 const CAP = 100;
@@ -157,7 +158,7 @@ export default function ShutterWordmark() {
           <clipPath id={`${uid}-down`}><rect x="-40" y="51.4" width="400" height="250" /></clipPath>
           <filter id={`${uid}-logo-ink`} colorInterpolationFilters="sRGB"><feComponentTransfer><feFuncR type="linear" slope="1.07" intercept="-.055" /><feFuncG type="linear" slope="1.07" intercept="-.055" /><feFuncB type="linear" slope="1.07" intercept="-.055" /></feComponentTransfer></filter>
           <mask id={`${uid}-club-logo`} x="0" y="0" width="100" height="100" maskUnits="userSpaceOnUse" style={{ maskType: 'luminance' }}>
-            <svg width="100" height="100" viewBox="350 371 561 585"><image href="/lingyi-logo.jpg" width="1254" height="1254" filter={`url(#${uid}-logo-ink)`} /></svg>
+            <svg width="100" height="100" viewBox="350 371 561 585"><image href={visible ? imageSource('/lingyi-logo.jpg', 320, 320, Math.min(window.devicePixelRatio || 1, 1.5)) : undefined} width="1254" height="1254" filter={`url(#${uid}-logo-ink)`} /></svg>
           </mask>
           <clipPath id={`${uid}-logo-part-0`}><polygon points="0,0 100,0 50,50" /></clipPath>
           <clipPath id={`${uid}-logo-part-1`}><polygon points="0,0 50,50 50,100 0,100" /></clipPath>

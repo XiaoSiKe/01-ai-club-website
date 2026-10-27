@@ -38,6 +38,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import ImageLightbox from './ImageLightbox';
+import ResponsiveImage from './ResponsiveImage';
 import BorderGlow, { clearBorderGlow, updateBorderGlow } from '../BorderGlow';
 import './DriftWall.css';
 
@@ -50,7 +51,7 @@ const columnFactor = (index, variance) => 1 + variance * (((index * 0.6180339887
 function WallImage({ item }) {
   const [failed, setFailed] = useState(false);
   return failed ? <span className="drift-wall__fallback" role="img" aria-label={item.title}>{item.title || '图片暂不可用'}</span> :
-    <img src={item.image} alt={item.title || ''} loading="lazy" decoding="async" draggable={false} onError={() => setFailed(true)} />;
+    <ResponsiveImage src={item.image} alt={item.title || ''} draggable={false} onError={() => setFailed(true)} />;
 }
 
 export default function DriftWall({
@@ -64,7 +65,6 @@ export default function DriftWall({
   const offsetsRef = useRef([]), velocitiesRef = useRef([]), wakeRef = useRef(null);
   const wallHoveredRef = useRef(false), hoverTileRef = useRef(null), pressedRef = useRef(null);
   const keyboardFocusRef = useRef(false), focusedTileRef = useRef(null), lightboxOpenRef = useRef(false);
-  const warmedImagesRef = useRef(new Map());
   const entrancePlayedRef = useRef(false), entranceFinishRef = useRef(null);
   const entranceRowsRef = useRef(new Set());
   const [size, setSize] = useState({ width: 0, height: 720 });
@@ -252,30 +252,15 @@ export default function DriftWall({
     };
   }, [columnMeta, entrance, reduced, items.length]);
 
-  const warm = useCallback(item => {
-    if (!item?.fullImage || warmedImagesRef.current.has(item.fullImage)) return;
-    const image = new Image(); image.decoding = 'async'; image.src = item.fullImage;
-    warmedImagesRef.current.set(item.fullImage, image);
-    while (warmedImagesRef.current.size > 2) {
-      const [source, oldest] = warmedImagesRef.current.entries().next().value;
-      oldest.removeAttribute('src');
-      warmedImagesRef.current.delete(source);
-    }
-  }, []);
-  useEffect(() => () => {
-    warmedImagesRef.current.forEach(image => image.removeAttribute('src'));
-    warmedImagesRef.current.clear();
-  }, []);
   const activate = useCallback(tile => {
     if (hoverTileRef.current !== tile) clearBorderGlow(hoverTileRef.current?.querySelector('.drift-wall__glow'));
     hoverTileRef.current = tile;
     setActiveId(tile?.dataset.tileId || null);
     if (tile) {
       velocitiesRef.current[Number(tile.dataset.col)] = 0;
-      warm(items.find(item => item.id === tile.dataset.itemId));
     }
     wakeRef.current?.();
-  }, [items, warm]);
+  }, []);
   const release = useCallback(() => activate(keyboardFocusRef.current ? focusedTileRef.current : null), [activate]);
   const hitTest = useCallback((x, y, target) => {
     const direct = target?.closest?.('[data-tile-id]');
@@ -305,7 +290,6 @@ export default function DriftWall({
     data-tile-id={id} data-item-id={item.id} data-col={col} data-orientation={item.orientation}
     tabIndex={duplicate ? -1 : 0} aria-hidden={duplicate && focusedTileRef.current?.dataset.tileId !== id ? true : undefined}
     aria-label={item.title || '活动照片'} aria-haspopup="dialog"
-    onPointerEnter={() => warm(item)}
     onFocus={event => {
       finishEntrance();
       const tile = event.currentTarget;

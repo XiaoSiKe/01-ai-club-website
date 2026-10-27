@@ -3,6 +3,7 @@ import { motion, useTransform, useReducedMotion, useMotionValue, useSpring } fro
 import { useEffect, useRef, useState } from 'react';
 import { activityPhotos } from '../../data/activity-photos';
 import BorderGlow, { clearBorderGlow, updateBorderGlow } from '../../BorderGlow';
+import ResponsiveImage from '../ResponsiveImage';
 import './perspective-tunnel-hero.css';
 
 const TUNNEL_CARDS = activityPhotos.map((item, index) => {
@@ -40,11 +41,10 @@ function TunnelCard({ card, progress, pointer, total, stage, reduce }) {
   const localProgress = useTransform(progress, [start, end], [0, 1]);
   const [loadImage, setLoadImage] = useState(false);
   useEffect(() => {
-    if (loadImage) return undefined;
-    const prepare = value => { if (value >= Math.max(0, start - .12)) setLoadImage(true); };
+    const prepare = value => setLoadImage(value > .001 && value >= start - .08 && value < end + .02);
     prepare(progress.get());
     return progress.on('change', prepare);
-  }, [progress, start, loadImage]);
+  }, [progress, start, end]);
   const farZ = stage.isMobile ? -1200 : -1700;
   const nearZ = stage.isMobile ? 350 : 500;
   const z = useTransform(localProgress, [0, 1], [farZ, nearZ]);
@@ -65,7 +65,7 @@ function TunnelCard({ card, progress, pointer, total, stage, reduce }) {
   return <motion.div className="tunnel-hero__card"
     style={{ width: cardWidth, aspectRatio: `${card.item.width} / ${card.item.height}`, transform, opacity, visibility, zIndex: card.index + 1 }}>
     <div className="tunnel-hero__card-inner">
-      {loadImage && <img src={card.item.src} alt="" width={card.item.width} height={card.item.height} decoding="async" fetchPriority="low" draggable={false} />}
+      <ResponsiveImage active={loadImage} src={card.item.src} alt="" width={card.item.width} height={card.item.height} fetchPriority="low" draggable={false} />
     </div>
     <BorderGlow as="span" className="media-edge-glow tunnel-hero__photo-glow" backgroundColor="transparent" borderRadius={16} glowRadius={24} glowIntensity={2.1} />
   </motion.div>;

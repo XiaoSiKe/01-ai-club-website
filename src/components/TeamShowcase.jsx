@@ -1,6 +1,7 @@
 // Adapted from the user's TeamShowcase: staggered portraits and linked names.
 // Native CSS matches the existing app; no framework migration is needed.
 import { useId, useState } from 'react';
+import ResponsiveImage from './ResponsiveImage';
 import './TeamShowcase.css';
 
 export default function TeamShowcase({ members, headingAs: Heading = 'h4', headingContent = 'Mentor' }) {
@@ -28,7 +29,7 @@ export default function TeamShowcase({ members, headingAs: Heading = 'h4', headi
               data-active={activeId === member.id} data-dimmed={Boolean(activeId && activeId !== member.id)}
               aria-label={`查看${member.name}介绍`} {...interact(member.id)}
             >
-              {member.image ? <img src={member.image} alt={member.name} loading="lazy" decoding="async" /> : <span className="team-showcase__name-tile" aria-hidden="true">{member.name}</span>}
+              {member.image ? <ResponsiveImage src={member.image} alt={member.name} fit="cover" /> : <span className="team-showcase__name-tile" aria-hidden="true">{member.name}</span>}
             </button>)}
           </div>)}
         </div>

@@ -5,6 +5,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SiGithub, SiQq, SiX } from 'react-icons/si';
 import SiteBackground from './components/SiteBackground';
 import ViewportMount from './components/ViewportMount';
+import ResponsiveImage from './components/ResponsiveImage';
+import { imageSource } from './components/imageSource';
 import EchoText from './EchoText';
 import { BRAND_ECHO_PROPS as ECHO_TEXT_PROPS } from './components/EchoText/brandEchoProps';
 import SpecularButton from './SpecularButton';
@@ -22,8 +24,7 @@ import { socialChannels, telegramChannel } from './data/social';
 import { businesses } from './data/business';
 import { wechatChannel } from './data/community';
 import { useTheme } from './Theme';
-import joinQrJpeg from './assets/join-qq-qr.jpg';
-import joinQrPng from './assets/join-qq-qr.png';
+import joinQr from './assets/join-qq-qr.webp';
 
 gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
 const FlexCarousel = lazy(() => import('./FlexCarousel'));
@@ -59,14 +60,15 @@ const BORDER_GLOW_PROPS = {
   coneSpread: 25,
   animated: false,
 };
+const footerMask = (source, scale = 1) => ({ '--brand-mask': `url("${imageSource(source, 48 * scale, 48 * scale)}")` });
 const FOOTER_LOGOS = [
   ...socialChannels.map(channel => ({ ...channel, node: <SocialIcon platform={channel.id} /> })),
   { ...telegramChannel, node: <SocialIcon platform={telegramChannel.id} /> },
-  { node: <span className="home-footer-brand-mark home-footer-club-mark" />, title: '日新社', href: 'https://club.01aiedu.com/' },
+  { node: <span className="home-footer-brand-mark home-footer-club-mark" style={footerMask('/lingyi-logo.jpg', 2.1)} />, title: '日新社', href: 'https://club.01aiedu.com/' },
   { node: <SiGithub />, title: 'GitHub' },
   { node: <SiX />, title: 'X', href: 'https://x.com/01yang2026?s=11' },
-  { node: <span className="home-footer-brand-mark home-footer-feishu-mark" />, title: '飞书', href: LEARNING_WIKI_URL },
-  { node: <span className="home-footer-brand-mark home-footer-lingyiyang-mark" />, title: '零一扬', href: 'https://www.01yang.space' },
+  { node: <span className="home-footer-brand-mark home-footer-feishu-mark" style={footerMask('/images/feishu-logo.png')} />, title: '飞书', href: LEARNING_WIKI_URL },
+  { node: <span className="home-footer-brand-mark home-footer-lingyiyang-mark" style={footerMask('/images/lingyiyang-logo.jpg', 1.6)} />, title: '零一扬', href: 'https://www.01yang.space' },
   { node: <SiQq />, title: 'QQ', href: 'https://qun.qq.com/universal-share/share?ac=1&authKey=Y6PHDoQm%2BSNy%2Bdr0SJTyHZ7Vt2jQfwQCR6sidHUatABcMNltCtupL24cigSRxTYc&busi_data=eyJncm91cENvZGUiOiI5NjY2NTQ2MzMiLCJ0b2tlbiI6IllLUmVXNXM4WS8zMG1MRHlGeFFkUUd4M0R1ZG8wekpXMVB1a0N2dkhubVp6KzF5b2xOVjRKakxFZHQ4Q3dCRFQiLCJ1aW4iOiIxNzg1ODY3NzkyIn0%3D&data=-Yz2JZMQgTAM5BkEf9Vrw9lDLH6BkX2nFl4-tH8ska8WC6OQPqpmTcvM5f24z7x5jSg--p3b18JBNtQeMn3Tzg&svctype=4&tempid=h5_group_info' },
 ];
 export default function App() {
@@ -471,7 +473,7 @@ export default function App() {
                 </SpecularButton>
               </div>
             </div>
-            <LogoMarquee />
+            <ViewportMount minHeight={96}><LogoMarquee /></ViewportMount>
           </section>
 
           <section className="home-section home-cooperation-section" id="cooperation" aria-labelledby="cooperation-title" tabIndex="-1">
@@ -487,25 +489,24 @@ export default function App() {
             <div className="home-join-channels">
               <figure className="home-join-channel">
                 <BorderGlow {...borderGlowProps} className="home-join-qr-glow">
-                  <picture className="home-join-qr-media">
-                    <source srcSet={joinQrJpeg} type="image/jpeg" />
-                    <img
+                  <div className="home-join-qr-media">
+                    <ResponsiveImage
                       className="home-join-qr"
-                      src={joinQrPng}
+                      src={joinQr}
                       alt="零一 AI 日新社 QQ 群二维码"
                       width="640"
                       height="640"
                       loading="lazy"
                       decoding="async"
                     />
-                  </picture>
+                  </div>
                 </BorderGlow>
                 <figcaption>零一 QQ 社团群</figcaption>
               </figure>
               <figure className="home-join-channel">
                 <BorderGlow {...borderGlowProps} className="home-join-qr-glow">
                   <div className="home-join-qr-media home-join-official-qr">
-                    <img
+                    <ResponsiveImage
                       className="home-join-qr home-join-qr--wechat"
                       src={wechatChannel.qr}
                       alt="零一 AI 日新社微信公众号二维码"
@@ -514,7 +515,7 @@ export default function App() {
                       loading="lazy"
                       decoding="async"
                     />
-                    <img
+                    <ResponsiveImage
                       className="home-join-qr home-join-official-logo"
                       src={wechatChannel.qr}
                       alt=""
@@ -531,7 +532,7 @@ export default function App() {
               <figure className="home-join-channel" id="join-contact">
                 <BorderGlow {...borderGlowProps} className="home-join-qr-glow">
                   <div className="home-join-qr-media home-join-personal-qr">
-                    <img
+                    <ResponsiveImage
                       className="home-join-qr home-join-qr--wechat"
                       src="/images/join-lingyiyang-wechat.jpg"
                       alt="商务合作联系零一扬的微信二维码"
@@ -558,6 +559,7 @@ export default function App() {
               <span className="home-footer-english" lang="en">{SLOGAN_EN}</span>
             </p>
           </div>
+          <ViewportMount className="home-footer-logo-loop" minHeight={64}>
           <LogoLoop
             logos={FOOTER_LOGOS}
             speed={90}
@@ -569,8 +571,8 @@ export default function App() {
             fadeOut
             fadeOutColor="#0d0d0d"
             ariaLabel="社团与社交平台"
-            className="home-footer-logo-loop"
           />
+          </ViewportMount>
         </div>
 
         <ShutterWordmark />

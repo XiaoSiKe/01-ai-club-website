@@ -1,6 +1,7 @@
 /** Adapted from the Spectrum UI AvatarStack supplied with this project. */
 import { useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import ResponsiveImage from './ResponsiveImage';
 import './AvatarStack.css';
 
 const EMPTY_ITEMS = [];
@@ -16,7 +17,7 @@ function getInitials(name = '') {
 function AvatarImage({ item }) {
   const [failedSrc, setFailedSrc] = useState(null);
   return item.src && failedSrc !== item.src ? (
-    <img src={item.src} alt="" draggable={false} loading="lazy" onError={() => setFailedSrc(item.src)} />
+    <ResponsiveImage src={item.src} alt="" draggable={false} fit="cover" onError={() => setFailedSrc(item.src)} />
   ) : <span aria-hidden="true">{getInitials(item.name)}</span>;
 }
 
