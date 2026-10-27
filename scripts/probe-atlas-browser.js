@@ -25,7 +25,7 @@
   };
   click(root.querySelector('.branch-atlas__toolbar nav button'));
   await frame();
-  click(root.querySelector('[aria-label="查看闽江大学分社"]'));
+  click(root.querySelector('[aria-label="查看福州理工学院分社"]'));
   await until(() => root.dataset.view === 'school');
   await until(() => root.querySelector('.branch-atlas__viewport').dataset.moving === 'false');
   const heading = root.querySelector('.branch-atlas__panel h3');
@@ -93,7 +93,7 @@
   click(root.querySelector('[aria-label="进入福州高校地图"]'));
   await settleAndSample();
   phase = 'city-to-school';
-  click(root.querySelector('[aria-label="查看闽江大学分社"]'));
+  click(root.querySelector('[aria-label="查看福州理工学院分社"]'));
   await settleAndSample();
   phase = 'interrupted-return';
   click(root.querySelector('.branch-atlas__toolbar nav button'));

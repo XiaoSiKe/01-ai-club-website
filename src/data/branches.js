@@ -52,18 +52,6 @@ export const branches = [
     labelSide: 'right',
   },
   {
-    id: 'mju', school: '闽江大学', shortName: '闽大', name: '闽江分社', role: '分社',
-    founded: '2026-10-22',
-    leader: { name: 'Spark', title: '分社长', avatar: memberPortraits.Spark },
-    coordinates: [119.1649388, 26.0693679], osmId: 938005192, campus: '大学城校区',
-    address: '福建省福州市闽侯县上街镇溪源宫路200号',
-    description: '连接愿意学习、分享与共创的伙伴。在闽江大学，一起探索 AI 的更多可能。',
-    crest: '/images/branches/mju-color-crest.svg', searchTerms: '闽江大学 闽江学院 闽大 闽院 mju 分社 福建 福州 大学城',
-    website: 'https://www.mju.edu.cn/',
-    addressSource: 'https://www.mju.edu.cn/',
-    labelSide: 'left',
-  },
-  {
     id: 'fit', school: '福州理工学院', shortName: '福州理工', name: '福州理工分社', role: '分社',
     founded: '2026-10-26',
     leader: { name: 'Eug', title: '分社长', avatar: memberPortraits.Eug },

@@ -44,3 +44,8 @@
 ## business-ezcut.png / business-exdrink.png / business-smartbot.png
 
 用户于 2026-10-19 提供的三个 1254 × 1254 PNG Logo，原图原样复制。对应关系为：图 3 → 零一快剪（business-ezcut.png），图 2 → 零一拓饮（business-exdrink.png），图 1 → 零一智械（business-smartbot.png）。用于“零一商业”模块，保留原有黑底、白色标志和立体灰阶。
+
+
+## business-physicsos.png / pioneers/dong-siwei-upload.jpg
+
+2026-10-27新增physicsOS的用户上传Logo（1024×1024透明PNG），文件原样保存；商业轮播通过WebGL着色器及CSS静态回退以灰阶展示，显示缩放为0.702。冬思韦头像使用用户新上传的1144×1144 JPEG，原图保留原色，供商业项目成员与领航先锋共用。

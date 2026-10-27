@@ -9,7 +9,7 @@
   const show = () => window.scrollBy({top:root.getBoundingClientRect().top-140,behavior:'instant'});
   show(); await frame();
   click(root.querySelector('.branch-atlas__toolbar nav button')); await settle();
-  click(root.querySelector('[aria-label="查看闽江大学分社"]'));
+  click(root.querySelector('[aria-label="查看福州理工学院分社"]'));
   const initial = new Set();
   for(let i=0;i<12;i++){await frame();initial.add((layer.atlasFrame?.transform || layer.getAttribute('transform')));}
   window.scrollTo({top:0,behavior:'instant'});

@@ -52,6 +52,7 @@
 
 .avatar-stack__avatar {
   overflow: hidden;
+  text-decoration: none;
   transition: transform 220ms cubic-bezier(.2, .8, .2, 1.2), box-shadow 180ms ease;
 }
 

@@ -815,6 +815,7 @@ const Folder = ({
   peek = true,
   intro = false,
   tilt = 0.5,
+  stationary = false,
   bounce = 0,
   speed = 1,
   frost = 0.25,
@@ -907,6 +908,7 @@ const Folder = ({
     onItemClick,
     onItemDrop,
     tilt: clamp(tilt, 0, 1.5),
+    stationary,
     bounce: clamp(bounce, 0, 1),
     speed: clamp(speed, 0.2, 3),
     frost: clamp(frost, 0, 1),
@@ -1235,11 +1237,11 @@ const Folder = ({
       if (elapsed < frontDelay) busy = true;
       busy = integrate(state.anchor, staged ? 1 : 0, frontOmega, 1, dt) || busy;
 
-      const engaged = state.hovered && !reduce;
+      const engaged = state.hovered && !reduce && !s.stationary;
       busy = integrate(state.rx, engaged ? -state.pointerY * 8 * s.tilt : 0, soft, 1, dt) || busy;
       busy = integrate(state.ry, engaged ? state.pointerX * 10 * s.tilt : 0, soft, 1, dt) || busy;
-      busy = integrate(state.lift, state.hovered && phase !== 'open' ? 1 : 0, soft, 1, dt) || busy;
-      busy = integrate(state.squash, state.pressed ? 0.975 : 1, TAU * 3.2, 1, dt) || busy;
+      busy = integrate(state.lift, !s.stationary && state.hovered && phase !== 'open' ? 1 : 0, soft, 1, dt) || busy;
+      busy = integrate(state.squash, !s.stationary && state.pressed ? 0.975 : 1, TAU * 3.2, 1, dt) || busy;
 
       const opening = phase === 'open' && state.previous !== 'open';
       const drag = state.drag?.active ? state.drag : null;

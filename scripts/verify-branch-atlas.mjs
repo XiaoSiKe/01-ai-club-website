@@ -93,7 +93,8 @@ for (const branch of branches) {
 }
 assert.equal(new Set(branches.map(item => item.id)).size, branches.length);
 assert.deepEqual(searchBranches(' 福理工 ').map(item => item.id), ['fjut']);
-assert.deepEqual(searchBranches('闽江学院').map(item => item.id), ['mju']);
+assert.deepEqual(searchBranches('闽江学院'), []);
+assert.deepEqual(searchBranches('闽江大学'), []);
 assert.deepEqual(searchBranches('FZU').map(item => item.id), ['fzu']);
 assert.equal(searchBranches('福州').length, branches.length);
 assert.deepEqual(searchBranches('福师大').map(item => item.id), ['fjnu']);
@@ -103,7 +104,10 @@ assert.deepEqual(searchBranches('郑航').map(item => item.id), ['fuzc']);
 assert.deepEqual(searchBranches('福州理工').map(item => item.id), ['fit']);
 assert.deepEqual(searchBranches('Eug').map(item => item.id), ['fit']);
 assert.deepEqual(searchBranches('FIT').map(item => item.id), ['fit']);
-assert.deepEqual(branches.map(item => item.id), ['fzu', 'fjnu', 'fjut', 'fuzc', 'mju', 'fit']);
+assert.deepEqual(branches.map(item => item.id), ['fzu', 'fjnu', 'fjut', 'fuzc', 'fit']);
+assert.deepEqual(atlas.campuses.map(item => item.id).sort(), branches.map(item => item.id).sort());
+assert.equal(atlas.points.mju, undefined);
+assert.equal(atlas.campusViews.mju, undefined);
 assert.equal(branches.find(item => item.id === 'fuzc').founded, '2026-10-26');
 assert.equal(branches.find(item => item.id === 'fit').founded, '2026-10-26');
 assert.deepEqual(searchBranches('福州 总社').map(item => item.id), ['fzu']);

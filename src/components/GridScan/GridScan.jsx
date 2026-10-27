@@ -1,4 +1,3 @@
-import * as faceapi from 'face-api.js';
 import { BloomEffect, ChromaticAberrationEffect, EffectComposer, EffectPass, RenderPass } from 'postprocessing';
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
@@ -299,11 +298,14 @@ export const GridScan = ({
   enableGyro = false,
   scanOnClick = false,
   snapBackDelay = 250,
+  maxPixelRatio = 2,
+  pixelBudget = Infinity,
   className,
   style
 }) => {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
+  const faceApiRef = useRef(null);
 
   const rendererRef = useRef(null);
   const materialRef = useRef(null);
@@ -424,9 +426,12 @@ export const GridScan = ({
     const container = containerRef.current;
     if (!container) return;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    // The full-screen shader already antialiases its lines with derivatives.
+    const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
     rendererRef.current = renderer;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    const fitPixelRatio = () => Math.min(window.devicePixelRatio || 1, maxPixelRatio,
+      Math.sqrt(pixelBudget / Math.max(1, container.clientWidth * container.clientHeight)));
+    renderer.setPixelRatio(fitPixelRatio());
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.NoToneMapping;
@@ -505,14 +510,19 @@ export const GridScan = ({
     }
 
     const onResize = () => {
+      renderer.setPixelRatio(fitPixelRatio());
       renderer.setSize(container.clientWidth, container.clientHeight);
       material.uniforms.iResolution.value.set(container.clientWidth, container.clientHeight, renderer.getPixelRatio());
       if (composerRef.current) composerRef.current.setSize(container.clientWidth, container.clientHeight);
+      requestFrame();
     };
     window.addEventListener('resize', onResize);
 
     let last = performance.now();
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
     const tick = () => {
+      rafRef.current = null;
+      if (document.hidden) return;
       const now = performance.now();
       const dt = Math.max(0, Math.min(0.1, (now - last) / 1000));
       last = now;
@@ -543,25 +553,38 @@ export const GridScan = ({
       yawCurrent.current = yawSm.value;
       yawVel.current = yawSm.v;
 
-      const skew = new THREE.Vector2(lookCurrent.current.x * skewScale, -lookCurrent.current.y * yBoost * skewScale);
-      material.uniforms.uSkew.value.set(skew.x, skew.y);
+      material.uniforms.uSkew.value.set(lookCurrent.current.x * skewScale, -lookCurrent.current.y * yBoost * skewScale);
       material.uniforms.uTilt.value = tiltCurrent.current * tiltScale;
       material.uniforms.uYaw.value = THREE.MathUtils.clamp(yawCurrent.current * yawScale, -0.6, 0.6);
 
-      material.uniforms.iTime.value = now / 1000;
+      material.uniforms.iTime.value = motionPreference.matches ? 0 : now / 1000;
       renderer.clear(true, true, true);
       if (composerRef.current) {
         composerRef.current.render(dt);
       } else {
         renderer.render(scene, camera);
       }
+      if (!motionPreference.matches) rafRef.current = requestAnimationFrame(tick);
+    };
+    const requestFrame = () => {
+      if (document.hidden || rafRef.current !== null) return;
+      last = performance.now();
       rafRef.current = requestAnimationFrame(tick);
     };
-    rafRef.current = requestAnimationFrame(tick);
+    const visibility = () => {
+      if (document.hidden) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
+      else requestFrame();
+    };
+    document.addEventListener('visibilitychange', visibility);
+    motionPreference.addEventListener('change', requestFrame);
+    requestFrame();
 
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
       window.removeEventListener('resize', onResize);
+      document.removeEventListener('visibilitychange', visibility);
+      motionPreference.removeEventListener('change', requestFrame);
       material.dispose();
       quad.geometry.dispose();
 
@@ -574,6 +597,8 @@ export const GridScan = ({
       container.removeChild(renderer.domElement);
     };
   }, [
+    maxPixelRatio,
+    pixelBudget,
     sensitivity,
     lineThickness,
     linesColor,
@@ -672,9 +697,13 @@ export const GridScan = ({
   }, [enableGyro, uiFaceActive]);
 
   useEffect(() => {
+    if (!enableWebcam) { setModelsReady(false); return undefined; }
     let canceled = false;
     const load = async () => {
       try {
+        const faceapi = await import('face-api.js');
+        if (canceled) return;
+        faceApiRef.current = faceapi;
         await Promise.all([
           faceapi.nets.tinyFaceDetector.loadFromUri(modelsPath),
           faceapi.nets.faceLandmark68TinyNet.loadFromUri(modelsPath)
@@ -688,7 +717,7 @@ export const GridScan = ({
     return () => {
       canceled = true;
     };
-  }, [modelsPath]);
+  }, [enableWebcam, modelsPath]);
 
   useEffect(() => {
     let stop = false;
@@ -698,6 +727,8 @@ export const GridScan = ({
     const start = async () => {
       if (!enableWebcam || !modelsReady) return;
       if (!video) return;
+      const faceapi = faceApiRef.current;
+      if (!faceapi) return;
 
       try {
         const stream = await navigator.mediaDevices.getUserMedia({

@@ -1,20 +1,27 @@
-.mentors-page { min-height: 100svh; padding: 112px 24px 64px; color: var(--site-ink); background: var(--site-background); }
-.mentors-page__content { width: min(100%, 1184px); margin-inline: auto; animation: mentors-enter 650ms cubic-bezier(.23,1,.32,1) both; }
-.mentors-page .team-showcase { margin: 0; }
-.mentors-page .team-showcase__title { font-size: var(--people-title-size); line-height: 1; margin-bottom: 48px; }
-.mentors-page .team-showcase__layout { grid-template-columns: minmax(0, 2fr) minmax(280px, .95fr); gap: clamp(32px, 4vw, 56px); align-items: center; }
-.mentors-page .team-showcase__portraits { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.mentors-page { position: relative; isolation: isolate; min-height: 100svh; padding: 112px 24px 64px; color: var(--site-ink); background: var(--site-background); }
+.mentors-page__content { position: relative; z-index: 1; width: min(100%, 1536px); margin-inline: auto; animation: mentors-enter 650ms cubic-bezier(.23,1,.32,1) both; }
+.mentors-page .team-showcase { display: grid; grid-template-columns: max-content minmax(0, 1fr); align-items: center; gap: clamp(24px, 2.8vw, 44px); min-height: calc(100svh - 176px); margin: 0; }
+.mentors-page .team-showcase__title { min-width: 0; margin: 0; font-size: var(--people-title-size); font-weight: 800; line-height: 1; text-align: left; }
+.mentors-page .brand-title { font-size: inherit; line-height: inherit; }
+.mentors-page__eyebrow { display: block; font-size: clamp(21px, 2.25vw, 30px); font-weight: 800; line-height: 1.2; letter-spacing: -.04em; margin-bottom: 24px; }
+.mentors-page__headline { display: flex; flex-direction: column; align-items: flex-start; }
+.mentors-page .team-showcase__layout { min-width: 0; grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr); gap: clamp(20px, 2.3vw, 36px); align-items: center; }
+.mentors-page .team-showcase__portraits { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; width: calc((100% - 32px) * .968 + 24px); margin-inline: auto; transform: translateX(15pt); }
 .mentors-page .team-showcase__portrait { aspect-ratio: 1; }
-.mentors-page .team-showcase__members { gap: 28px; }
-.mentors-page .team-showcase__member-name strong { font-size: 24px; }
-.mentors-page .team-showcase__role, .mentors-page .team-showcase__description { font-size: 13px; }
+.mentors-page .team-showcase__members { gap: 24px; }
+.mentors-page .team-showcase__member-name strong { font-size: 20px; }
+.mentors-page .team-showcase__role, .mentors-page .team-showcase__description { font-size: 14px; line-height: 1.7; }
+.mentors-page .team-showcase__description { white-space: pre-line; }
 @keyframes mentors-enter { from { transform: translateY(16px); } to { transform: translateY(0); } }
+@media (min-width: 701px) and (max-width: 1100px) {
+  .mentors-page .team-showcase__layout { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+}
 @media (max-width: 700px) {
   .mentors-page { padding: 104px 24px 48px; }
-  .mentors-page .team-showcase { margin-top: 24px; }
-  .mentors-page .team-showcase__title { margin-bottom: 32px; }
+  .mentors-page .team-showcase { grid-template-columns: minmax(0, 1fr); gap: 32px; min-height: 0; margin-top: 24px; }
+  .mentors-page__eyebrow { font-size: 21px; margin-bottom: 16px; }
   .mentors-page .team-showcase__layout { grid-template-columns: minmax(0, 1fr); gap: 40px; }
-  .mentors-page .team-showcase__portraits { width: 100%; gap: 12px; }
-  .mentors-page .team-showcase__members { gap: 28px; }
+  .mentors-page .team-showcase__portraits { width: calc((100% - 24px) * .968 + 16px); gap: 8px; }
+  .mentors-page .team-showcase__members { gap: 24px; }
 }
 @media (prefers-reduced-motion: reduce) { .mentors-page__content { animation: none; } }

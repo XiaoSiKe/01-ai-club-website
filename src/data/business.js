@@ -1,4 +1,4 @@
-import { ezcutBusinessMembers, exdrinkBusinessMembers, smartbotBusinessMembers, timetableBusinessMembers } from './business-members';
+import { ezcutBusinessMembers, exdrinkBusinessMembers, smartbotBusinessMembers, timetableBusinessMembers, physicsosBusinessMembers } from './business-members.js';
 
 export const businesses = [
   {
@@ -40,9 +40,20 @@ export const businesses = [
     title: '零一课表',
     imageScale: 0.76,
     subtitle: '课表，本该如此简单。',
-    captionCredit: '零一 AI 日新社｜闽江分社',
     href: 'https://www.weiyanglab.cn',
     members: timetableBusinessMembers,
+    membersExample: false,
+  },
+  {
+    id: 'physicsos',
+    src: '/images/business-physicsos.png',
+    alt: 'physicsOS Logo',
+    title: 'physicsOS',
+    imageScale: 0.702,
+    monochrome: true,
+    subtitle: '让物理看得见，让思考有过程！',
+    href: 'https://physics.dongsiwei.com/',
+    members: physicsosBusinessMembers,
     membersExample: false,
   },
 ];

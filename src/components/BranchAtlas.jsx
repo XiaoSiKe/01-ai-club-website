@@ -124,7 +124,7 @@ export default function BranchAtlas({ buttonProps, borderGlowProps }) {
             <span>{branch.leader.name}</span>
           </span>}
         </span>
-        <span className="branch-atlas__founded" id={`${id}-founded-${branch.id}`}><span>成立于</span><time dateTime={branch.founded}>{foundedLabel(branch.founded)}</time></span>
+        <span className="branch-atlas__founded" id={`${id}-founded-${branch.id}`}><span>{branch.role} 成立于</span><time dateTime={branch.founded}>{foundedLabel(branch.founded)}</time></span>
       </span>
       <span className="branch-atlas__row-end"><Chevron /></span>
     </button>
@@ -153,7 +153,7 @@ export default function BranchAtlas({ buttonProps, borderGlowProps }) {
           {atlas && local && branches.map(branch => <div key={branch.id} ref={el => { markerRefs.current[branch.id] = el; }} className={`branch-atlas__pin branch-atlas__pin--${branch.labelSide}${selected?.id === branch.id || hovered === branch.id ? ' is-active' : ''}${branch.role === '总社' ? ' is-head' : ''}`}>
             <button type="button" onClick={follow(`school:${branch.id}`)} onPointerEnter={() => setHovered(branch.id)} onPointerLeave={() => setHovered(null)} aria-label={`在地图中查看${branch.school}`} aria-pressed={selected?.id === branch.id}>
               <span className="branch-atlas__pulse" /><span className="branch-atlas__dot" />
-              <span className="branch-atlas__pin-label"><strong className="branch-atlas__pin-full">{branch.school}</strong><strong className="branch-atlas__pin-short">{branch.shortName}</strong><small>{branch.role === '总社' ? '总社' : branch.name}</small></span>
+              <span className="branch-atlas__pin-label"><strong>{branch.role === '总社' ? `${branch.school}总社` : branch.name}</strong></span>
             </button>
           </div>)}
           <div className="branch-atlas__map-top"><span>{local ? '福州' : view === 'fujian' ? '福建' : '中国'}</span><span className="branch-atlas__north" aria-label="北方">N <svg viewBox="0 0 12 16" aria-hidden="true"><path d="M6 0 12 16 6 12 0 16Z" /></svg></span></div>
@@ -179,7 +179,7 @@ export default function BranchAtlas({ buttonProps, borderGlowProps }) {
                 <h3 ref={titleRef} tabIndex={-1}>{selected.school}</h3>
                 <p className="branch-atlas__branch-name">
                   <span>{selected.role === '总社' ? '零一 AI 日新社' : selected.name}</span>
-                  <span className="branch-atlas__founded"><span>成立于</span><time dateTime={selected.founded}>{foundedLabel(selected.founded)}</time></span>
+                  <span className="branch-atlas__founded"><span>{selected.role} 成立于</span><time dateTime={selected.founded}>{foundedLabel(selected.founded)}</time></span>
                 </p>
               </div>
             </header>}

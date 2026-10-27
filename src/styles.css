@@ -4,10 +4,25 @@
   --site-font-family:
     Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
     "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-  --people-title-size: clamp(3rem, 7.5vw, 6rem);
+  /* Match the existing two-line Pioneer headline: its copy column, padding,
+     18% overhang, and height limit now also size the Mentor heading. */
+  --people-title-copy-width: 42vw;
+  --people-title-size: min(
+    280px,
+    calc(max(600px, calc(100svh - 112px)) * .212244898),
+    calc((var(--people-title-copy-width) - clamp(20px, 3.2vw, 48px) - clamp(16px, 2vw, 32px)) * .614583333)
+  );
   font-family: var(--site-font-family);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+}
+
+@media (min-width: 700px) and (max-width: 999px) {
+  :root { --people-title-copy-width: 55vw; }
+}
+
+@media (max-width: 699px) {
+  :root { --people-title-size: 97px; }
 }
 
 * {
@@ -726,7 +741,7 @@ a {
 
 .home-business-lead {
   max-width: 960px;
-  margin: 0 0 12px;
+  margin: 0 0 4px;
   color: var(--site-ink);
   font-size: clamp(19px, 2vw, 24px);
   font-weight: 700;
@@ -737,9 +752,10 @@ a {
 .home-business-intro p {
   max-width: 74ch;
   margin: 0;
-  color: var(--site-muted, #b8b8bf);
-  font-size: 16px;
-  line-height: 1.8;
+  color: var(--site-ink);
+  font-size: clamp(19px, 2vw, 24px);
+  font-weight: 700;
+  line-height: 1.5;
 }
 
 .home-business-carousel {
@@ -1230,18 +1246,6 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .homepage {
-    background-color: #262626;
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-    background-size: 44px 44px;
-  }
-
-  .homepage-background > .gridscan {
-    display: none;
-  }
-
   *,
   *::before,
   *::after {

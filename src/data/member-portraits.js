@@ -1,4 +1,4 @@
-// User-supplied avatars shared by project teams and the pioneers roster.
+// Member avatars shared by project teams and the pioneers roster.
 export const memberPortraits = {
   '玉华': '/images/business-members-ezcut/01-yuhua.webp',
   '徐裕恒': '/images/business-members-ezcut/02-xuyuheng.webp',
@@ -20,4 +20,15 @@ export const memberPortraits = {
   zsq: '/images/pioneers/zsq.jpg',
   Spark: '/images/pioneers/spark.jpg',
   '郑航': '/images/pioneers/zheng-hang.jpg',
+  '韩慕昇': '/images/pioneers/han-musheng.webp',
+  '刘枭雄': '/images/pioneers/liu-xiaoxiong.webp',
+  '倪毅豪': '/images/pioneers/ni-yihao.webp',
+  '郑弘毅': '/images/pioneers/zheng-hongyi.webp',
+  '焱木阿': '/images/pioneers/yan-mua.webp',
+  '黄曾熠': '/images/pioneers/huang-zengyi.webp',
+  '洪悠然': '/images/pioneers/hong-youran.webp',
+  '王靖伊': '/images/pioneers/wang-jingyi.webp',
+  '李慧': '/images/pioneers/li-hui.webp',
+  // Portrait supplied by the user; a new filename also refreshes cached avatars.
+  '冬思韦': '/images/pioneers/dong-siwei-upload.jpg',
 };

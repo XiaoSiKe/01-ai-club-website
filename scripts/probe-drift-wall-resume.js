@@ -1,10 +1,18 @@
 /* Run in the local page via CDP. A fully stopped loop must wake after every exit. */
 (async () => {
-  const wall = document.querySelector('.drift-wall');
-  if (!wall || wall.classList.contains('drift-wall--reduced')) throw Error('A moving photo wall is required.');
-  wall.scrollIntoView({ block: 'center', behavior: 'instant' });
   const frame = () => new Promise(requestAnimationFrame);
   const frames = async count => { for (let i = 0; i < count; i++) await frame(); };
+  const mount = document.querySelector('.research-section__wall');
+  if (!mount) throw Error('Open the homepage first.');
+  mount.scrollIntoView({ block: 'center', behavior: 'instant' });
+  const loadingStarted = performance.now();
+  let wall;
+  while (!(wall = mount.querySelector('.drift-wall'))) {
+    if (performance.now() - loadingStarted > 8000) throw Error('Photo wall did not mount near the viewport.');
+    await frame();
+  }
+  if (wall.classList.contains('drift-wall--reduced')) throw Error('A moving photo wall is required.');
+  wall.scrollIntoView({ block: 'center', behavior: 'instant' });
   const positions = () => [...wall.querySelectorAll('.drift-wall__track')].map(track => track.style.transform);
   await frames(3);
   const cases = [];

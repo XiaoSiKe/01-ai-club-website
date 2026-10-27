@@ -3,6 +3,7 @@ import { useTheme } from './Theme';
 import DuotoneTeamRoster from './components/DuotoneTeamRoster';
 import SiteNavigation from './components/SiteNavigation';
 import BrandTitle from './components/BrandTitle';
+import SiteBackground from './components/SiteBackground';
 import { pioneers } from './data/pioneers';
 import './PioneersPage.css';
 
@@ -23,6 +24,7 @@ export default function PioneersPage() {
   const { theme } = useTheme();
   const requestedMember = new URLSearchParams(window.location.search).get('member');
   const targetMemberId = pioneers.some(member => member.id === requestedMember) ? requestedMember : null;
+  const initialMemberId = pioneers.find(member => member.name === '零一扬')?.id;
 
   useEffect(() => {
     const previousTitle = document.title;
@@ -32,6 +34,7 @@ export default function PioneersPage() {
 
   return (
     <main className="pioneers-page">
+      <SiteBackground />
       <a className="pioneers-page__skip" href="#pioneers-roster">跳到领航先锋</a>
       <SiteNavigation standalone />
       <div id="pioneers-roster" className="pioneers-page__roster" tabIndex={-1}>
@@ -39,13 +42,16 @@ export default function PioneersPage() {
           members={pioneers}
           titleAs="h1"
           title={'领航\n先锋'}
-          eyebrow="零一 AI 日新社｜01 AI CLUB"
+          eyebrow={<BrandTitle text="零一 AI 日新社｜01 AI CLUB" />}
           renderTitleLine={line => <BrandTitle text={line} />}
           preset="mono"
           palette={theme === 'light' ? LIGHT_PALETTE : DARK_PALETTE}
           columns={4}
           driftSeconds={7.2}
+          cardScale={0.9}
+          speedMultiplier={1.75329}
           targetMemberId={targetMemberId}
+          initialMemberId={initialMemberId}
           height="calc(100svh - var(--pioneers-header-clearance))"
           fontFamily="var(--site-font-family)"
           stretch={1}
