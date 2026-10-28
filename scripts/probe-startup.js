@@ -32,6 +32,9 @@
   const preparedPhotos = resources.filter(entry => entry.name.includes('/assets/images/activity-'));
   const firstScreenPrepared = ready?.detail.images === 13 && preparedPhotos.length === 12
     && preparedPhotos.every(entry => entry.responseEnd <= ready.startTime);
+  const photoRequestSpreadMs = preparedPhotos.length
+    ? Math.max(...preparedPhotos.map(entry => entry.startTime)) - Math.min(...preparedPhotos.map(entry => entry.startTime)) : Infinity;
+  const preloadHintsReleased = document.querySelectorAll('link[data-startup-preload]').length === 0;
   const deferred = !document.querySelector('.flex-carousel') && !document.querySelector('.drift-wall')
     && !document.querySelector('.folder-root');
   frames.sort((a, b) => a - b);
@@ -42,9 +45,9 @@
     estimatedDecodedImageMB: decodedBytes / 1e6,
     canvasCount: document.querySelectorAll('canvas').length, backgroundPixels,
     initialTunnelImages: document.querySelectorAll('.tunnel-hero__card img[src]').length,
-    criticalImageLoaded, firstScreenPrepared,
+    criticalImageLoaded, firstScreenPrepared, photoRequestSpreadMs, preloadHintsReleased,
     modelRequests: modelRequests.length, belowFoldDeferred: deferred,
     pass: modelRequests.length === 0 && backgroundPixels > 0 && backgroundPixels <= 1800000
-      && decodedBytes < 1000000 && criticalImageLoaded && firstScreenPrepared && document.querySelectorAll('.tunnel-hero__card img[src]').length === 0 && deferred,
+      && decodedBytes < 1000000 && criticalImageLoaded && firstScreenPrepared && preloadHintsReleased && document.querySelectorAll('.tunnel-hero__card img[src]').length === 0 && deferred,
   };
 })()

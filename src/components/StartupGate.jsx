@@ -27,14 +27,30 @@ function prepareImage(src) {
 }
 
 async function prepareImages(sources, onProgress) {
+  // Discover every critical download together. Fetching must not wait for the
+  // previous batch to decode; only the explicit decode work stays bounded.
+  const preloads = sources.map(src => {
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = src;
+    link.fetchPriority = 'high';
+    link.dataset.startupPreload = '';
+    document.head.appendChild(link);
+    return link;
+  });
   let next = 0, completed = 0;
-  const results = await Promise.allSettled(Array.from({ length: Math.min(3, sources.length) }, async () => {
-    while (next < sources.length) {
-      await prepareImage(sources[next++]);
-      onProgress(++completed);
-    }
-  }));
-  if (results.some(result => result.status === 'rejected')) throw new Error('Startup images unavailable');
+  try {
+    const results = await Promise.allSettled(Array.from({ length: Math.min(3, sources.length) }, async () => {
+      while (next < sources.length) {
+        await prepareImage(sources[next++]);
+        onProgress(++completed);
+      }
+    }));
+    if (results.some(result => result.status === 'rejected')) throw new Error('Startup images unavailable');
+  } finally {
+    preloads.forEach(link => link.remove());
+  }
 }
 
 export default function StartupGate({ loadPage, homepage, projectId }) {
