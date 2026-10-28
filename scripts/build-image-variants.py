@@ -20,7 +20,7 @@ def widths(path):
     name = path.as_posix()
     if 'qr' in name or 'wechat' in name:
         return ()  # Preserve every QR pixel, including the supplied center logo.
-    if '/activity-photos/' in name: return (320, 640)
+    if '/activity-photos/' in name: return (320, 480, 640)
     if '/competition/' in name:
         return (240, 480) if '-thumb' in name else (640, 1280, 1920, 2200)
     if '/mentors/' in name: return (192, 256, 384, 640)

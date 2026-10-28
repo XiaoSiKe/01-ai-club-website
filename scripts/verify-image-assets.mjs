@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto';
 import { imageSource } from '../src/components/imageSource.js';
 import { pioneers } from '../src/data/pioneers.js';
 import { businesses } from '../src/data/business.js';
+import { activityPhotos } from '../src/data/activity-photos.js';
 import assets from '../src/data/image-assets.json' with { type: 'json' };
 
 const publicRoot = fileURLToPath(new URL('../public/', import.meta.url));
@@ -53,6 +54,14 @@ const textureBytes = businesses.reduce((sum, item) => {
   return sum + bytes(imageSource(item.src, edge, edge, 1.5));
 }, 0);
 assert.ok(textureBytes <= 5 * 480 * 480 * 4, 'Carousel texture budget exceeded.');
+// Desktop tunnel cards are at most 270px wide. Keep a 480px step so their
+// existing 1.5x sampling target never jumps straight from 320px to 640px.
+for (const photo of activityPhotos) {
+  assert.ok(assets[photo.src].variants.some(variant => Math.max(variant.width, variant.height) === 480), photo.id);
+  const selected = variants.get(imageSource(photo.src, 270, 270 * photo.height / photo.width, 1.5));
+  assert.ok(Math.max(selected.width, selected.height) <= 480, photo.id);
+  assert.ok(selected.width >= 270 * 1.5, `${photo.id}: tunnel sampling target`);
+}
 assert.equal(imageSource('/images/join-lingyiyang-wechat.jpg', 300, 300), '/images/join-lingyiyang-wechat.jpg');
 assert.equal(imageSource('/images/partners/chinamobile.svg', 144, 34), '/images/partners/chinamobile.svg');
 console.log(`Image assets verified: ${Object.keys(assets).length} sources, ${variants.size} variants, avatars ≤96px, carousel RGBA ${(textureBytes / 1e6).toFixed(2)} MB before mipmaps.`);
