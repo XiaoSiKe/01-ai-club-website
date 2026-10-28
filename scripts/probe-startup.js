@@ -28,6 +28,10 @@
   const decodedBytes = [...images.values()].reduce((sum, bytes) => sum + bytes, 0);
   const logo = document.querySelector('.sm-logo-img');
   const criticalImageLoaded = Boolean(logo?.complete && logo.naturalWidth && logo.currentSrc);
+  const ready = performance.getEntriesByName('site:first-screen-ready').at(-1);
+  const preparedPhotos = resources.filter(entry => entry.name.includes('/assets/images/activity-'));
+  const firstScreenPrepared = ready?.detail.images === 13 && preparedPhotos.length === 12
+    && preparedPhotos.every(entry => entry.responseEnd <= ready.startTime);
   const deferred = !document.querySelector('.flex-carousel') && !document.querySelector('.drift-wall')
     && !document.querySelector('.folder-root');
   frames.sort((a, b) => a - b);
@@ -38,9 +42,9 @@
     estimatedDecodedImageMB: decodedBytes / 1e6,
     canvasCount: document.querySelectorAll('canvas').length, backgroundPixels,
     initialTunnelImages: document.querySelectorAll('.tunnel-hero__card img[src]').length,
-    criticalImageLoaded,
+    criticalImageLoaded, firstScreenPrepared,
     modelRequests: modelRequests.length, belowFoldDeferred: deferred,
     pass: modelRequests.length === 0 && backgroundPixels > 0 && backgroundPixels <= 1800000
-      && decodedBytes < 1000000 && criticalImageLoaded && document.querySelectorAll('.tunnel-hero__card img[src]').length === 0 && deferred,
+      && decodedBytes < 1000000 && criticalImageLoaded && firstScreenPrepared && document.querySelectorAll('.tunnel-hero__card img[src]').length === 0 && deferred,
   };
 })()

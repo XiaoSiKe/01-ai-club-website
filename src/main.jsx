@@ -1,43 +1,26 @@
-import { lazy, StrictMode, Suspense } from 'react';
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ThemeProvider } from './Theme';
-import { PageLoading } from './components/UniqueLoading';
+import StartupGate from './components/StartupGate';
 import './styles.css';
 import './theme.css';
 
-const ProjectPage = lazy(() => import('./ProjectPage'));
-const App = lazy(() => import('./App'));
-const PioneersPage = lazy(() => import('./PioneersPage'));
-const MentorsPage = lazy(() => import('./MentorsPage'));
-const ResearchPage = lazy(() => import('./ResearchPage'));
-const ArchitecturePage = lazy(() => import('./ArchitecturePage'));
 const pageId = new URLSearchParams(window.location.search).get('page');
 const projectId = new URLSearchParams(window.location.search).get('project');
+const pages = {
+  architecture: () => import('./ArchitecturePage'),
+  research: () => import('./ResearchPage'),
+  mentors: () => import('./MentorsPage'),
+  pioneers: () => import('./PioneersPage'),
+};
+const homepage = !Object.hasOwn(pages, pageId) && projectId === null;
+const loadPage = Object.hasOwn(pages, pageId) ? pages[pageId]
+  : projectId !== null ? () => import('./ProjectPage') : () => import('./App');
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>
-      {pageId === 'architecture' ? (
-        <Suspense fallback={<PageLoading />}>
-          <ArchitecturePage />
-        </Suspense>
-      ) : pageId === 'research' ? (
-        <Suspense fallback={<PageLoading />}>
-          <ResearchPage />
-        </Suspense>
-      ) : pageId === 'mentors' ? (
-        <Suspense fallback={<PageLoading />}>
-          <MentorsPage />
-        </Suspense>
-      ) : pageId === 'pioneers' ? (
-        <Suspense fallback={<PageLoading />}>
-          <PioneersPage />
-        </Suspense>
-      ) : projectId !== null ? (
-        <Suspense fallback={<PageLoading />}>
-          <ProjectPage projectId={projectId} />
-        </Suspense>
-      ) : <Suspense fallback={<PageLoading />}><App /></Suspense>}
+      <StartupGate loadPage={loadPage} homepage={homepage} projectId={projectId} />
     </ThemeProvider>
   </StrictMode>,
 );
