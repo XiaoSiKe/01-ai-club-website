@@ -23,7 +23,7 @@ RGBA像素量按实际选中的源图宽×高×4计算，相同URL去重，并�
 - 原始素材保留。scripts/build-image-variants.py生成按用途分级的WebP，并提交src/data/image-assets.json和public/assets/images/。源图SHA-256、真实尺寸和文件大小纳入构建校验。
 - 头像有96/192/256/320/480px等级；项目成员小头像使用至多96px的版本。照片、导师、证书缩略图、高清预览和商业Logo各有独立尺寸等级。
 - ResponsiveImage按元素实际尺寸选择图片，采样密度最多1.5。全站共用一个IntersectionObserver和一个ResizeObserver；离开可见范围或标签页进入后台后移除src，避免循环墙的全部副本长期持有解码图像。最后一个图片组件卸载时断开观察器并移除监听。
-- 首屏进度为0时不请求活动照片，合作品牌和页脚标识接近视口时才挂载。SVG image、CSS遮罩、校徽预解码也按可见性和用途处理。
+- 首屏隧道进度为0时不挂载活动照片的来源；进入页面前的加载页会提前请求并解码12张隧道照片。手机390px、DPR 1.5及以上约203 KB，桌面1440px、DPR 1.5及以上约582 KB，均复用实际展示的WebP规格。最多同时准备三张，不长期持有Image对象；照片在隧道中仍按可见性挂载与释放。合作品牌和页脚标识接近视口时才挂载。SVG image、CSS遮罩、校徽预解码也按可见性和用途处理。
 - 高清图只在打开预览时加载。悬停不预加载高清图，不再维护永久Image对象缓存；高清加载成功后移除预览层，关闭时卸载整个预览。
 - 商业Logo根据实际图卡和缩放比例选图，GPU上传完成后清除CPU图片来源，通过OGL的onUpdate回调保留已上传纹理。
 - QQ二维码转换为原尺寸无损WebP，解码像素与原PNG完全一致；452,393 B降至249,482 B。两个微信二维码保持原始文件与像素。
@@ -34,7 +34,7 @@ RGBA像素量按实际选中的源图宽×高×4计算，相同URL去重，并�
 替换源图片后运行`npm run images:build`（本机需要Python和Pillow），将源文件、衍生文件和清单一起提交。CI无需Python；`npm run build`首先校验全部图片清单，源图改变而衍生图未更新时会明确失败。
 
 - `npm run verify:images`：验证源图哈希、WebP实际尺寸、文件完整性、头像与商业纹理预算。
-- `scripts/probe-startup.js`：首屏图片低于1 MB，活动照片初始请求数为0，复杂模块保持延后挂载。
+- `scripts/probe-startup.js`：首页挂载前12张隧道照片完成请求，`site:first-screen-ready`标记记录13张首屏图片已就绪；挂载后DOM图片像素低于1 MB，隧道照片初始有源数量为0，复杂模块保持延后挂载。
 - `scripts/probe-image-memory.js`：在浏览器CDP中传入图片清单，记录每个选中资源的像素预算、来源、编码体积与断图情况。
 - `scripts/probe-image-lifecycle.js`：悬停无高清请求，高清预览成功，关闭后移除预览，照片墙离屏后有源图片归零。
 - `scripts/probe-image-background.js`：本地临时模拟document.hidden，验证后台有源图片归零、恢复可见后重新显示；测试通过finally恢复原属性。

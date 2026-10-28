@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { activityPhotos } from '../../data/activity-photos';
 import BorderGlow, { clearBorderGlow, updateBorderGlow } from '../../BorderGlow';
 import ResponsiveImage from '../ResponsiveImage';
+import { tunnelCardWidth } from '../heroImages';
 import './perspective-tunnel-hero.css';
 
 const TUNNEL_CARDS = activityPhotos.map((item, index) => {
@@ -50,9 +51,7 @@ function TunnelCard({ card, progress, pointer, total, stage, reduce }) {
   const z = useTransform(localProgress, [0, 1], [farZ, nearZ]);
   const opacity = useTransform(localProgress, [0, 0.18, 0.82, 0.98], [0, 1, 1, 0]);
   const visibility = useTransform(localProgress, value => value > .001 && value < .98 ? 'visible' : 'hidden');
-  const cardWidth = stage.isMobile
-    ? Math.max(130, Math.min(180, stage.width * 0.38))
-    : Math.max(180, Math.min(270, stage.width * 0.18));
+  const cardWidth = tunnelCardWidth(stage.width);
   const baseX = card.angleCos * (stage.width * card.radiusFactorX);
   const baseY = card.angleSin * (stage.height * card.radiusFactorY);
   const panStrength = stage.isMobile ? 20 : 45;
@@ -76,7 +75,7 @@ export default function PerspectiveTunnelHero({ children }) {
   const glowPointerRef = useRef(null);
   const requestGlowRef = useRef(null);
   const reduce = useReducedMotion();
-  const [stage, setStage] = useState({ width: 1440, height: 900, isMobile: false });
+  const [stage, setStage] = useState(() => ({ width: window.innerWidth, height: window.innerHeight, isMobile: window.innerWidth < 768 }));
   useEffect(() => {
     const update = () => setStage({ width: window.innerWidth, height: window.innerHeight, isMobile: window.innerWidth < 768 });
     update();
