@@ -14,7 +14,7 @@ function observe(node, update) {
         const item = images.get(entry.target);
         if (item) { item.near = entry.isIntersecting; item.update(item); }
       });
-    }, { rootMargin: '240px' });
+    }, { rootMargin: '120px' });
     sizeObserver = new ResizeObserver(entries => {
       entries.forEach(entry => {
         const item = images.get(entry.target);
@@ -43,12 +43,15 @@ export default function ResponsiveImage({ src, active = true, eager = false, max
   fit = 'contain', decoding = 'async', ...props }) {
   const ref = useRef(null);
   const [candidate, setCandidate] = useState();
-  useEffect(() => observe(ref.current, item => {
-    const source = !document.hidden && (eager || item.near) && item.width > 0 && item.height > 0
-      ? imageSource(src, item.width, item.height, Math.min(window.devicePixelRatio || 1, maxDpr), fit)
-      : undefined;
-    setCandidate(source);
-  }), [src, eager, maxDpr, fit]);
+  useEffect(() => {
+    if (!active) { setCandidate(undefined); return undefined; }
+    return observe(ref.current, item => {
+      const source = !document.hidden && (eager || item.near) && item.width > 0 && item.height > 0
+        ? imageSource(src, item.width, item.height, Math.min(window.devicePixelRatio || 1, maxDpr), fit)
+        : undefined;
+      setCandidate(source);
+    });
+  }, [src, active, eager, maxDpr, fit]);
 
   // Removing src releases the DOM's reference to decoded pixels on leaving the
   // viewport. The browser may keep an evictable cache; we never pin our own copy.

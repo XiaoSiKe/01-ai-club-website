@@ -33,17 +33,28 @@ def widths(path):
     return (320, 640, 960)
 
 
+def extra_widths(path):
+    # Fill large sampling gaps without lowering the existing 1.5x density target.
+    name = path.as_posix()
+    if '/activity-photos/' in name: return (224, 416)
+    if '/pioneers' in name or '/business-members' in name: return (128, 224, 288)
+    if '/competition/' in name and '-thumb' in name: return (160, 320, 384, 416)
+    return ()
+
+
 def generate(path):
     edges = widths(path)
     if not edges: return None
     raw = path.read_bytes()
+    # Keep the existing recipe hash so adding intermediate sizes preserves the
+    # URLs and immutable browser/CDN caches of previously generated variants.
     digest = hashlib.sha256(raw + str(edges).encode() + b'webp-v1').hexdigest()[:12]
     with Image.open(path) as source:
         if getattr(source, 'is_animated', False): return None
         image = ImageOps.exif_transpose(source)
         longest = max(image.size)
         variants = []
-        for edge in sorted({min(edge, longest) for edge in edges}):
+        for edge in sorted({min(edge, longest) for edge in (*edges, *extra_widths(path))}):
             copy = image.copy()
             copy.thumbnail((edge, edge), Image.Resampling.LANCZOS, reducing_gap=3)
             target = OUTPUT / f'{path.stem}-{digest}-{edge}.webp'

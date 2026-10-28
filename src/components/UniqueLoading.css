@@ -6,10 +6,6 @@
 .startup-loading__content { display: flex; flex-direction: column; align-items: center; padding: 32px; text-align: center; }
 .startup-loading__title { margin: 28px 0 16px; font-size: 16px; font-weight: 500; }
 .startup-loading__hint { margin: 12px 0 0; font-size: 12px; opacity: .6; }
-.startup-loading__progress { width: 160px; height: 2px; border: 0; border-radius: 2px; overflow: hidden; appearance: none; background: color-mix(in srgb, currentColor 15%, transparent); }
-.startup-loading__progress::-webkit-progress-bar { background: color-mix(in srgb, currentColor 15%, transparent); }
-.startup-loading__progress::-webkit-progress-value { background: currentColor; }
-.startup-loading__progress::-moz-progress-bar { background: currentColor; }
 .startup-loading__retry { margin-top: 20px; min-height: 44px; padding: 10px 24px; border: 1px solid currentColor; border-radius: 8px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
 .startup-loading__retry:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
 .unique-loading__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 4px; width: 100%; height: 100%; }

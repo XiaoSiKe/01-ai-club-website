@@ -62,6 +62,20 @@ for (const photo of activityPhotos) {
   assert.ok(Math.max(selected.width, selected.height) <= 480, photo.id);
   assert.ok(selected.width >= 270 * 1.5, `${photo.id}: tunnel sampling target`);
 }
+// Intermediate sizes must retain the same sampling density while fitting a
+// smaller decoded-pixel budget on both high-DPR phones and desktop screens.
+for (const [width, budget] of [[148.2, 2_100_000], [259.2, 6_400_000], [270, 6_600_000]]) {
+  const selected = activityPhotos.map(photo => {
+    const variant = variants.get(imageSource(photo.src, width, width * photo.height / photo.width, 1.5));
+    assert.ok(variant.width >= width * 1.5 - 1, `${photo.id}: preserve tunnel density at ${width}px`);
+    return variant;
+  });
+  assert.ok(selected.reduce((sum, image) => sum + image.width * image.height * 4, 0) <= budget,
+    `Tunnel decoded-pixel budget exceeded at ${width}px.`);
+}
+for (const pioneer of pioneers) {
+  assert.ok(bytes(imageSource(pioneer.photo, 80, 100, 1.5)) <= 128 * 128 * 4, `${pioneer.name}: small portrait budget`);
+}
 assert.equal(imageSource('/images/join-lingyiyang-wechat.jpg', 300, 300), '/images/join-lingyiyang-wechat.jpg');
 assert.equal(imageSource('/images/partners/chinamobile.svg', 144, 34), '/images/partners/chinamobile.svg');
 console.log(`Image assets verified: ${Object.keys(assets).length} sources, ${variants.size} variants, avatars ≤96px, carousel RGBA ${(textureBytes / 1e6).toFixed(2)} MB before mipmaps.`);
