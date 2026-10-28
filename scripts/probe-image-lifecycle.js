@@ -27,14 +27,17 @@ async () => {
   const selected = document.querySelector('.image-lightbox__full');
   const lightboxReady = Boolean(selected.currentSrc && selected.naturalWidth);
   const previewReleased = !document.querySelector('.image-lightbox__preview');
+  const coveredWallSources = wall.querySelectorAll('img[src]').length;
   document.querySelector('dialog [aria-label="退出"]').click();
   await frames(4);
   const lightboxReleased = !document.querySelector('dialog');
+  const wallRestored = wall.querySelectorAll('img[src]').length > 0;
   window.scrollTo({ top: 0, behavior: 'instant' });
   await frames(6);
   const offscreenSources = wall.querySelectorAll('img[src]').length;
   const noBrokenImages = [...document.images].every(image => !image.hasAttribute('src') || !image.complete || image.naturalWidth > 0);
   return { hoverRequests: hoverRequests.map(entry => entry.name), lightboxReady, previewReleased,
-    lightboxReleased, offscreenSources, noBrokenImages,
-    pass: hoverRequests.length === 0 && lightboxReady && previewReleased && lightboxReleased && offscreenSources === 0 && noBrokenImages };
+    coveredWallSources, lightboxReleased, wallRestored, offscreenSources, noBrokenImages,
+    pass: hoverRequests.length === 0 && lightboxReady && previewReleased && coveredWallSources === 0
+      && lightboxReleased && wallRestored && offscreenSources === 0 && noBrokenImages };
 }

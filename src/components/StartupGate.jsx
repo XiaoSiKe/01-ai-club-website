@@ -26,7 +26,7 @@ function prepareImage(src) {
   return request;
 }
 
-async function prepareImages(sources, onProgress) {
+async function prepareImages(sources) {
   // Discover every critical download together. Fetching must not wait for the
   // previous batch to decode; only the explicit decode work stays bounded.
   const preloads = sources.map(src => {
@@ -39,12 +39,11 @@ async function prepareImages(sources, onProgress) {
     document.head.appendChild(link);
     return link;
   });
-  let next = 0, completed = 0;
+  let next = 0;
   try {
     const results = await Promise.allSettled(Array.from({ length: Math.min(3, sources.length) }, async () => {
       while (next < sources.length) {
         await prepareImage(sources[next++]);
-        onProgress(++completed);
       }
     }));
     if (results.some(result => result.status === 'rejected')) throw new Error('Startup images unavailable');
@@ -55,16 +54,14 @@ async function prepareImages(sources, onProgress) {
 
 export default function StartupGate({ loadPage, homepage, projectId }) {
   const [Page, setPage] = useState(null);
-  const [progress, setProgress] = useState({ completed: 0, total: 0 });
   const [failed, setFailed] = useState(false);
   useEffect(() => {
     let active = true;
     const sources = startupImageSources(homepage, window.innerWidth, window.devicePixelRatio);
     setFailed(false);
-    setProgress({ completed: 0, total: sources.length });
     Promise.all([
       loadPage(),
-      prepareImages(sources, completed => { if (active) setProgress({ completed, total: sources.length }); }),
+      prepareImages(sources),
     ]).then(([module]) => {
       if (!active) return;
       performance.mark('site:first-screen-ready', { detail: { images: sources.length } });
@@ -78,13 +75,10 @@ export default function StartupGate({ loadPage, homepage, projectId }) {
   return <main className="project-loading startup-loading" aria-busy={!failed} data-startup-state={failed ? 'error' : 'loading'}>
     <div className="startup-loading__content">
       <UniqueLoading text={failed ? '加载遇到问题' : '正在准备首屏'} />
-      <p className="startup-loading__title">{failed ? '加载遇到问题' : '正在准备首屏'}</p>
-      {failed ? <>
+      {failed && <>
+        <p className="startup-loading__title">加载遇到问题</p>
         <p className="startup-loading__hint" role="alert">请检查网络连接，再试一次。</p>
         <button className="startup-loading__retry" onClick={() => window.location.reload()}>重新加载</button>
-      </> : <>
-        <progress className="startup-loading__progress" max={progress.total || 1} value={progress.completed} aria-label="首屏图片加载进度" />
-        <p className="startup-loading__hint">图片就绪后，自动进入</p>
       </>}
     </div>
   </main>;
