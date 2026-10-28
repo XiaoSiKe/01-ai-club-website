@@ -56,6 +56,8 @@ curl -fsS https://club.01aiedu.com/version.json
 curl -fsS https://club.01aiedu.com/lingyi-logo.jpg > /dev/null
 ```
 
+CDN 接入后，检查响应头中的 `Via`、`X-Cache` 与 `Age`。带哈希的 `/assets/` 资源重复访问应命中缓存；首页和 `version.json` 应保持不缓存，并与源站当前版本一致。首屏加载的 `site:first-screen-ready` 性能标记记录 13 张图片已就绪，`scripts/probe-startup.js` 可在浏览器 CDP 中检查。
+
 服务器内部可绕过公网 DNS 验证当前 Nginx：
 
 ```bash
@@ -100,6 +102,8 @@ certbot certificates --config-dir /etc/letsencrypt-01aiclub
 
 定时器每天检查两次。续期成功后自动执行 `nginx -t` 并重载。
 
+该定时器只更新 ECS。CDN 当前使用手动导入的 `club-01aiedu-com-20261028` 证书，截止北京时间 2026-11-29 23:44:14，必须在到期前将已续期证书安全导入 CDN 并验证 HTTPS；不能仅根据 ECS 定时器正常就判断 CDN 证书已更新。导入后清除本地临时私钥副本。
+
 ## 8. 密钥与令牌轮换
 
 ### CI SSH 密钥
@@ -130,11 +134,11 @@ certbot certificates --config-dir /etc/letsencrypt-01aiclub
 ### DNS 不生效
 
 ```bash
-dig @223.5.5.5 +short A club.01aiedu.com
-dig @1.1.1.1 +short A club.01aiedu.com
+dig @223.5.5.5 +short CNAME club.01aiedu.com
+dig @1.1.1.1 +short CNAME club.01aiedu.com
 ```
 
-应返回 `47.106.14.254`。修改后至少等待原 TTL；不要反复新增重复 A 记录。
+应返回 `club.01aiedu.com.w.kunlunaq.com`。最终 IP 由 CDN 调度。修改后至少等待原 TTL；不要反复新增同名 A 记录。源站仍为 `47.106.14.254`，必要时使用 `--resolve` 直接验证源站。
 
 ### 流水线无法发布
 
@@ -148,7 +152,7 @@ dig @1.1.1.1 +short A club.01aiedu.com
 - [ ] 通过 PR 合并到 `main`。
 - [ ] 本地 `npm run build` 通过。
 - [ ] 云效流水线成功。
-- [ ] DNS 返回目标 ECS IP。
+- [ ] DNS 的 CNAME 返回目标 CDN，HTTPS 回源到专属 ECS。
 - [ ] HTTP 跳转 HTTPS，HTTPS 200。
 - [ ] `version.json` 与 Git 提交一致。
 - [ ] 另外两个站点仍正常。
