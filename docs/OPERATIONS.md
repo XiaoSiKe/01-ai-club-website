@@ -18,7 +18,7 @@
 
 ## 2. 日常发布
 
-合并 PR 到 `main` 后，云效自动执行：
+合并 PR 到 `main` 后，GitHub Actions 的 `Website checks` 先执行回归检查和完整构建，检查通过后经 HTTPS 自动触发云效。云效执行：
 
 1. 从公共 GitHub 仓库拉取 `main`。
 2. 下载并校验固定 Node.js 24.16.0。
@@ -28,6 +28,18 @@
 6. 服务器安全解包、原子切换并做本机健康检查。
 
 流水线失败时不会切换线上版本；切换后验收失败会自动恢复。
+
+GitHub 工作流在触发云效后会等待官网 `version.json` 返回本次 main 提交 SHA；仅收到 Webhook 的 HTTP 200 不代表发布成功。触发入口最多重试三次，同时检查云效响应的 `successful` 字段。发布只允许当前仓库 main 分支的 push 事件，PR 检查不会触发生产发布。同一分支的 GitHub 工作流串行执行。
+
+`CLUB_FLOW_WEBHOOK_URL` 保存在该 GitHub 仓库的 Actions Secret 中，必须使用 `https://flow-openapi.aliyun.com/scm/webhook/…`。不在源码、日志或配置模板中保存完整地址；云效界面返回的 HTTP 示例也必须升级为 HTTPS。此前的 GitHub 原生 push Webhook 已停用，避免与工作流重复发布。云效的代码源触发保持开启，继续使用原来的通用 Git 来源和受限 SSH 发布配置。
+
+相关入口：
+
+- [GitHub 构建与发布](https://github.com/XiaoSiKe/01-ai-club-website/actions/workflows/ci.yml)
+- [云效运行状态](https://flow.aliyun.com/pipelines/5236605/current)
+- `node --test scripts/trigger-flow.test.mjs`：验证分支/仓库/提交保护、HTTPS 限制、应用错误、网络重试和线上版本验收。
+
+排查自动发布时先查看该提交的 GitHub Actions：构建失败不会触发云效；触发失败会明确标为失败；等待版本超时则继续检查云效运行记录。不要根据旧的 Webhook 投递记录或 HTTP 200 判断新提交已经上线。修复临时故障后可以重跑失败的 GitHub job，或从云效控制台手动运行 main 作为恢复方式。
 
 ## 3. 本机运维配置
 
