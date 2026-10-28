@@ -27,9 +27,19 @@
     />
     <meta property="og:url" content="https://club.01aiedu.com/" />
     <title>零一 AI 日新社｜01AIClub</title>
+    <style>
+      body{margin:0}#root>.project-loading{min-height:100svh;display:grid;place-items:center;background:#090909}
+      #root>.project-loading .unique-loading{position:relative;width:48px;height:48px}
+      #root>.project-loading .unique-loading__grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:4px;width:100%;height:100%}
+      #root>.project-loading .unique-loading__square{background:#e5e7eb;animation:unique-loading-pulse 1.5s cubic-bezier(.4,0,.6,1) infinite}
+      #root>.project-loading .unique-loading__label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+      html[data-theme=light] #root>.project-loading{background:#f4f4f2}html[data-theme=light] #root>.project-loading .unique-loading__square{background:#000}
+      @keyframes unique-loading-pulse{0%,100%{opacity:1}50%{opacity:.5}}
+      @media(prefers-reduced-motion:reduce){#root>.project-loading .unique-loading__square{animation:none}}
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"><main class="project-loading" aria-busy="true"><div class="unique-loading" role="status"><div class="unique-loading__grid" aria-hidden="true"><div class="unique-loading__square"></div><div class="unique-loading__square" style="animation-delay:.1s"></div><div class="unique-loading__square" style="animation-delay:.2s"></div><div class="unique-loading__square" style="animation-delay:.3s"></div><div class="unique-loading__square" style="animation-delay:.4s"></div><div class="unique-loading__square" style="animation-delay:.5s"></div><div class="unique-loading__square" style="animation-delay:.6s"></div><div class="unique-loading__square" style="animation-delay:.7s"></div><div class="unique-loading__square" style="animation-delay:.8s"></div></div><span class="unique-loading__label">加载中</span></div></main></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

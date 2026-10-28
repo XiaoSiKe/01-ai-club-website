@@ -5,6 +5,7 @@ import { useTheme } from '../Theme';
 import { learningFolderItems, practiceFolderItems } from '../data/explore';
 import SocialIcon from './SocialIcon';
 import ExploreModuleIcon, { ExploreBookIcon } from './ExploreModuleIcon';
+import { LoadingSlot } from './UniqueLoading';
 import { socialChannels } from '../data/social';
 import { RiUserStarLine, RiFlag2Line, RiCompass3Line, RiGraduationCapLine, RiBroadcastLine, RiUserAddLine } from 'react-icons/ri';
 import './ExploreSection.css';
@@ -25,19 +26,35 @@ const documentItems = (items, categories) => items.map((item, index) => ({
 }));
 const learningItems = documentItems(learningFolderItems, ['周刊 · 分享', '文章 · 观点', '大学 · 成长']);
 const practiceItems = documentItems(practiceFolderItems, ['黑客松 · 创造', '沙龙 · 交流', '商业 · 产品', '科研 · 竞赛', '日常 · 耍起']);
+const folderGroups = [
+  { id: 'learn', title: '从零到一', label: '学习与分享', items: learningItems },
+  { id: 'practice', title: '零一实践', label: '探索与创新', items: practiceItems },
+];
 
 export default function ExploreSection({ borderGlowProps, knowledgeUrl, onItemClick }) {
   const { theme } = useTheme();
   const [openFolder, setOpenFolder] = useState(null);
+  const [folderLayouts, setFolderLayouts] = useState(() => folderGroups.map(() => ({ size: .99, documentScale: 1.276, documentOffsetX: 0 })));
   const folderViewportRefs = useRef([]);
 
   useLayoutEffect(() => {
     const viewportWidths = new WeakMap();
     const centerFolders = () => {
-      folderViewportRefs.current.forEach(viewport => {
+      folderViewportRefs.current.forEach((viewport, index) => {
         if (!viewport || viewportWidths.get(viewport) === viewport.clientWidth) return;
         viewportWidths.set(viewport, viewport.clientWidth);
-        viewport.scrollLeft = Math.max(0, (viewport.scrollWidth - viewport.clientWidth) / 2);
+        const compact = window.matchMedia('(max-width: 760px)').matches;
+        const size = compact ? Math.min(.5, Math.max(.3, (viewport.clientWidth - 12) / 224)) : .99;
+        const frame = viewport.closest('.home-explore-folder-frame').getBoundingClientRect();
+        const bounds = viewport.getBoundingClientRect();
+        const width = 224 * size, count = folderGroups[index].items.length;
+        const available = frame.width - 24, gap = 12 * size;
+        const documentScale = compact ? Math.min(1.276, Math.max(1,
+          (available - gap * (count - 1)) / (count * .94 * width * .54), available / (width * 2.3))) : 1.276;
+        const documentOffsetX = compact ? frame.left + frame.width / 2 - bounds.left - bounds.width / 2 : 0;
+        const layout = { size, documentScale, documentOffsetX };
+        setFolderLayouts(previous => Object.keys(layout).every(key => previous[index][key] === layout[key]) ? previous : previous.map((value, i) => i === index ? layout : value));
+        viewport.scrollLeft = Math.round(Math.max(0, (viewport.scrollWidth - viewport.clientWidth) / 2));
       });
     };
     centerFolders();
@@ -99,10 +116,7 @@ export default function ExploreSection({ borderGlowProps, knowledgeUrl, onItemCl
         </nav>
 
         <div className="home-explore-folders">
-          {[
-            { id: 'learn', title: '从零到一', label: '学习与分享', items: learningItems },
-            { id: 'practice', title: '零一实践', label: '探索与创新', items: practiceItems },
-          ].map((group, index) => (
+          {folderGroups.map((group, index) => (
             <BorderGlow key={group.id} {...borderGlowProps} borderRadius={16} className={`home-explore-folder-frame${openFolder === group.id ? ' is-open' : ''}`}>
               <article className="home-explore-folder-card">
                 <header className="home-explore-card-heading">
@@ -111,9 +125,10 @@ export default function ExploreSection({ borderGlowProps, knowledgeUrl, onItemCl
                 </header>
                 <div className="home-explore-folder-viewport" ref={node => { folderViewportRefs.current[index] = node; }}>
                   <div className="home-explore-folder-space">
-                    <ViewportMount className="home-explore-folder-mount" minHeight={194.04}>
-                    <Suspense fallback={null}>
-                    <Folder label={group.title} items={group.items} size={0.99} color="#141416" paperColor="#f2f2f0" theme={theme} intro stationary peek documentScale={1.276}
+                    <ViewportMount className="home-explore-folder-mount" minHeight={196 * folderLayouts[index].size}>
+                    <Suspense fallback={<LoadingSlot />}>
+                    <Folder label={group.title} items={group.items} size={folderLayouts[index].size} color="#141416" paperColor="#f2f2f0" theme={theme} intro stationary peek
+                      documentScale={folderLayouts[index].documentScale} documentOffsetX={folderLayouts[index].documentOffsetX}
                       open={openFolder === group.id} onOpenChange={open => setOpenFolder(open ? group.id : null)} onItemClick={onItemClick} />
                     </Suspense>
                     </ViewportMount>

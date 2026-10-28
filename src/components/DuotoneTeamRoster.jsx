@@ -184,8 +184,9 @@ function bringIntoView(card) {
 	const track = card.closest(".dtr-track, .dtr-strip-track");
 	if (!frame || !track) return;
 	const f = frame.getBoundingClientRect();
-	const r = card.getBoundingClientRect();
 	const vertical = track.classList.contains("dtr-track");
+	const expanded = vertical && card.closest('.dtr')?.hasAttribute('data-mobile-columns') ? card.querySelector('.dtr-panel') : card;
+	const r = expanded.getBoundingClientRect();
 	// Start from where the track is right now (it may still be easing back).
 	const now = getComputedStyle(track).translate;
 	const parts = !now || now === "none" ? ["0", "0"] : now.split(" ");
@@ -213,7 +214,7 @@ function Portrait(props) {
 	const panelId = "p" + React.useId().replace(/[^a-zA-Z0-9]/g, "");
 	const hidden = slot.dup;
 	const hitRef = React.useRef(null);
-	const close = () => { hitRef.current?.focus({ preventScroll: true }); onLeave(slot.key); };
+	const close = () => { hitRef.current?.focus({ preventScroll: true }); onLeave(slot.key); if (hitRef.current) releaseNudge(hitRef.current.parentElement); };
 	const isRole = slot.kind === "role";
 	const member = slot.kind === "member" ? slot.member : null;
 	const role = slot.kind === "role" ? slot.role : null;
@@ -290,6 +291,7 @@ function Portrait(props) {
 			return;
 		}
 		if (!on) bringIntoView(card);
+		else releaseNudge(card);
 		onToggle(slot.key);
 	}} onKeyDown={(e) => {
 		if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); close(); }
@@ -309,7 +311,7 @@ function Portrait(props) {
       </div>
     </div>;
 }
-export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles = [], eyebrow = "Meet", title = "The\ncrew", intro = "", cta = null, secondaryCta = null, preset = "ember", palette, columns = 3, driftSeconds = 9, cardScale = 1, speedMultiplier = 1, drift = true, height = "100svh", fontFamily = DISPLAY_STACK, stretch = 1.16, uppercase = true, grain = true, labels, className = "", onMemberSelect, clickFollowsLink = true, targetMemberId = null, initialMemberId = null, titleAs: Title = "h2", renderTitleLine = null }) {
+export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles = [], eyebrow = "Meet", title = "The\ncrew", intro = "", cta = null, secondaryCta = null, preset = "ember", palette, columns = 3, mobileRows = 1, mobileColumns = 0, driftSeconds = 9, cardScale = 1, speedMultiplier = 1, drift = true, height = "100svh", fontFamily = DISPLAY_STACK, stretch = 1.16, uppercase = true, grain = true, labels, className = "", onMemberSelect, clickFollowsLink = true, targetMemberId = null, initialMemberId = null, titleAs: Title = "h2", renderTitleLine = null }) {
 	const pal = resolvePalette(preset, palette);
 	const text = {
 		...DEFAULT_LABELS,
@@ -343,13 +345,15 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 	// The shadow end is lifted toward the field so dark skin and dark clothes keep their detail.
 	const mid = palette && palette.mid || mixHex(pal.hot, pal.highlight, .35);
 	const tables = tritoneTables(mixHex(pal.shadow, pal.deep, .4), mid, mixHex(pal.highlight, pal.ink, .5));
-	const still = !drift || !(driftSeconds > 0) || reducedMotion || cols === 0;
+	const still = !drift || !(driftSeconds > 0) || reducedMotion;
 	const copies = still ? [0] : [0, 1];
+	const rowCount = Math.max(1, Math.round(mobileRows));
 	const [minPer, setMinPer] = React.useState(4);
-	const plan = React.useMemo(() => dealColumns(members.length, openRoles.length, cols || 1, cols && !still ? minPer : 0), [
+	const plan = React.useMemo(() => dealColumns(members.length, openRoles.length, cols || rowCount, cols && !still ? minPer : 0), [
 		members.length,
 		openRoles.length,
 		cols,
+		rowCount,
 		minPer,
 		still
 	]);
@@ -372,7 +376,7 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 		if (!root || !copy || !head) return;
 		const fit = () => {
 			const w = root.getBoundingClientRect().width;
-			const next = layoutFor(w, columns);
+			const next = mobileColumns > 0 && w < 700 ? mobileColumns : layoutFor(w, columns);
 			setCols((c) => c === next ? c : next);
 			const spans = head.querySelectorAll(".dtr-line > span");
 			let widest = 0;
@@ -408,6 +412,7 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 		return () => ro.disconnect();
 	}, [
 		columns,
+		mobileColumns,
 		cardScale,
 		stretch,
 		title,
@@ -432,12 +437,75 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 	const onEnter = React.useCallback((key) => setActive(key), []);
 	const onLeave = React.useCallback((key) => setActive((a) => a === key ? null : a), []);
 	const onToggle = React.useCallback((key) => setActive((a) => a === key ? null : key), []);
+	// Scroll the native phone strip so swipes and automatic motion share one position.
+	// The second copy keeps the wrap seamless without retaining full-size portraits.
+	React.useEffect(() => {
+		if (cols !== 0 || still || active || offscreen) return undefined;
+		const strips = [...rootRef.current.querySelectorAll('.dtr-strip')].map(strip => ({
+			strip, track: strip.querySelector('.dtr-strip-track'), position: strip.scrollLeft, distance: 0
+		}));
+		if (!strips.length) return undefined;
+		let raf, resumeTimer, last = null, duration = 0;
+		const measure = () => {
+			strips.forEach(row => {
+				row.distance = (row.track.scrollWidth - parseFloat(getComputedStyle(row.track).paddingLeft)) / 2;
+				row.position = row.strip.scrollLeft;
+			});
+			duration = parseFloat(getComputedStyle(rootRef.current).getPropertyValue('--dtr-sdur')) * 1000;
+		};
+		const stop = () => { cancelAnimationFrame(raf); last = null; };
+		const frame = time => {
+			if (last === null && strips.some(row => row.strip.querySelector(':focus-visible'))) return;
+			if (!(duration > 0)) return;
+			if (last !== null) {
+				strips.forEach(row => {
+					if (!(row.distance > 0)) return;
+					row.position = (row.position + Math.min(time - last, 50) * row.distance / duration) % row.distance;
+					row.strip.scrollLeft = row.position;
+				});
+			}
+			last = time;
+			raf = requestAnimationFrame(frame);
+		};
+		const resume = () => {
+			stop();
+			strips.forEach(row => { row.position = row.strip.scrollLeft; });
+			raf = requestAnimationFrame(frame);
+		};
+		const hold = () => { clearTimeout(resumeTimer); stop(); };
+		const release = () => { clearTimeout(resumeTimer); resumeTimer = window.setTimeout(resume, 900); };
+		const wheel = () => { hold(); release(); };
+		strips.forEach(({ strip }) => {
+			strip.addEventListener('pointerdown', hold, { passive: true });
+			strip.addEventListener('wheel', wheel, { passive: true });
+			strip.addEventListener('focusin', stop);
+			strip.addEventListener('focusout', resume);
+		});
+		window.addEventListener('pointerup', release, { passive: true });
+		window.addEventListener('pointercancel', release, { passive: true });
+		measure();
+		const observer = new ResizeObserver(measure);
+		strips.forEach(({ track }) => observer.observe(track));
+		resume();
+		return () => {
+			hold();
+			observer.disconnect();
+			strips.forEach(({ strip }) => {
+				strip.removeEventListener('pointerdown', hold);
+				strip.removeEventListener('wheel', wheel);
+				strip.removeEventListener('focusin', stop);
+				strip.removeEventListener('focusout', resume);
+			});
+			window.removeEventListener('pointerup', release);
+			window.removeEventListener('pointercancel', release);
+		};
+	}, [cols, rowCount, still, active, offscreen, members.length, openRoles.length, driftSeconds, speedMultiplier]);
 	// Seek the existing loop instead of layering another transform over it.
 	// Both alternating directions then follow a downward wheel in the same way.
 	React.useEffect(() => {
 		const root = rootRef.current;
-		const wall = root?.querySelector(cols === 0 ? '.dtr-strip' : '.dtr-wall');
-		if (!wall || (still && cols !== 0)) return undefined;
+		const wall = root?.querySelector('.dtr-wall');
+		if (!wall || still) return undefined;
 		let resumeTimer;
 		const resume = () => {
 			root.removeAttribute('data-manual');
@@ -447,14 +515,6 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 			if (event.ctrlKey || !event.deltaY) return;
 			const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? wall.clientHeight : 1;
 			const delta = event.deltaY * unit;
-			if (cols === 0) {
-				if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
-				const next = Math.max(0, Math.min(wall.scrollWidth - wall.clientWidth, wall.scrollLeft + delta));
-				if (next === wall.scrollLeft) return;
-				event.preventDefault();
-				wall.scrollLeft = next;
-				return;
-			}
 			const panel = event.target.closest?.('.dtr-panel');
 			if (panel && ((delta > 0 && panel.scrollTop + panel.clientHeight < panel.scrollHeight - 1) || (delta < 0 && panel.scrollTop > 0))) return;
 			root.setAttribute('data-manual', '');
@@ -486,11 +546,12 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 	useIsoLayoutEffect(() => {
 		if (!initialMemberId || targetMemberId) return undefined;
 		const root = rootRef.current;
-		const frame = root?.querySelector(cols === 0 ? '.dtr-strip' : '.dtr-wall');
-		if (!frame) return undefined;
+		const layout = root?.querySelector(cols === 0 ? '.dtr-strips' : '.dtr-wall');
+		if (!layout) return undefined;
 		const positionInitialMember = () => {
-			const card = [...frame.querySelectorAll('[data-member-id]:not([aria-hidden="true"])')].find(node => node.dataset.memberId === initialMemberId);
+			const card = [...layout.querySelectorAll('[data-member-id]:not([aria-hidden="true"])')].find(node => node.dataset.memberId === initialMemberId);
 			if (!card) return;
+			const frame = cols === 0 ? card.closest('.dtr-strip') : layout;
 			const key = `${initialMemberId}:${card.dataset.slotKey}:${cols}:${still}:${frame.clientWidth}:${frame.clientHeight}:${stepRatio}:${driftSeconds}:${speedMultiplier}:${plan.map(column => column.length).join(',')}`;
 			if (appliedInitialRef.current === key) return;
 			const box = frame.getBoundingClientRect();
@@ -514,7 +575,7 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 		};
 		positionInitialMember();
 		const observer = new ResizeObserver(positionInitialMember);
-		observer.observe(frame);
+		observer.observe(layout);
 		return () => observer.disconnect();
 	}, [initialMemberId, targetMemberId, cols, still, plan, members, stepRatio, driftSeconds, speedMultiplier]);
 	// A branch leader link arrives with a member ID, never a transient row index.
@@ -563,10 +624,10 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 		["--dtr-cols"]: String(cols || 1),
 		["--dtr-card-scale"]: String(cardScale),
 		["--dtr-ts"]: titleSize ? titleSize + "px" : undefined,
-		["--dtr-sdur"]: Math.max(8, (members.length + openRoles.length) * Math.max(1, driftSeconds) * .55) + "s",
+		["--dtr-sdur"]: Math.max(8, Math.ceil((members.length + openRoles.length) / rowCount) * Math.max(1, driftSeconds) * .55) / Math.max(.1, speedMultiplier) + "s",
 		["--dtr-h"]: height,
 		height: cols === 0 || still ? "auto" : height,
-		minHeight: cols === 0 ? undefined : still ? height : "600px"
+		minHeight: cols === 0 ? undefined : still ? height : mobileColumns > 0 ? "480px" : "600px"
 	};
 	const phases = [
 		0,
@@ -574,7 +635,7 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 		.71,
 		.18
 	];
-	return <section ref={rootRef} className={"dtr " + className} style={rootStyle} aria-labelledby={titleId} data-mode={cols === 0 ? "strip" : "columns"} data-cols={cols || undefined} data-active={active ? "" : undefined} data-active-col={active && cols !== 0 ? active.split("-")[0] : undefined} data-linked={targetMemberId ? "" : undefined} data-initial-member={!targetMemberId ? initialMemberId : undefined} data-static={still ? "" : undefined} data-offscreen={offscreen ? "" : undefined}>
+	return <section ref={rootRef} className={"dtr " + className} style={rootStyle} aria-labelledby={titleId} data-mode={cols === 0 ? "strip" : "columns"} data-cols={cols || undefined} data-mobile-columns={mobileColumns || undefined} data-active={active ? "" : undefined} data-active-col={active && cols !== 0 ? active.split("-")[0] : undefined} data-linked={targetMemberId ? "" : undefined} data-initial-member={!targetMemberId ? initialMemberId : undefined} data-static={still ? "" : undefined} data-offscreen={offscreen ? "" : undefined}>
       <svg className="dtr-defs" aria-hidden="true" focusable="false">
         <filter id={filterId} colorInterpolationFilters="sRGB">
           <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0 0 0 1 0" />
@@ -621,16 +682,18 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
             </div> : null}
         </div>
 
-        {cols === 0 ? <div className="dtr-strip" role="group" aria-label={text.team}>
+        {cols === 0 ? <div className="dtr-strips">
+          {plan.map((row, rowIndex) => <div className="dtr-strip" key={rowIndex} role="group" aria-label={`${text.team}，第${rowIndex + 1}排`}>
             <div className="dtr-strip-track">
-              {copies.map((copy) => plan[0].map((e, i) => {
+              {copies.map((copy) => row.map((e, i) => {
 		const slot = slotFor({
 			...e,
 			dup: e.dup || copy === 1
-		}, "s" + copy + "-" + i);
+		}, "s" + rowIndex + "-" + copy + "-" + i);
 		return <Portrait key={slot.key} slot={slot} on={active === slot.key} filterId={filterId} labels={text} onEnter={onEnter} onLeave={onLeave} onToggle={onToggle} onSelect={onMemberSelect} follows={clickFollowsLink} />;
 	}))}
             </div>
+          </div>)}
           </div> : <div className="dtr-wall" role="group" aria-label={text.team}>
             {plan.map((col, c) => {
 		const dur = Math.max(6, col.length * Math.max(1, driftSeconds)) * stepRatio / Math.max(.1, speedMultiplier);

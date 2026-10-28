@@ -22,7 +22,7 @@
 }
 
 @media (max-width: 699px) {
-  :root { --people-title-size: 97px; }
+  :root { --people-title-size: 97px; --people-mobile-title-size: min(97px, calc((100vw - 48px) / 4)); }
 }
 
 * {
@@ -624,6 +624,12 @@ a {
   margin-top: 0;
 }
 
+.home-about-president { position: relative; display: inline-flex; align-items: center; gap: 6px; margin-inline: 2px; color: inherit; text-decoration: none; vertical-align: middle; white-space: nowrap; }
+.home-about-president::before { position: absolute; inset: -8px -2px; content: ''; }
+.home-about-president img { flex: none; width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+.home-about-president:hover span { text-decoration: underline; text-underline-offset: 3px; }
+.home-about-president:focus-visible { outline: 2px solid var(--site-ink); outline-offset: 4px; border-radius: 4px; }
+
 .home-protocol-card h2,
 .home-note h2 {
   color: #f5f5f5;
@@ -764,6 +770,13 @@ a {
   height: auto;
 }
 
+@media (max-width: 760px) {
+  .home-business-carousel { --business-placeholder-height: 340px; }
+}
+@media (max-width: 359px) {
+  .home-business-carousel { --business-placeholder-height: 370px; }
+}
+
 .home-cooperation-section { display: block; }
 .home-cooperation-intro { margin: 0 0 40px; color: var(--site-ink); font-size: clamp(19px, 2vw, 24px); font-weight: 700; line-height: 1.5; text-wrap: pretty; }
 .home-partners-section {
@@ -848,6 +861,15 @@ a {
 
 .home-join-qr-glow {
   width: 100%;
+}
+
+.home-join-qr-button { display: block; width: 100%; margin: 0; padding: 0; border: 0; border-radius: 28px; background: transparent; color: inherit; cursor: zoom-in; }
+.home-join-qr-button:focus-visible { outline: 2px solid var(--site-ink); outline-offset: 5px; }
+
+@media (max-width: 760px) {
+  .home-join-channels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; gap: 10px; }
+  .home-join-channel { width: 100%; min-width: 0; }
+  .home-join-channel figcaption { margin-top: 8px; font-size: 12px; line-height: 1.5; text-wrap: balance; }
 }
 
 .home-join-qr-media {
@@ -1217,12 +1239,21 @@ a {
 
 @media (max-width: 760px) {
   .home-partners-section { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .home-trust-subtitle,
+  .home-how-section .home-explore-heading .home-directions-quote,
+  .home-business-lead,
+  .home-business-intro p,
+  .research-section .research-section__intro,
+  .home-cooperation-intro,
+  .home-note .home-join-slogan { font-size: clamp(15.2px, 1.6vw, 19.2px); }
+  .home-note .home-join-slogan-en { font-size: clamp(12px, 1.28vw, 15.2px); }
+  .home-footer-brand p { font-size: 12px; }
   .home-partners-heading > .home-flow-title,
   .home-partners-heading > .home-cooperation-actions,
   .home-partners-section > .logo-marquee { grid-column: 1; grid-row: auto; }
   .home-footer-inner { grid-template-columns: 1fr; gap: 28px; }
   .home-footer-logo-loop { width: 100%; justify-self: start; }
-  .home-footer-english { font-size: clamp(7.8px, 2.4vw, 15px); }
+  .home-footer-english { font-size: clamp(6.24px, 1.92vw, 12px); }
 }
 
 @media (max-width: 360px) {

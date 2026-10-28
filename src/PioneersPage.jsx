@@ -4,6 +4,7 @@ import DuotoneTeamRoster from './components/DuotoneTeamRoster';
 import SiteNavigation from './components/SiteNavigation';
 import BrandTitle from './components/BrandTitle';
 import SiteBackground from './components/SiteBackground';
+import useMediaQuery from './components/useMediaQuery';
 import { pioneers } from './data/pioneers';
 import './PioneersPage.css';
 
@@ -22,6 +23,7 @@ const LABELS = {
 
 export default function PioneersPage() {
   const { theme } = useTheme();
+  const mobile = useMediaQuery('(max-width: 699px)');
   const requestedMember = new URLSearchParams(window.location.search).get('member');
   const targetMemberId = pioneers.some(member => member.id === requestedMember) ? requestedMember : null;
   const initialMemberId = pioneers.find(member => member.name === '零一扬')?.id;
@@ -47,9 +49,10 @@ export default function PioneersPage() {
           preset="mono"
           palette={theme === 'light' ? LIGHT_PALETTE : DARK_PALETTE}
           columns={4}
+          mobileColumns={mobile ? 4 : 0}
           driftSeconds={7.2}
-          cardScale={0.9}
-          speedMultiplier={1.75329}
+          cardScale={mobile ? 0.9 : 0.99}
+          speedMultiplier={mobile ? 1.75329 : 1.928619}
           targetMemberId={targetMemberId}
           initialMemberId={initialMemberId}
           height="calc(100svh - var(--pioneers-header-clearance))"

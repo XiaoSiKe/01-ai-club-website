@@ -59,3 +59,6 @@
 @media (prefers-reduced-motion: reduce) {
   .architecture-system-card { transition: none; }
 }
+@media (max-width: 760px) {
+  .architecture-section-heading p { font-size: .65rem; }
+}
