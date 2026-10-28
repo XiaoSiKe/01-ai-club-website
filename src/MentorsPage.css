@@ -19,9 +19,12 @@
 @media (max-width: 700px) {
   .mentors-page { padding: 104px 24px 48px; }
   .mentors-page .team-showcase { grid-template-columns: minmax(0, 1fr); gap: 32px; min-height: 0; margin-top: 24px; }
-  .mentors-page__eyebrow { font-size: 21px; margin-bottom: 16px; }
+  .mentors-page__eyebrow { font-size: 16.8px; margin-bottom: 16px; }
   .mentors-page .team-showcase__layout { grid-template-columns: minmax(0, 1fr); gap: 40px; }
   .mentors-page .team-showcase__portraits { width: calc((100% - 24px) * .968 + 16px); gap: 8px; }
   .mentors-page .team-showcase__members { gap: 24px; }
 }
 @media (prefers-reduced-motion: reduce) { .mentors-page__content { animation: none; } }
+@media (max-width: 699px) {
+  .mentors-page__headline { flex-direction: row; flex-wrap: nowrap; font-size: var(--people-mobile-title-size); }
+}

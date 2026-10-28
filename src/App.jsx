@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useLayoutEffect, useRef } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -6,6 +6,9 @@ import { SiGithub, SiQq, SiX } from 'react-icons/si';
 import SiteBackground from './components/SiteBackground';
 import ViewportMount from './components/ViewportMount';
 import ResponsiveImage from './components/ResponsiveImage';
+import ImageLightbox from './components/ImageLightbox';
+import renderDisplayedQr from './components/renderDisplayedQr';
+import { LoadingSlot } from './components/UniqueLoading';
 import { imageSource } from './components/imageSource';
 import EchoText from './EchoText';
 import { BRAND_ECHO_PROPS as ECHO_TEXT_PROPS } from './components/EchoText/brandEchoProps';
@@ -23,6 +26,7 @@ import SocialIcon from './components/SocialIcon';
 import { socialChannels, telegramChannel } from './data/social';
 import { businesses } from './data/business';
 import { wechatChannel } from './data/community';
+import { pioneers } from './data/pioneers';
 import { useTheme } from './Theme';
 import joinQr from './assets/join-qq-qr.webp';
 
@@ -30,9 +34,15 @@ gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
 const FlexCarousel = lazy(() => import('./FlexCarousel'));
 
 const PRODUCT_NAME = '零一 AI 日新社';
+const PRESIDENT = pioneers.find(member => member.name === '零一扬');
 const SLOGAN = '从零到一，让技术进步成为每个人的机会';
 const SLOGAN_EN = 'From Zero to One, Turning Technology into Opportunity for Everyone';
 const LEARNING_WIKI_URL = 'https://scn96l2kzmbn.feishu.cn/wiki/DDaiw0qKoifo7jkd2H2c9mxhnYe';
+const JOIN_QR_ITEMS = {
+  qq: { image: joinQr, title: '零一 QQ 社团群', downloadName: '零一AI日新社-QQ社团群.png' },
+  official: { image: wechatChannel.qr, title: '零一 AI 日新社微信公众号', downloadName: '零一AI日新社-微信公众号.png' },
+  contact: { image: '/images/join-lingyiyang-wechat.jpg', title: '商务合作联系：零一扬', downloadName: '零一AI日新社-商务合作微信.png' },
+};
 const SPECULAR_BUTTON_PROPS = {
   size: 'lg',
   radius: 18,
@@ -83,6 +93,22 @@ export default function App() {
   const borderGlowProps = BORDER_GLOW_PROPS;
   const pageRef = useRef(null);
   const scrollTweenRef = useRef(null);
+  const [selectedQr, setSelectedQr] = useState(null);
+  const [qrError, setQrError] = useState('');
+  const qrRequestRef = useRef(0);
+  useEffect(() => () => { if (selectedQr) URL.revokeObjectURL(selectedQr.item.image); }, [selectedQr]);
+  useEffect(() => () => { qrRequestRef.current += 1; }, []);
+  const openQr = async (event, item) => {
+    const opener = event.currentTarget, request = ++qrRequestRef.current;
+    setQrError('');
+    try {
+      const rendered = await renderDisplayedQr(opener.querySelector('.home-join-qr-media'), item.image);
+      if (request !== qrRequestRef.current) { URL.revokeObjectURL(rendered.image); return; }
+      setSelectedQr({ item: { ...item, ...rendered }, opener });
+    } catch {
+      if (request === qrRequestRef.current) setQrError('二维码暂时无法打开，请稍后再试。');
+    }
+  };
 
   const scrollToSection = useCallback((id) => {
     const target = document.getElementById(id);
@@ -414,7 +440,7 @@ export default function App() {
                     <p className="home-about-lead"><strong>这里是「零一 AI 日新社｜01 AI Club」！</strong></p>
                     <blockquote className="home-about-quote">
                       <p>一个面向 AI 探索者、向全社会开放的交流社区、共创社团与开源知识库。</p>
-                      <p>「零一 AI 日新社」成立于 2026 年 9 月 1 日，我是社长，零一扬！</p>
+                      <p>「零一 AI 日新社」成立于 2026 年 9 月 1 日，我是社长，<a className="home-about-president" href={`./?page=pioneers&member=${encodeURIComponent(PRESIDENT.id)}`} aria-label="查看社长零一扬的领航先锋介绍"><ResponsiveImage src={PRESIDENT.photo} alt="" width="28" height="28" fit="cover" /><span>{PRESIDENT.name}</span></a>！</p>
                     </blockquote>
                   </div>
 
@@ -442,8 +468,8 @@ export default function App() {
               <h3 className="home-business-lead">用 AI 解决真实问题，让技术创造社会价值。</h3>
               <p>我们是福州零一极致智能科技有限公司！</p>
             </div>
-            <ViewportMount className="home-business-carousel" minHeight={640}>
-              <Suspense fallback={null}>
+            <ViewportMount className="home-business-carousel" minHeight="var(--business-placeholder-height, 640px)">
+              <Suspense fallback={<LoadingSlot />}>
               <FlexCarousel
                 items={businesses}
                 preset="liquid"
@@ -488,6 +514,8 @@ export default function App() {
             <p className="home-join-slogan home-join-slogan-en" lang="en"><strong>{SLOGAN_EN}</strong></p>
             <div className="home-join-channels">
               <figure className="home-join-channel">
+                <button type="button" className="home-join-qr-button" aria-label="放大零一 QQ 社团群二维码" aria-haspopup="dialog"
+                  onClick={event => openQr(event, JOIN_QR_ITEMS.qq)}>
                 <BorderGlow {...borderGlowProps} className="home-join-qr-glow">
                   <div className="home-join-qr-media">
                     <ResponsiveImage
@@ -501,9 +529,12 @@ export default function App() {
                     />
                   </div>
                 </BorderGlow>
+                </button>
                 <figcaption>零一 QQ 社团群</figcaption>
               </figure>
               <figure className="home-join-channel">
+                <button type="button" className="home-join-qr-button" aria-label="放大零一微信公众号二维码" aria-haspopup="dialog"
+                  onClick={event => openQr(event, JOIN_QR_ITEMS.official)}>
                 <BorderGlow {...borderGlowProps} className="home-join-qr-glow">
                   <div className="home-join-qr-media home-join-official-qr">
                     <ResponsiveImage
@@ -527,9 +558,12 @@ export default function App() {
                     />
                   </div>
                 </BorderGlow>
+                </button>
                 <figcaption>「零一 AI 日新社」公众号</figcaption>
               </figure>
               <figure className="home-join-channel" id="join-contact">
+                <button type="button" className="home-join-qr-button" aria-label="放大商务合作微信二维码" aria-haspopup="dialog"
+                  onClick={event => openQr(event, JOIN_QR_ITEMS.contact)}>
                 <BorderGlow {...borderGlowProps} className="home-join-qr-glow">
                   <div className="home-join-qr-media home-join-personal-qr">
                     <ResponsiveImage
@@ -543,12 +577,15 @@ export default function App() {
                     />
                   </div>
                 </BorderGlow>
+                </button>
                 <figcaption>商务合作联系：零一扬</figcaption>
               </figure>
             </div>
+            {qrError && <p role="alert">{qrError}</p>}
           </section>
         </div>
       </main>
+      {selectedQr && <ImageLightbox item={selectedQr.item} opener={selectedQr.opener} buttonProps={buttonProps} onClose={() => setSelectedQr(null)} />}
 
       <footer className="home-footer">
         <div className="home-footer-inner">

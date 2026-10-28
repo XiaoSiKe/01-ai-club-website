@@ -5,7 +5,7 @@
 .research-section__wall .drift-wall__tile--certificate .drift-wall__inner { background: #eeedeb; }
 .research-section__wall .drift-wall__tile--certificate img { object-fit: contain; }
 @media (max-width: 760px) {
-  .research-section__wall { height: 580px; }
+  .research-section__wall { height: 361.92px; }
   .research-section__heading { margin-bottom: 24px; }
 }
 @media (prefers-reduced-motion: reduce) { .research-section__wall { height: auto; overflow: visible; } }

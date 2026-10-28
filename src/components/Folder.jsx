@@ -754,7 +754,7 @@ const placeBook = (rank, count, phase, layout, g) => {
   };
 };
 
-const placeFlap = (rank, count, phase, layout, g, pointer, documentScale = 1) => {
+const placeFlap = (rank, count, phase, layout, g, pointer, documentScale = 1, documentOffsetX = 0) => {
   const rest = FLAP_REST[rank] ?? FLAP_REST[FLAP_REST.length - 1];
   const floor = g.tabH + g.h - 5 * g.scale - g.docH / 2;
   const mid = (count - 1) / 2;
@@ -764,7 +764,7 @@ const placeFlap = (rank, count, phase, layout, g, pointer, documentScale = 1) =>
       const strip = Math.min(30 * g.scale, (g.h * 0.62) / Math.max(1, count - 1));
       const fit = 1.04 - rank * 0.05;
       return {
-        x: g.w / 2,
+        x: g.w / 2 + documentOffsetX,
         y: g.tabH + g.h * 0.1 - rank * strip - (g.docH * (1.04 - fit)) / 2,
         z: -rank * 18 * g.scale,
         r: 0,
@@ -777,7 +777,7 @@ const placeFlap = (rank, count, phase, layout, g, pointer, documentScale = 1) =>
     const step = g.docW * fit + gap;
     const tidy = layout === 'row';
     return {
-      x: g.w / 2 + (rank - mid) * step,
+      x: g.w / 2 + (rank - mid) * step + documentOffsetX,
       y: lift + (tidy ? 0 : SPREAD_DROP[rank] * g.h * 0.7),
       z: 0,
       r: tidy ? 0 : SPREAD_TURN[rank] * 0.55,
@@ -804,6 +804,7 @@ const Folder = ({
   layout = 'spread',
   size = 1,
   documentScale = 1,
+  documentOffsetX = 0,
   openOn = 'click',
   open,
   defaultOpen = false,
@@ -899,6 +900,7 @@ const Folder = ({
     open: isOpen,
     layout,
     documentScale: clamp(documentScale, 1, 1.5),
+    documentOffsetX,
     openOn,
     peek,
     intro,
@@ -1120,7 +1122,7 @@ const Folder = ({
     const place = (rank, inside, phase, s) => {
       if (s.g.book) return placeBook(rank, inside, phase, s.layout, s.g);
       const pointer = state.hovered ? ((state.pointerX + 1) / 2) * s.g.w : null;
-      return placeFlap(rank, inside, phase, s.layout, s.g, pointer, s.documentScale);
+      return placeFlap(rank, inside, phase, s.layout, s.g, pointer, s.documentScale, s.documentOffsetX);
     };
 
     const approach = (item, slot, s) => {

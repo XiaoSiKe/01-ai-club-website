@@ -1,6 +1,7 @@
 import { BloomEffect, ChromaticAberrationEffect, EffectComposer, EffectPass, RenderPass } from 'postprocessing';
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import UniqueLoading from '../UniqueLoading';
 import './GridScan.css';
 
 const vert = `
@@ -835,7 +836,7 @@ export const GridScan = ({
                 ? uiFaceActive
                   ? 'Face: tracking'
                   : 'Face: searching'
-                : 'Loading models'
+                : <UniqueLoading size="sm" text="加载摄像头模型" />
               : 'Webcam disabled'}
           </div>
         </div>

@@ -117,38 +117,35 @@ a.home-explore-social::before { position: absolute; inset: -2px -4px; content: '
   .home-explore-bento { --explore-inset: 24px; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: var(--explore-folder-height) 168px 216px 180px 170px; grid-template-areas: "learn practice" "mentor pioneers" "compass knowledge" "branches media" "architecture architecture"; }
 }
 @media (max-width: 760px) {
-  .home-explore-bento { --explore-title-size: 19px; --explore-description-size: 14px; --explore-inset: 16px; grid-template-rows: repeat(2, var(--explore-folder-height)) 190px 216px 200px 156px; grid-template-areas: "learn learn" "practice practice" "mentor pioneers" "compass knowledge" "branches media" "architecture architecture"; }
-  .home-explore-heading { margin-bottom: 20px; }
-  .home-explore-heading .home-flow-title { margin-bottom: 16px; }
-  .home-explore-link, .home-explore-media-card { padding: 16px 12px; }
-  .home-explore-media-card { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; align-content: end; padding-top: 60px; padding-right: 68px; }
+  .home-explore-bento { --explore-title-size: 16px; --explore-folder-height: 150px; --explore-gap: 10px; --explore-inset: 12px; container-type: inline-size; gap: var(--explore-gap); grid-template-rows: repeat(2, var(--explore-folder-height)) repeat(3, 78px) 64px; grid-template-areas: "learn learn" "practice practice" "mentor pioneers" "compass knowledge" "branches architecture" "media media"; }
+  .home-explore-heading { margin-bottom: 16px; }
+  .home-explore-heading .home-flow-title { margin-bottom: 12px; }
+  .home-explore-link { display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: center; justify-content: start; gap: 8px; padding: 12px; }
+  .home-how-section .home-explore-link h3, .home-how-section .home-explore-media-card h3, .home-how-section .home-explore-card-heading h3 { font-family: var(--site-font-family); font-size: var(--explore-title-size); font-weight: 700; line-height: 1.35; letter-spacing: -.025em; writing-mode: horizontal-tb; }
+  .home-explore-link p, .home-explore-media-card p, .home-explore-card-kicker { display: none; }
+  .home-explore-link-arrow { display: none; }
+  .home-explore-module-icon { position: static; width: 24px; height: 24px; }
+  .home-explore-media-card { display: flex; align-items: center; padding: 12px 144px 12px 48px; }
+  .home-explore-media-card .home-explore-module-icon { position: absolute; top: 50%; left: 12px; transform: translateY(-50%); }
   .home-explore-media-card h3 { grid-column: 1; grid-row: 1; }
-  .home-explore-media-card p { grid-column: 1; grid-row: 2; }
-  .home-explore-link h3, .home-explore-media-card h3 { font-size: 19px; gap: 6px; }
-  .home-explore-link h3 > svg, .home-explore-media-card h3 > svg { width: 30.03px; height: 30.03px; flex-basis: 30.03px; }
-  .home-explore-link p { font-size: 14px; }
-  .home-explore-link-arrow { top: 16px; right: 12px; font-size: 28px; }
-  .home-explore-module-icon { top: 16px; left: 12px; width: 40px; height: 40px; }
-  .home-explore-link--knowledge h3 { font-size: 23px; }
-  .home-explore-socials { right: 12px; }
-  .home-explore-social { min-width: 36px; }
-  .home-explore-social > svg { width: 21px; height: 21px; }
-  .home-explore-folder-card { grid-template-columns: 48px minmax(0, 1fr); gap: 8px; padding: 12px; }
-  .home-explore-card-heading { gap: 8px; }
-  .home-explore-folder-viewport { overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: thin; }
-  .home-explore-folder-space { width: 648px; min-width: 648px; padding-top: 12px; }
-  /* Let raised pages overlap nearby cards while retaining horizontal scrolling. */
-  .home-explore-folder-frame.is-open .home-explore-folder-viewport { height: calc(100% + 320px); margin-block: -160px; padding-block: 160px; }
-}
-@media (max-width: 360px) {
-  .home-explore-bento { --explore-title-size: 18px; --explore-description-size: 12px; }
-  .home-explore-link h3, .home-explore-media-card h3 { font-size: 18px; }
-  .home-explore-link p, .home-explore-media-card p { font-size: 12px; }
-  .home-explore-media-card p { display: none; }
-  .home-explore-social { min-width: 0; }
-  .home-explore-link--branches h3 > svg { display: none; }
-  .home-explore-folder-card { grid-template-columns: 24px minmax(0, 1fr); gap: 4px; padding-inline: 6px; }
-  .home-explore-card-kicker { display: none; }
+  .home-explore-socials { top: 10px; right: 6px; bottom: 10px; flex-direction: row; }
+  .home-explore-social { min-width: 44px; min-height: 44px; }
+  .home-explore-social > svg { width: 20px; height: 20px; }
+  .home-explore-folder-frame > .border-glow-content { min-width: 0; }
+  .home-explore-folder-card { display: flex; flex-direction: row; gap: 16px; width: 100%; padding: 12px 20px; }
+  .home-explore-card-heading { flex: none; flex-direction: row; justify-content: flex-start; width: auto; }
+  /* The folder stays anchored; opened papers may cover nearby copy. */
+  .home-explore-folder-viewport { flex: 1; width: 100%; height: 420px; margin-block: -150px; padding-block: 150px; overflow: visible; }
+  .home-explore-folder-space { width: 100%; min-width: 0; padding-top: 0; }
+  .home-explore-folder-mount { width: 112px; max-width: 100%; }
+  .home-folder-document { padding: 4px; }
+  .home-folder-document__masthead { font-size: 5.5px; gap: 2px; }
+  .home-folder-document__masthead > span:last-child { font-size: 8px; }
+  .home-folder-document__rule { margin: 3px 0 5px; }
+  .home-folder-document__title { flex-shrink: 0; font-size: 11.5px; }
+  .home-folder-document__category { display: none; }
+  .home-folder-document__footer { padding-top: 4px; font-size: 5.5px; }
+  .home-folder-document__index { font-size: 11px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .home-explore-module-icon > svg, .home-explore-book-page { transform: none !important; transition: none !important; }

@@ -161,7 +161,10 @@ export default function BranchAtlas({ buttonProps, borderGlowProps }) {
             </button>
           </div>)}
           <div className="branch-atlas__map-top"><span>{local ? '福州' : view === 'fujian' ? '福建' : '中国'}</span><span className="branch-atlas__north" aria-label="北方">N <svg viewBox="0 0 12 16" aria-hidden="true"><path d="M6 0 12 16 6 12 0 16Z" /></svg></span></div>
-          <div className="branch-atlas__map-bottom"><span id={`${id}-map-help`}>{local ? '点击校名，探索分社' : '点击地点，逐级探索'}</span></div>
+          <div className="branch-atlas__map-bottom">
+            <span id={`${id}-map-help`}>{local ? '点击校名，探索分社' : '点击地点，逐级探索'}</span>
+            <button type="button" className="branch-atlas__map-back" aria-label="地图内返回上一级" disabled={!atlas || view === 'china'} onClick={follow(parentAtlasView(view))}><Arrow back />返回上一级</button>
+          </div>
           {!atlas && <div className="branch-atlas__loading" aria-busy={!error}>{error ? <><span>地图暂时无法载入</span><SpecularButton {...controlProps} onClick={() => setAttempt(value => value + 1)}>重新加载</SpecularButton></> : <UniqueLoading text="加载中" />}</div>}
         </div>
 

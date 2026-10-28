@@ -38,6 +38,10 @@
 .branch-atlas__north { display: flex; align-items: center; gap: 8px; font-size: 13px; }
 .branch-atlas__north svg { width: 9px; height: 14px; fill: currentColor; opacity: .7; }
 .branch-atlas__map-bottom { bottom: 24px; font-size: var(--atlas-caption-size); }
+.branch-atlas__map-bottom .branch-atlas__map-back { display: inline-flex; align-items: center; gap: 6px; flex: none; min-height: 44px; padding: 8px 0; border: 0; border-radius: 0; background: none; box-shadow: none; font-size: 13px; color: var(--atlas-ink); pointer-events: auto; }
+.branch-atlas__map-back svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.5; }
+.branch-atlas__map-back:disabled { opacity: .3; cursor: default; }
+.branch-atlas__map-back:not(:disabled):hover { text-decoration: underline; text-underline-offset: 4px; }
 .branch-atlas__pin { position: absolute; top: 0; left: 0; z-index: 2; width: 0; height: 0; visibility: hidden; will-change: transform; }
 .branch-atlas__pin.is-active { z-index: 4; }
 .branch-atlas__pin > button { position: absolute; top: -22px; left: -22px; width: 44px; height: 44px; display: grid; place-items: center; }
@@ -163,7 +167,12 @@ a.branch-atlas__leader-profile:is(:hover, :focus-visible) strong { text-decorati
 
 .branch-atlas__search input { appearance: none; -webkit-appearance: none; -webkit-tap-highlight-color: transparent; }
 .branch-atlas__search input:focus, .branch-atlas__search input:focus-visible { outline: none !important; box-shadow: none; border: 0; border-radius: 0; background: transparent; }
-@media (max-width: 760px) { .branch-atlas__map-top { font-size: 14px; } }
+@media (max-width: 760px) {
+  .branch-atlas__map-top { font-size: 14px; }
+  .branch-atlas__pin:not(.branch-atlas__pin--city) .branch-atlas__pin-label { gap: 3.2px; padding: 4px 6.4px; border-radius: 11.2px; }
+  .branch-atlas__pin:not(.branch-atlas__pin--city) .branch-atlas__pin-label strong { font-size: 11.2px; }
+  .branch-atlas__pin:not(.branch-atlas__pin--city) .branch-atlas__pin-label small { font-size: 8.8px; }
+}
 @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
   .branch-atlas__map { opacity: 1; }
   .branch-atlas__panel { background: var(--atlas-panel); }

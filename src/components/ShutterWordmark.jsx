@@ -53,34 +53,27 @@ export default function ShutterWordmark() {
   const [visible, setVisible] = useState(false);
   const [seen, setSeen] = useState(false);
   const [reduced, setReduced] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  const [compact, setCompact] = useState(() => window.matchMedia('(max-width: 600px)').matches);
   const { items, logoX, logoY, width, height } = useMemo(() => {
     let x = 0;
-    let y = 0;
-    let firstRowWidth = 0;
-    const items = Array.from('01 AI CLUB').map((ch, index) => {
-      if (compact && index === 5) { firstRowWidth = x - 12; x = 0; y = 124; return { ch: ' ', x, y, w: 0, d: [] }; }
+    const items = Array.from('01 AI CLUB').map(ch => {
       const glyph = GLYPHS[ch] || { w: 42, d: [] };
-      const item = { ch, x, y, ...glyph };
+      const item = { ch, x, y: 0, ...glyph };
       x += glyph.w + 12;
       return item;
     });
-    return { items, logoX: x + 16, logoY: y, width: Math.max(firstRowWidth, x + 116), height: y + CAP };
-  }, [compact]);
+    return { items, logoX: x + 16, logoY: 0, width: x + 116, height: CAP };
+  }, []);
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
     const update = () => { setReduced(media.matches); if (media.matches) setExpanded(false); };
     media.addEventListener('change', update);
-    const smallScreen = window.matchMedia('(max-width: 600px)');
-    const updateCompact = () => setCompact(smallScreen.matches);
-    smallScreen.addEventListener('change', updateCompact);
     const observer = new IntersectionObserver(([entry]) => {
       setVisible(entry.isIntersecting);
       if (entry.isIntersecting) setSeen(true);
     }, { threshold: .1 });
     observer.observe(rootRef.current);
-    return () => { observer.disconnect(); media.removeEventListener('change', update); smallScreen.removeEventListener('change', updateCompact); };
+    return () => { observer.disconnect(); media.removeEventListener('change', update); };
   }, []);
 
   useEffect(() => {
