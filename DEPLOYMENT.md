@@ -25,21 +25,42 @@
 
 ## DNS
 
-阿里云云解析 DNS 中为 `01aiedu.com` 添加：
+阿里云 CDN 使用 `club.01aiedu.com` 作为加速域名，仅中国内地加速，ECS `47.106.14.254:443` 作为源站。云解析 DNS 中该域名使用：
 
 | 项目 | 值 |
 |---|---|
-| 记录类型 | `A` |
+| 记录类型 | `CNAME` |
 | 主机记录 | `club` |
 | 解析请求来源 | 默认 |
-| 记录值 | `47.106.14.254` |
+| 记录值 | `club.01aiedu.com.w.kunlunaq.com` |
 | TTL | 600 秒 |
 
-验证时必须确认权威 DNS 返回目标 IP：
+验证时必须确认 CNAME 指向 CDN，最终地址由阿里云调度，不再固定为 ECS IP：
 
 ```bash
-dig @223.5.5.5 +short A club.01aiedu.com
+dig @223.5.5.5 +short CNAME club.01aiedu.com
 ```
+
+### CDN 配置
+
+- 业务类型：图片小文件；加速区域：中国内地。
+- 回源：HTTPS、443；默认回源 Host 与 SNI 均为 `club.01aiedu.com`，源站地址必须是 ECS IP，不能改为加速域名，避免回源循环。
+- CDN HTTPS 证书：`club-01aiedu-com-20261028`，与源站证书匹配；启用 HTTP/2、TLS 1.2/1.3 与 HTTP → HTTPS 跳转。
+- `/assets/`：365 天缓存，权重 99；其中图片、脚本和样式的文件名包含内容哈希，浏览器沿用源站一年 immutable 策略。
+- `/`：0 秒缓存，权重 1，关闭“强制内容重新验证”（等同 no-store）。此规则覆盖首页、`version.json`、ACME 验证和未匹配静态资源，发布后不会长期缓存旧 HTML。
+- Gzip 与 Brotli 均开启；构建已经压缩代码，不启用会重写页面内容的额外优化或付费图片处理。
+- 不将“带宽封顶”当成限速工具；当前控制台会在超过阈值时直接下线域名，10 Mbps 阈值可能打断正常集中访问。计费沿用现有按流量后付费，HTTPS 请求数按账户免费额度与实际使用计费。
+
+切换 DNS 前必须用 CDN CNAME 模拟访问，验证证书、首屏图片和版本信息，再修改现有 `club` 记录，不保留同名 A 记录。可从 ECS 验证，避免本地代理 DNS 影响：
+
+```bash
+curl --connect-to club.01aiedu.com:443:club.01aiedu.com.w.kunlunaq.com:443 \
+  -I https://club.01aiedu.com/
+curl --connect-to club.01aiedu.com:443:club.01aiedu.com.w.kunlunaq.com:443 \
+  https://club.01aiedu.com/version.json
+```
+
+CDN 证书与 ECS 自动续期是两份独立配置。源站证书续期后，须安全更新阿里云 CDN 证书并重新验证；当前导入证书到期时间为北京时间 **2026-11-29 23:44:14**。不要把证书私钥放入 Git、流水线正文或公开日志。
 
 ## 发布结构
 
@@ -115,7 +136,7 @@ curl -I https://club.01aiedu.com/
 curl -fsS https://club.01aiedu.com/version.json
 ```
 
-- HTTP 返回 `308` 并跳转 HTTPS。
+- HTTP 返回 `301`（CDN）或 `308`（源站）并跳转 HTTPS。
 - HTTPS 返回 `200`，证书域名为 `club.01aiedu.com`。
 - 首页、Logo、JavaScript 和 CSS 无 404。
 - `version.json` 的提交 SHA 与发布提交一致。
