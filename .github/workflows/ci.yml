@@ -29,6 +29,8 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Verify automatic deployment trigger behavior
         run: node --test scripts/trigger-flow.test.mjs
+      - name: Verify runtime lifecycle and pioneer name search
+        run: npm run test:runtime
       - name: Build and verify static files and map behavior
         run: npm run build
         env:

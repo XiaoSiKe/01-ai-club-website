@@ -311,7 +311,7 @@ function Portrait(props) {
       </div>
     </div>;
 }
-export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles = [], eyebrow = "Meet", title = "The\ncrew", intro = "", cta = null, secondaryCta = null, preset = "ember", palette, columns = 3, mobileRows = 1, mobileColumns = 0, driftSeconds = 9, cardScale = 1, speedMultiplier = 1, drift = true, height = "100svh", fontFamily = DISPLAY_STACK, stretch = 1.16, uppercase = true, grain = true, labels, className = "", onMemberSelect, clickFollowsLink = true, targetMemberId = null, initialMemberId = null, titleAs: Title = "h2", renderTitleLine = null }) {
+export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles = [], eyebrow = "Meet", title = "The\ncrew", intro = "", cta = null, secondaryCta = null, preset = "ember", palette, columns = 3, mobileRows = 1, mobileColumns = 0, mobileWallScale = 1, driftSeconds = 9, cardScale = 1, speedMultiplier = 1, drift = true, height = "100svh", fontFamily = DISPLAY_STACK, stretch = 1.16, uppercase = true, grain = true, labels, className = "", onMemberSelect, clickFollowsLink = true, targetMemberId = null, targetRequestId = 0, initialMemberId = null, titleAs: Title = "h2", renderTitleLine = null, titleControls = null }) {
 	const pal = resolvePalette(preset, palette);
 	const text = {
 		...DEFAULT_LABELS,
@@ -388,6 +388,12 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 			const cs = getComputedStyle(copy);
 			const avail = copy.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
 			const h = root.getBoundingClientRect().height;
+			if (next > 0 && mobileColumns > 0 && w < 700 && mobileWallScale !== 1) {
+				// Scale the original wall area, excluding the newly added controls.
+				const copyHeight = head.getBoundingClientRect().height + parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+				const gap = parseFloat(getComputedStyle(copy.parentElement).rowGap) || 0;
+				root.style.setProperty('--dtr-mobile-wall-height', `${Math.max(0, h - copyHeight - gap) * mobileWallScale}px`);
+			} else root.style.removeProperty('--dtr-mobile-wall-height');
 			const strip = next === 0;
 			// Enough portraits per column that one loop is taller than the wall.
 			if (next > 0) {
@@ -409,10 +415,12 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 		fit();
 		const ro = new ResizeObserver(fit);
 		ro.observe(root);
+		if (mobileWallScale !== 1) ro.observe(head);
 		return () => ro.disconnect();
 	}, [
 		columns,
 		mobileColumns,
+		mobileWallScale,
 		cardScale,
 		stretch,
 		title,
@@ -581,7 +589,7 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 	// A branch leader link arrives with a member ID, never a transient row index.
 	useIsoLayoutEffect(() => {
 		if (!targetMemberId) return undefined;
-		const key = `${targetMemberId}:${cols}:${still}`;
+		const key = `${targetMemberId}:${targetRequestId}:${cols}:${still}`;
 		if (appliedTargetRef.current === key) return undefined;
 		const frame = requestAnimationFrame(() => {
 			const root = rootRef.current;
@@ -600,7 +608,7 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 			card.querySelector('.dtr-hit')?.focus({ preventScroll: true });
 		});
 		return () => cancelAnimationFrame(frame);
-	}, [targetMemberId, cols, still, plan]);
+	}, [targetMemberId, targetRequestId, cols, still, plan]);
 	// Tap outside an unfolded card folds it again.
 	React.useEffect(() => {
 		if (!active) return;
@@ -665,6 +673,7 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
                 {i < lines.length - 1 ? " " : null}
               </span>)}
           </Title>
+          {titleControls}
           {intro ? <p className="dtr-intro">{intro}</p> : null}
           {cta || secondaryCta ? <div className="dtr-actions">
               {cta ? <a className="dtr-cta" href={cta.href}>

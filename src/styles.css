@@ -781,15 +781,17 @@ a {
 .home-cooperation-intro { margin: 0 0 40px; color: var(--site-ink); font-size: clamp(19px, 2vw, 24px); font-weight: 700; line-height: 1.5; text-wrap: pretty; }
 .home-partners-section {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 22px;
+}
+.home-partners-heading > .home-cooperation-intro { margin-bottom: 0; }
+.home-partners-row {
+  display: grid;
   grid-template-columns: max-content minmax(0, 1fr);
   align-items: center;
-  column-gap: clamp(32px, 4vw, 64px);
-  row-gap: 22px;
+  gap: clamp(32px, 4vw, 64px);
 }
-.home-partners-heading { display: contents; }
-.home-partners-heading > .home-flow-title { grid-column: 1; grid-row: 1; margin-bottom: 0; }
-.home-partners-heading > .home-cooperation-actions { grid-column: 1; grid-row: 2; }
-.home-partners-section > .logo-marquee { grid-column: 2; grid-row: 2; }
+.home-partners-marquee { min-width: 0; }
 .home-cooperation-actions { display: flex; justify-content: flex-start; }
 .home-cooperation-link { min-height: 56px; }
 .home-cooperation-link .specular-button__label { display: inline-flex; align-items: center; gap: 20px; }
@@ -1238,7 +1240,8 @@ a {
 }
 
 @media (max-width: 760px) {
-  .home-partners-section { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .home-partners-section { gap: 28px; }
+  .home-partners-row { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .home-trust-subtitle,
   .home-how-section .home-explore-heading .home-directions-quote,
   .home-business-lead,
@@ -1248,9 +1251,6 @@ a {
   .home-note .home-join-slogan { font-size: clamp(15.2px, 1.6vw, 19.2px); }
   .home-note .home-join-slogan-en { font-size: clamp(12px, 1.28vw, 15.2px); }
   .home-footer-brand p { font-size: 12px; }
-  .home-partners-heading > .home-flow-title,
-  .home-partners-heading > .home-cooperation-actions,
-  .home-partners-section > .logo-marquee { grid-column: 1; grid-row: auto; }
   .home-footer-inner { grid-template-columns: 1fr; gap: 28px; }
   .home-footer-logo-loop { width: 100%; justify-self: start; }
   .home-footer-english { font-size: clamp(6.24px, 1.92vw, 12px); }

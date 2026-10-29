@@ -9,6 +9,6 @@ export default function SiteBackground() {
       scanColor="#ffffff" scanOpacity={light ? .27 : .22} scanDuration={3.7} scanDelay={.9}
       scanTimeOffset={1} enablePost bloomIntensity={light ? .34 : .29}
       chromaticAberration={.0009} noiseIntensity={.005} scanGlow={light ? .30 : .26}
-      maxPixelRatio={1.5} pixelBudget={1800000} />
+      maxPixelRatio={1.5} pixelBudget={1800000} maxFps={30} />
   </div>;
 }

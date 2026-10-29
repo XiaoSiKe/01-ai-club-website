@@ -33,6 +33,8 @@ const roster = [
   ['王靖伊', '福州大学', null, 'wang-jingyi'],
   ['李慧', '闽江大学', null, 'li-hui'],
   ['冬思韦', '六盘水师范学院', '122-syf-wcy'],
+  ['吴浩然', '吉林建筑大学', 'Joshmax010'],
+  ['张荣晖', '福州大学', 'likezz-rh'],
 ];
 
 export const pioneers = roster.map(([name, university, github, memberId]) => {
@@ -48,3 +50,8 @@ export const pioneers = roster.map(([name, university, github, memberId]) => {
     focus: '50% 50%',
   };
 });
+
+export function searchPioneers(query) {
+  const name = query.trim().normalize('NFKC').toLocaleLowerCase();
+  return name ? pioneers.filter(member => member.name.normalize('NFKC').toLocaleLowerCase().includes(name)) : [];
+}

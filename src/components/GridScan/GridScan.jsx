@@ -301,6 +301,7 @@ export const GridScan = ({
   snapBackDelay = 250,
   maxPixelRatio = 2,
   pixelBudget = Infinity,
+  maxFps = Infinity,
   className,
   style
 }) => {
@@ -308,12 +309,12 @@ export const GridScan = ({
   const videoRef = useRef(null);
   const faceApiRef = useRef(null);
 
-  const rendererRef = useRef(null);
   const materialRef = useRef(null);
   const composerRef = useRef(null);
   const bloomRef = useRef(null);
   const chromaRef = useRef(null);
   const rafRef = useRef(null);
+  const redrawRef = useRef(null);
 
   const [modelsReady, setModelsReady] = useState(false);
   const [uiFaceActive, setUiFaceActive] = useState(false);
@@ -428,8 +429,14 @@ export const GridScan = ({
     if (!container) return;
 
     // The full-screen shader already antialiases its lines with derivatives.
-    const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
-    rendererRef.current = renderer;
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
+    } catch {
+      // The background is decorative; unavailable graphics must not unmount
+      // navigation and page content.
+      return undefined;
+    }
     const fitPixelRatio = () => Math.min(window.devicePixelRatio || 1, maxPixelRatio,
       Math.sqrt(pixelBudget / Math.max(1, container.clientWidth * container.clientHeight)));
     renderer.setPixelRatio(fitPixelRatio());
@@ -520,11 +527,19 @@ export const GridScan = ({
     window.addEventListener('resize', onResize);
 
     let last = performance.now();
+    let nextDrawTime = last;
+    const frameInterval = 1000 / Math.max(1, maxFps);
     const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const tick = () => {
+    const tick = now => {
       rafRef.current = null;
       if (document.hidden) return;
-      const now = performance.now();
+      // The slow background scan does not need a full postprocessing pass at
+      // the display's refresh rate. Keep its clock independent of draw rate.
+      if (!motionPreference.matches && now < nextDrawTime) {
+        rafRef.current = requestAnimationFrame(tick);
+        return;
+      }
+      nextDrawTime = Math.max(nextDrawTime + frameInterval, now);
       const dt = Math.max(0, Math.min(0.1, (now - last) / 1000));
       last = now;
 
@@ -570,8 +585,10 @@ export const GridScan = ({
     const requestFrame = () => {
       if (document.hidden || rafRef.current !== null) return;
       last = performance.now();
+      nextDrawTime = last;
       rafRef.current = requestAnimationFrame(tick);
     };
+    redrawRef.current = requestFrame;
     const visibility = () => {
       if (document.hidden) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
       else requestFrame();
@@ -583,16 +600,19 @@ export const GridScan = ({
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
+      redrawRef.current = null;
       window.removeEventListener('resize', onResize);
       document.removeEventListener('visibilitychange', visibility);
       motionPreference.removeEventListener('change', requestFrame);
       material.dispose();
+      materialRef.current = null;
       quad.geometry.dispose();
 
       if (composerRef.current) {
         composerRef.current.dispose();
         composerRef.current = null;
       }
+      bloomRef.current = chromaRef.current = null;
       renderer.dispose();
       renderer.forceContextLoss();
       container.removeChild(renderer.domElement);
@@ -600,27 +620,9 @@ export const GridScan = ({
   }, [
     maxPixelRatio,
     pixelBudget,
+    maxFps,
     sensitivity,
-    lineThickness,
-    linesColor,
-    scanColor,
-    scanOpacity,
-    gridScale,
-    lineStyle,
-    lineJitter,
-    scanDirection,
     enablePost,
-    noiseIntensity,
-    bloomIntensity,
-    scanGlow,
-    scanSoftness,
-    scanPhaseTaper,
-    scanDuration,
-    scanDelay,
-    scanTimeOffset,
-    bloomThreshold,
-    bloomSmoothing,
-    chromaticAberration,
     smoothTime,
     maxSpeed,
     skewScale,
@@ -658,6 +660,9 @@ export const GridScan = ({
     if (chromaRef.current) {
       chromaRef.current.offset.set(chromaticAberration, chromaticAberration);
     }
+    // Theme/style changes update the existing renderer, including when motion
+    // is reduced and there is no continuous animation loop to request a frame.
+    redrawRef.current?.();
   }, [
     lineThickness,
     linesColor,

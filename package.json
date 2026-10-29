@@ -14,6 +14,7 @@
     "preview": "vite preview",
     "verify:dist": "node scripts/verify-dist.mjs",
     "verify:atlas": "node scripts/verify-branch-atlas.mjs",
+    "test:runtime": "node --test scripts/viewport-readiness.test.mjs scripts/pioneers-search.test.mjs",
     "release:package": "bash deploy/package-release.sh",
     "ops:check": "node scripts/ops.mjs check",
     "ops:status": "node scripts/ops.mjs status",

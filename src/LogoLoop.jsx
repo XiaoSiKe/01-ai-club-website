@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import './LogoLoop.css';
 
 const EMPTY_LOGOS = [];
@@ -20,6 +20,23 @@ export default function LogoLoop({
   const rootRef = useRef(null);
   const groupRef = useRef(null);
   const [groupCount, setGroupCount] = useState(2);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    let visible = false;
+    const update = () => { root.dataset.offscreen = String(!visible || document.hidden); };
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      update();
+    });
+    observer.observe(root);
+    document.addEventListener('visibilitychange', update);
+    update();
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', update);
+    };
+  }, []);
 
   useLayoutEffect(() => {
     const root = rootRef.current;

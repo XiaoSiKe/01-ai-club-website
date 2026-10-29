@@ -80,32 +80,9 @@
   z-index: 2;
 }
 
-@property --sb-css-angle { syntax: '<angle>'; initial-value: 138deg; inherits: true; }
-.specular-button[data-render-mode='css'] { --sb-css-proximity: 0; transition: transform 240ms cubic-bezier(.16,1,.3,1), --sb-css-angle 180ms ease-out; }
-.specular-button[data-render-mode='css'] .specular-button__fx::before,
-.specular-button[data-render-mode='css'] .specular-button__fx::after {
-  content: '';
-  position: absolute;
-  inset: 20px;
-  padding: 1px;
-  border-radius: var(--sb-radius);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-}
-.specular-button[data-render-mode='css'] .specular-button__fx::before { background: var(--sb-base-color); opacity: .45; }
-.specular-button[data-render-mode='css'] .specular-button__fx::after {
-  background: conic-gradient(from var(--sb-css-angle), var(--sb-line-color) 0deg, transparent 48deg 132deg, var(--sb-line-color) 180deg, transparent 228deg 312deg, var(--sb-line-color) 360deg);
-  opacity: min(1, calc(var(--sb-css-proximity) * var(--sb-css-intensity)));
-  transition: opacity 240ms ease-out;
-}
-.specular-button[data-render-mode='css']:focus-visible .specular-button__fx::after { opacity: 1; }
-.specular-button[data-render-mode='css']:disabled .specular-button__fx::after { opacity: 0; }
-
 .specular-button[data-static-shine='true'] {
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.24),
+    inset 0 0 0 1px color-mix(in srgb, var(--sb-base-color) 45%, transparent),
     0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
@@ -113,7 +90,6 @@
   .specular-button {
     transition: background-color 120ms ease, opacity 120ms ease;
   }
-  .specular-button[data-render-mode='css'] { transition: none; }
 
   .specular-button:active {
     transform: none;

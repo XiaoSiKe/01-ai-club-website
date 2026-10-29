@@ -31,4 +31,6 @@ export const memberPortraits = {
   '李慧': '/images/pioneers/li-hui.webp',
   // Portrait supplied by the user; a new filename also refreshes cached avatars.
   '冬思韦': '/images/pioneers/dong-siwei-upload.jpg',
+  '吴浩然': '/images/pioneers/wu-haoran.jpg',
+  '张荣晖': '/images/pioneers/zhang-ronghui.jpg',
 };

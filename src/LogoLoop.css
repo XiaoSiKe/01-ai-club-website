@@ -22,6 +22,7 @@
 }
 
 .logo-loop[data-pause-on-hover='true']:hover .logo-loop-track,
+.logo-loop[data-offscreen='true'] .logo-loop-track,
 .logo-loop:focus-within .logo-loop-track {
   animation-play-state: paused;
 }
