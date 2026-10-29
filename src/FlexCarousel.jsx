@@ -340,7 +340,6 @@ const FlexCarousel = ({
   captions = true,
   captionCredit = '',
   captureWheel = false,
-  websiteButtonProps = {},
   ariaLabel = '零一商业',
   onChange,
   onSelect,
@@ -1506,7 +1505,7 @@ const FlexCarousel = ({
     <div className={`flex-carousel${className ? ` ${className}` : ''}`} style={style} data-revealed={revealed || undefined} data-captions={captions || undefined}>
       {current && (captions || focusOpen) && (
         <header className="flex-carousel__header">
-          {focusOpen && <SpecularButton {...websiteButtonProps} renderMode="css" className="flex-carousel__close" onClick={() => engineRef.current?.closeFocus()} ariaLabel="收起品牌标志">收起</SpecularButton>}
+          {focusOpen && <SpecularButton className="flex-carousel__close" onClick={() => engineRef.current?.closeFocus()} ariaLabel="收起品牌标志">收起</SpecularButton>}
           {captions && <>
             <h3 key={active} className="flex-carousel__title">{current.title || current.alt}</h3>
             {current.subtitle && <p className="flex-carousel__subtitle">{current.subtitle}</p>}
@@ -1545,17 +1544,17 @@ const FlexCarousel = ({
           )}
           <div className="flex-carousel__actions" role="group" aria-label="项目操作">
             {list.length > 1 && (
-              <SpecularButton {...websiteButtonProps} size="md" radius={8} className="flex-carousel__arrow" onClick={() => move(-1)} ariaLabel="上一个品牌">
+              <SpecularButton size="md" className="flex-carousel__arrow" onClick={() => move(-1)} ariaLabel="上一个品牌">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m14 6-6 6 6 6" /></svg>
               </SpecularButton>
             )}
             {captions && current.href && (
-              <SpecularButton {...websiteButtonProps} size="md" className="flex-carousel__website" href={current.href} target="_blank" rel="noopener noreferrer" ariaLabel={`访问${current.title || current.alt}项目官网（新窗口）`}>
+              <SpecularButton size="md" className="flex-carousel__website" href={current.href} target="_blank" rel="noopener noreferrer" ariaLabel={`访问${current.title || current.alt}项目官网（新窗口）`}>
                 <span className="flex-carousel__website-label">访问项目官网 <span aria-hidden="true">↗</span></span>
               </SpecularButton>
             )}
             {list.length > 1 && (
-              <SpecularButton {...websiteButtonProps} size="md" radius={8} className="flex-carousel__arrow" onClick={() => move(1)} ariaLabel="下一个品牌">
+              <SpecularButton size="md" className="flex-carousel__arrow" onClick={() => move(1)} ariaLabel="下一个品牌">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m10 6 6 6-6 6" /></svg>
               </SpecularButton>
             )}

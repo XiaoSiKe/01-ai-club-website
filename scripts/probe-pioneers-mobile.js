@@ -27,10 +27,19 @@
   const alternating = deltas.length === 4 && deltas.every((delta, i) => i % 2 ? delta > 1 : delta < -1);
   const bounds = columns.map(column => column.getBoundingClientRect());
   const wall = root.querySelector('.dtr-wall').getBoundingClientRect();
+  const title = root.querySelector('.dtr-title').getBoundingClientRect();
+  const search = root.querySelector('.pioneers-search').getBoundingClientRect();
+  const copyStyle = getComputedStyle(root.querySelector('.dtr-copy'));
+  const originalWallHeight = root.getBoundingClientRect().height - title.height
+    - parseFloat(copyStyle.paddingTop) - parseFloat(copyStyle.paddingBottom)
+    - parseFloat(getComputedStyle(root.querySelector('.dtr-in')).rowGap);
+  const heightReduced = Math.abs(wall.height / originalWallHeight - .7) < .005;
+  const searchBelowTitle = search.top >= title.bottom && search.bottom <= wall.top;
   const fourColumns = bounds.length === 4 && bounds.every((column, i) => column.left >= 0 && column.right <= innerWidth && (!i || column.left > bounds[i - 1].left));
   const titleAbove = root.querySelector('.dtr-title').getBoundingClientRect().bottom <= wall.top;
   const noHorizontalStrip = !root.querySelector('.dtr-strip');
   const wallFits = wall.bottom <= innerHeight + 1;
-  return { singleLine, fits, fourColumns, alternating, noHorizontalStrip, titleAbove, wallFits, deltas,
-    pass: singleLine && fits && fourColumns && alternating && noHorizontalStrip && titleAbove && wallFits && !root.hasAttribute('data-static') };
+  return { singleLine, fits, fourColumns, alternating, noHorizontalStrip, titleAbove, wallFits, heightReduced, searchBelowTitle, deltas,
+    pass: singleLine && fits && fourColumns && alternating && noHorizontalStrip && titleAbove && wallFits
+      && heightReduced && searchBelowTitle && !root.hasAttribute('data-static') };
 })()

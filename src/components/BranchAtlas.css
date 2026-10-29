@@ -12,9 +12,9 @@
    rim still follows the pointer through the existing isolated pseudo layers. */
 .branch-atlas__frame { transform: none; }
 .branch-atlas__frame > .border-glow-content { padding-top: 15pt; background: linear-gradient(to bottom, color-mix(in srgb, var(--atlas-bg) 86%, transparent) 0 15pt, transparent 15pt); }
-.branch-atlas :where(button) { margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; touch-action: manipulation; }
-.branch-atlas :where(a) { color: inherit; text-decoration: none; }
-.branch-atlas :where(button, a, input):focus-visible { outline: 2px solid currentColor; outline-offset: 3px; border-radius: 6px; }
+.branch-atlas :where(button:not(.specular-button)) { margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; touch-action: manipulation; }
+.branch-atlas :where(a:not(.specular-button)) { color: inherit; text-decoration: none; }
+.branch-atlas :where(button:not(.specular-button), a:not(.specular-button), input):focus-visible { outline: 2px solid currentColor; outline-offset: 3px; border-radius: 6px; }
 .branch-atlas h3 { margin: 0; font-size: 24px; font-weight: 600; line-height: 1.35; letter-spacing: -.03em; text-wrap: balance; }
 .branch-atlas h3:focus { outline: none; }
 .branch-atlas__toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; min-height: 44px; margin-bottom: 12px; }
@@ -113,7 +113,6 @@ a.branch-atlas__leader-profile:is(:hover, :focus-visible) strong { text-decorati
 .branch-atlas__switcher > button:hover { color: var(--atlas-ink); }
 .branch-atlas__toolbar button:not(:disabled):is(:hover, :focus-visible),
 .branch-atlas__switcher > button:is(:hover, :focus-visible) { color: var(--atlas-ink); text-shadow: 0 0 8px color-mix(in srgb, var(--atlas-ink) 55%, transparent); }
-.branch-atlas__resource-link.specular-button:is(:hover, :focus-visible) { box-shadow: 0 0 14px color-mix(in srgb, var(--atlas-ink) 28%, transparent); }
 .branch-atlas__switcher svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 1.4; }
 .branch-atlas__panel-foot { margin: 0; color: var(--atlas-quiet); font-size: 12px; line-height: 1.8; }
 .branch-atlas__empty { padding-top: 20px; }

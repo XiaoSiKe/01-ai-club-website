@@ -59,7 +59,7 @@ export default function DriftWall({
   gap = 18, radius = 14, tilt = 16, turn = -14, roll = 0, perspective = 1200, depth = 120,
   speed = 42, direction = 'up', variance = 0.45, lift = 0, fade = 0.6,
   dim = 0.55, grayscale = false, brightness = 1, overlayColor = '#060010', entrance = false,
-  ariaLabel = '活动照片墙', className = '', lightboxButtonProps, style,
+  ariaLabel = '活动照片墙', className = '', style,
 }) {
   const containerRef = useRef(null), planeRef = useRef(null), trackRefs = useRef([]);
   const offsetsRef = useRef([]), velocitiesRef = useRef([]), wakeRef = useRef(null);
@@ -368,7 +368,7 @@ export default function DriftWall({
         </div>)}
       </div>}
     </div>
-    {selectedItem && <ImageLightbox item={selectedItem} opener={openerRef.current} buttonProps={lightboxButtonProps} onClose={() => {
+    {selectedItem && <ImageLightbox item={selectedItem} opener={openerRef.current} onClose={() => {
       keyboardFocusRef.current = false;
       wallHoveredRef.current = false;
       pressedRef.current = null;

@@ -5,7 +5,7 @@ import ResponsiveImage from './ResponsiveImage';
 import UniqueLoading from './UniqueLoading';
 import './ImageLightbox.css';
 
-export default function ImageLightbox({ item, opener, buttonProps, onClose }) {
+export default function ImageLightbox({ item, opener, onClose }) {
   const dialogRef = useRef(null);
   const [ready, setReady] = useState(false), [failed, setFailed] = useState(false);
   const close = () => {
@@ -20,7 +20,7 @@ export default function ImageLightbox({ item, opener, buttonProps, onClose }) {
     document.body.style.overflow = 'hidden';
     return () => { dialog.close(); document.body.style.overflow = previousOverflow; };
   }, []);
-  const closeButton = <SpecularButton {...buttonProps} renderMode="css" className="image-lightbox__close" ariaLabel="退出" autoFocus onClick={close}>
+  const closeButton = <SpecularButton className="image-lightbox__close" ariaLabel="退出" autoFocus onClick={close}>
     退出
   </SpecularButton>;
 
@@ -39,7 +39,7 @@ export default function ImageLightbox({ item, opener, buttonProps, onClose }) {
         <figcaption id="lightbox-caption">{item.title || item.alt}{item.credit && <span className="image-lightbox__credit">{item.credit}</span>}{failed && <span>高清图暂时无法加载，当前显示预览图。</span>}</figcaption>
       </figure>
       {item.downloadName ? <div className="image-lightbox__actions">
-        <SpecularButton {...buttonProps} renderMode="css" className="image-lightbox__save"
+        <SpecularButton className="image-lightbox__save"
           href={item.fullImage || item.image || item.src} download={item.downloadName} ariaLabel={`保存${item.title || '二维码'}`}>
           保存二维码
         </SpecularButton>

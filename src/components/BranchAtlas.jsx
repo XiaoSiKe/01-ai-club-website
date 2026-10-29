@@ -20,10 +20,11 @@ const Chevron = () => <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><p
 
 const foundedLabel = date => date.split('-').map(Number).join('.');
 
-export default function BranchAtlas({ buttonProps, borderGlowProps }) {
+export default function BranchAtlas({ borderGlowProps }) {
   const id = useId();
   const rootRef = useRef(null);
   const imageReady = useViewportReady(rootRef);
+  const dataReady = useViewportReady(rootRef, { margin: 600 });
   const viewportRef = useRef(null);
   const layerRef = useRef(null);
   const painterRef = useRef(null);
@@ -43,7 +44,7 @@ export default function BranchAtlas({ buttonProps, borderGlowProps }) {
   const [query, setQuery] = useState('');
   const matches = useMemo(() => searchBranches(query), [query]);
   const searching = query.trim().length > 0;
-  const controlProps = { ...buttonProps, size: 'sm', renderMode: 'css' };
+  const controlProps = { size: 'sm' };
   const selected = view.startsWith('school:') ? branchById[view.slice(7)] : null;
   const leaderMember = selected?.leader ? pioneers.find(member => member.name === selected.leader.name) : null;
   const LeaderProfile = leaderMember ? 'a' : 'div';
@@ -63,38 +64,15 @@ export default function BranchAtlas({ buttonProps, borderGlowProps }) {
     branches.forEach(branch => { prepareSchoolCrest(branch.crest).catch(() => {}); });
   }, [imageReady]);
 
-
   useEffect(() => {
+    if (!dataReady) return undefined;
     let cancelled = false;
-    let requested = false;
-    let observer;
-    const stopWatching = () => {
-      observer?.disconnect();
-      window.removeEventListener('scroll', check);
-      window.removeEventListener('resize', check);
-    };
-    const load = () => {
-      if (requested || cancelled) return;
-      requested = true;
-      stopWatching();
-      setError(false);
-      import('../data/maps/branch-atlas.json').then(module => {
-        if (!cancelled) setAtlas(module.default);
-      }).catch(() => { if (!cancelled) setError(true); });
-    };
-    function check() {
-      const rect = rootRef.current.getBoundingClientRect();
-      if (rect.top < window.innerHeight + 600 && rect.bottom > -600) load();
-    }
-    observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) load();
-    }, { rootMargin: '600px' });
-    observer.observe(rootRef.current);
-    window.addEventListener('scroll', check, { passive: true });
-    window.addEventListener('resize', check);
-    check();
-    return () => { cancelled = true; stopWatching(); };
-  }, [attempt]);
+    setError(false);
+    import('../data/maps/branch-atlas.json').then(module => {
+      if (!cancelled) setAtlas(module.default);
+    }).catch(() => { if (!cancelled) setError(true); });
+    return () => { cancelled = true; };
+  }, [dataReady, attempt]);
 
   const bounds = atlas ? selected ? atlas.campusViews[selected.id] : view === 'fuzhou' ? atlas.bounds.campuses : atlas.bounds[view] : null;
   const points = useMemo(() => atlas ? Object.fromEntries(Object.entries(atlas.points).map(([key, point]) => [key, { point, side: branchById[key]?.labelSide || 'right', minScale: key === 'fuzhou' ? 0 : 450 }])) : {}, [atlas]);

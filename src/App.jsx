@@ -27,7 +27,6 @@ import { socialChannels, telegramChannel } from './data/social';
 import { businesses } from './data/business';
 import { wechatChannel } from './data/community';
 import { pioneers } from './data/pioneers';
-import { useTheme } from './Theme';
 import joinQr from './assets/join-qq-qr.webp';
 
 gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
@@ -42,24 +41,6 @@ const JOIN_QR_ITEMS = {
   qq: { image: joinQr, title: '零一 QQ 社团群', downloadName: '零一AI日新社-QQ社团群.png' },
   official: { image: wechatChannel.qr, title: '零一 AI 日新社微信公众号', downloadName: '零一AI日新社-微信公众号.png' },
   contact: { image: '/images/join-lingyiyang-wechat.jpg', title: '商务合作联系：零一扬', downloadName: '零一AI日新社-商务合作微信.png' },
-};
-const SPECULAR_BUTTON_PROPS = {
-  size: 'lg',
-  radius: 18,
-  tint: '#ffffff',
-  tintOpacity: 0,
-  blur: 0,
-  textColor: '#f5f5f5',
-  lineColor: '#ffffff',
-  baseColor: '#525252',
-  intensity: 1.875,
-  shineSize: 10,
-  shineFade: 40,
-  thickness: 1,
-  speed: 0.35,
-  followMouse: true,
-  proximity: 250,
-  autoAnimate: false,
 };
 const BORDER_GLOW_PROPS = {
   edgeSensitivity: 30,
@@ -82,14 +63,6 @@ const FOOTER_LOGOS = [
   { node: <SiQq />, title: 'QQ', href: 'https://qun.qq.com/universal-share/share?ac=1&authKey=Y6PHDoQm%2BSNy%2Bdr0SJTyHZ7Vt2jQfwQCR6sidHUatABcMNltCtupL24cigSRxTYc&busi_data=eyJncm91cENvZGUiOiI5NjY2NTQ2MzMiLCJ0b2tlbiI6IllLUmVXNXM4WS8zMG1MRHlGeFFkUUd4M0R1ZG8wekpXMVB1a0N2dkhubVp6KzF5b2xOVjRKakxFZHQ4Q3dCRFQiLCJ1aW4iOiIxNzg1ODY3NzkyIn0%3D&data=-Yz2JZMQgTAM5BkEf9Vrw9lDLH6BkX2nFl4-tH8ska8WC6OQPqpmTcvM5f24z7x5jSg--p3b18JBNtQeMn3Tzg&svctype=4&tempid=h5_group_info' },
 ];
 export default function App() {
-  const { theme } = useTheme();
-  const buttonProps = {
-    ...SPECULAR_BUTTON_PROPS,
-    textColor: theme === 'light' ? '#202024' : '#f5f5f5',
-    lineColor: theme === 'light' ? '#000000' : '#ffffff',
-    baseColor: theme === 'light' ? '#8e8e93' : '#525252',
-    intensity: theme === 'light' ? 2.625 : SPECULAR_BUTTON_PROPS.intensity,
-  };
   const borderGlowProps = BORDER_GLOW_PROPS;
   const pageRef = useRef(null);
   const scrollTweenRef = useRef(null);
@@ -399,21 +372,18 @@ export default function App() {
 
                 <div className="hero-actions">
                   <SpecularButton
-                    {...buttonProps}
                     className="hero-button"
                     onClick={() => scrollToSection('about')}
                   >
                     关于我们
                   </SpecularButton>
                   <SpecularButton
-                    {...buttonProps}
                     className="hero-button"
                     onClick={() => scrollToSection('directions')}
                   >
                     我们在做什么
                   </SpecularButton>
                   <SpecularButton
-                    {...buttonProps}
                     className="hero-button"
                     onClick={() => scrollToSection('join')}
                   >
@@ -460,7 +430,7 @@ export default function App() {
             </BorderGlow>
           </section>
 
-          <ExploreSection buttonProps={buttonProps} borderGlowProps={borderGlowProps} knowledgeUrl={LEARNING_WIKI_URL} />
+          <ExploreSection borderGlowProps={borderGlowProps} knowledgeUrl={LEARNING_WIKI_URL} />
 
           <section className="home-section home-business-section" id="business" aria-labelledby="business-title" tabIndex="-1">
             <h2 className="home-flow-title" id="business-title">零一商业</h2>
@@ -482,30 +452,32 @@ export default function App() {
                 captions
                 captionCredit="零一 AI 日新社"
                 captureWheel
-                websiteButtonProps={buttonProps}
               />
               </Suspense>
             </ViewportMount>
           </section>
 
-          <ResearchSection buttonProps={buttonProps} />
+          <ResearchSection />
 
           <section className="home-section home-cooperation-section home-partners-section" id="partners" aria-labelledby="partners-title" tabIndex="-1">
             <div className="home-partners-heading">
               <h2 className="home-flow-title" id="partners-title">零一合作生态</h2>
+              <p className="home-cooperation-intro">创造力，就是把事物连接起来。</p>
+            </div>
+            <div className="home-partners-row">
               <div className="home-cooperation-actions">
-                <SpecularButton {...buttonProps} href="https://scn96l2kzmbn.feishu.cn/wiki/X7h6wI8SCiAuZAkpYF2caNv7nTG" target="_blank" rel="noopener noreferrer" className="home-cooperation-link">
+                <SpecularButton href="https://scn96l2kzmbn.feishu.cn/wiki/X7h6wI8SCiAuZAkpYF2caNv7nTG" target="_blank" rel="noopener noreferrer" className="home-cooperation-link">
                   关于合作生态 <span aria-hidden="true">↗</span>
                 </SpecularButton>
               </div>
+              <ViewportMount className="home-partners-marquee" minHeight={96}><LogoMarquee /></ViewportMount>
             </div>
-            <ViewportMount minHeight={96}><LogoMarquee /></ViewportMount>
           </section>
 
           <section className="home-section home-cooperation-section" id="cooperation" aria-labelledby="cooperation-title" tabIndex="-1">
             <h2 className="home-flow-title" id="cooperation-title">零一高校分社</h2>
             <p className="home-cooperation-intro">团结一切可以团结的力量！</p>
-            <BranchAtlas buttonProps={buttonProps} borderGlowProps={borderGlowProps} />
+            <BranchAtlas borderGlowProps={borderGlowProps} />
           </section>
 
           <section className="home-note" id="join" aria-labelledby="join-title" tabIndex="-1">
@@ -585,7 +557,7 @@ export default function App() {
           </section>
         </div>
       </main>
-      {selectedQr && <ImageLightbox item={selectedQr.item} opener={selectedQr.opener} buttonProps={buttonProps} onClose={() => setSelectedQr(null)} />}
+      {selectedQr && <ImageLightbox item={selectedQr.item} opener={selectedQr.opener} onClose={() => setSelectedQr(null)} />}
 
       <footer className="home-footer">
         <div className="home-footer-inner">

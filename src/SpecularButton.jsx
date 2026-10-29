@@ -1,5 +1,5 @@
-import { useRef, useEffect } from 'react';
-import useViewportReady from './components/useViewportReady';
+import { useRef, useEffect, useState } from 'react';
+import { useTheme } from './Theme';
 import { Renderer, Program, Mesh, Triangle, Color } from 'ogl';
 import './SpecularButton.css';
 
@@ -59,40 +59,42 @@ void main() {
 }
 `;
 
-const SpecularButton = ({
-  children = 'Get Started',
-  size = 'lg',
-  radius = 18,
-  tint = '#ffffff',
-  tintOpacity = 0,
-  blur = 0,
-  textColor = '#f5f5f5',
-  lineColor = '#ffffff',
-  baseColor = '#525252',
-  intensity = 1,
-  shineSize = 10,
-  shineFade = 40,
-  thickness = 1,
-  speed = 0.35,
-  followMouse = true,
-  proximity = 250,
-  autoAnimate = false,
-  disabled = false,
-  onClick,
-  href,
-  target,
-  rel,
-  ariaLabel,
-  className = '',
-  type = 'button',
-  renderMode = 'webgl',
-  ...elementProps
-}) => {
+const SpecularButton = (buttonProps) => {
+  const { theme } = useTheme();
+  const light = theme === 'light';
+  const {
+    children = 'Get Started',
+    size = 'lg',
+    radius = 18,
+    tint = '#ffffff',
+    tintOpacity = 0,
+    blur = 0,
+    textColor = light ? '#202024' : '#f5f5f5',
+    lineColor = light ? '#000000' : '#ffffff',
+    baseColor = light ? '#8e8e93' : '#525252',
+    intensity = light ? 2.625 : 1.875,
+    shineSize = 10,
+    shineFade = 40,
+    thickness = 1,
+    speed = 0.35,
+    followMouse = true,
+    proximity = 250,
+    autoAnimate = false,
+    disabled = false,
+    onClick,
+    href,
+    target,
+    rel,
+    ariaLabel,
+    className = '',
+    type = 'button',
+    ...elementProps
+  } = buttonProps;
   const btnRef = useRef(null);
   const fxRef = useRef(null);
   const propsRef = useRef({});
   const requestRenderRef = useRef(null);
-  const glReady = useViewportReady(btnRef, { margin: 200, enabled: renderMode !== 'css' });
+  const [glReady, setGlReady] = useState(false);
   propsRef.current = {
     radius,
     lineColor,
@@ -109,37 +111,26 @@ const SpecularButton = ({
 
   useEffect(() => {
     const btn = btnRef.current;
-    const fx = fxRef.current;
-    if (!btn || !fx) return;
-    if (renderMode !== 'css' && !glReady) return;
+    let nearby = false;
+    const update = () => setGlReady(nearby && !document.hidden);
+    // Release offscreen contexts instead of accumulating one for every visited
+    // button. The margin prepares the original rim before it enters the screen.
+    const observer = new IntersectionObserver(([entry]) => {
+      nearby = entry.isIntersecting;
+      update();
+    }, { rootMargin: '200px' });
+    observer.observe(btn);
+    document.addEventListener('visibilitychange', update);
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', update);
+    };
+  }, []);
 
-    // Dense groups share the same rim and pointer response without allocating
-    // a WebGL context per control. Keep the existing renderer for large CTAs.
-    if (renderMode === 'css') {
-      let angle = 138;
-      const move = event => {
-        if (!propsRef.current.followMouse || event.pointerType === 'touch' || document.hidden) return;
-        const r = btn.getBoundingClientRect();
-        if (r.bottom < 0 || r.top > window.innerHeight) return;
-        const distance = Math.hypot(Math.max(r.left - event.clientX, 0, event.clientX - r.right), Math.max(r.top - event.clientY, 0, event.clientY - r.bottom));
-        const next = Math.atan2(event.clientY - (r.top + r.height / 2), event.clientX - (r.left + r.width / 2)) * 180 / Math.PI + 90;
-        const difference = (next - angle) * Math.PI / 180;
-        angle += Math.atan2(Math.sin(difference), Math.cos(difference)) * 180 / Math.PI;
-        btn.style.setProperty('--sb-css-angle', `${angle}deg`);
-        btn.style.setProperty('--sb-css-proximity', Math.max(0, 1 - distance / propsRef.current.proximity).toFixed(3));
-      };
-      const leave = () => btn.style.setProperty('--sb-css-proximity', '0');
-      window.addEventListener('pointermove', move, { passive: true });
-      window.addEventListener('scroll', leave, { passive: true });
-      window.addEventListener('blur', leave);
-      document.documentElement.addEventListener('pointerleave', leave);
-      return () => {
-        window.removeEventListener('pointermove', move);
-        window.removeEventListener('scroll', leave);
-        window.removeEventListener('blur', leave);
-        document.documentElement.removeEventListener('pointerleave', leave);
-      };
-    }
+  useEffect(() => {
+    const btn = btnRef.current;
+    const fx = fxRef.current;
+    if (!btn || !fx || !glReady) return;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let renderer;
@@ -149,7 +140,7 @@ const SpecularButton = ({
     } catch {
       renderer?.gl?.getExtension('WEBGL_lose_context')?.loseContext();
       btn.dataset.staticShine = 'true';
-      return () => { delete btn.dataset.staticShine; };
+      return;
     }
     const gl = renderer.gl;
     gl.clearColor(0, 0, 0, 0);
@@ -185,7 +176,7 @@ const SpecularButton = ({
     let inView = !('IntersectionObserver' in window);
     let pointerAngle = null;
     let proximityT = 0;
-    let focused = false;
+    let focused = btn === document.activeElement;
     let angle = 2.4;
     let idleAngle = 2.4;
     let brightness = 0;
@@ -251,7 +242,7 @@ const SpecularButton = ({
     resize();
 
     const onPointerMove = event => {
-      if (!inView || document.hidden || event.pointerType === 'touch') return;
+      if (!inView || document.hidden || event.pointerType === 'touch' || !propsRef.current.followMouse || btn.matches(':disabled, [aria-disabled="true"]')) return;
       const rect = btn.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
@@ -332,7 +323,7 @@ const SpecularButton = ({
       program.remove();
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
-  }, [renderMode, glReady]);
+  }, [glReady]);
 
   useEffect(() => {
     requestRenderRef.current?.();
@@ -347,7 +338,7 @@ const SpecularButton = ({
       {...(href ? { href, target, rel } : { type, disabled })}
       aria-disabled={href && disabled ? true : undefined}
       aria-label={ariaLabel}
-      data-render-mode={renderMode}
+      data-static-shine={!glReady || undefined}
       onClick={onClick}
       className={`specular-button specular-button--${size}${className ? ` ${className}` : ''}`}
       style={{
@@ -357,8 +348,7 @@ const SpecularButton = ({
         '--sb-blur': `${blur}px`,
         '--sb-text-color': textColor,
         '--sb-line-color': lineColor,
-        '--sb-base-color': baseColor,
-        '--sb-css-intensity': intensity
+        '--sb-base-color': baseColor
       }}
     >
       <span ref={fxRef} className="specular-button__fx" aria-hidden="true" />
