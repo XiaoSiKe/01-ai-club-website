@@ -21,6 +21,7 @@ const easing = {
 
 const EchoText = ({
   text = 'Motion Echo',
+  children,
   echoes = 12,
   lag = 0.24,
   offset = 36,
@@ -278,7 +279,7 @@ const EchoText = ({
               opacity: 0
             }}
           >
-            {text}
+            {children ?? text}
           </span>
         ))}
       <span
@@ -288,7 +289,7 @@ const EchoText = ({
           copyRefs.current[0] = element;
         }}
       >
-        {text}
+        {children ?? text}
       </span>
     </span>
   );

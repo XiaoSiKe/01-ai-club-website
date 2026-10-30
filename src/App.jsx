@@ -28,6 +28,7 @@ import { businesses } from './data/business';
 import { wechatChannel } from './data/community';
 import { pioneers } from './data/pioneers';
 import joinQr from './assets/join-qq-qr.webp';
+import clubWordmark from './assets/club-wordmark.svg';
 
 gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
 const FlexCarousel = lazy(() => import('./FlexCarousel'));
@@ -344,7 +345,9 @@ export default function App() {
 
               <h1 id="hero-title" className="echo-viewport title-echo" aria-label={PRODUCT_NAME} tabIndex="-1">
                 <span className="echo-scale">
-                  <EchoText {...ECHO_TEXT_PROPS} text={PRODUCT_NAME} />
+                  <EchoText {...ECHO_TEXT_PROPS} className="hero-wordmark" color="var(--site-wordmark)" tint={null} style={{ '--wordmark-image': `url("${clubWordmark}")` }}>
+                    <span className="hero-wordmark__shape" aria-hidden="true" />
+                  </EchoText>
                 </span>
               </h1>
 
