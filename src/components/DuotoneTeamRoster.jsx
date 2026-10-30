@@ -692,7 +692,7 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
         </div>
 
         {cols === 0 ? <div className="dtr-strips">
-          {plan.map((row, rowIndex) => <div className="dtr-strip" key={rowIndex} role="group" aria-label={`${text.team}，第${rowIndex + 1}排`}>
+          {plan.map((row, rowIndex) => <div className="dtr-strip" data-image-viewport={still ? undefined : ""} key={rowIndex} role="group" aria-label={`${text.team}，第${rowIndex + 1}排`}>
             <div className="dtr-strip-track">
               {copies.map((copy) => row.map((e, i) => {
 		const slot = slotFor({
@@ -703,7 +703,7 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 	}))}
             </div>
           </div>)}
-          </div> : <div className="dtr-wall" role="group" aria-label={text.team}>
+          </div> : <div className="dtr-wall" data-image-viewport={still ? undefined : ""} role="group" aria-label={text.team}>
             {plan.map((col, c) => {
 		const dur = Math.max(6, col.length * Math.max(1, driftSeconds)) * stepRatio / Math.max(.1, speedMultiplier);
 		const phase = phases[c % phases.length];

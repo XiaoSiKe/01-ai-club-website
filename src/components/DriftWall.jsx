@@ -128,7 +128,7 @@ export default function DriftWall({
   useEffect(() => {
     const root = containerRef.current;
     if (reduced || !items.length) return undefined;
-    let raf = null, last = null, alive = true;
+    let raf = null, visibilityFrame = null, last = null, alive = true;
     const inViewport = () => {
       const rect = root.getBoundingClientRect();
       return rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.top < innerHeight && rect.right > 0 && rect.left < innerWidth;
@@ -156,27 +156,36 @@ export default function DriftWall({
       });
       if (moving) raf = requestAnimationFrame(frame); else last = null;
     };
-    const wake = () => {
-      if (!alive || document.hidden || raf !== null) return;
-      inView = inViewport();
-      if (inView) { last = null; raf = requestAnimationFrame(frame); }
+    const start = () => {
+      if (!alive || document.hidden || raf !== null || !inView) return;
+      last = null;
+      raf = requestAnimationFrame(frame);
     };
+    const wake = () => { inView = inViewport(); start(); };
     const stop = () => { if (raf !== null) cancelAnimationFrame(raf); raf = null; last = null; };
     // Fragment restoration and dialog closing can outrun observer callbacks.
     // Read the current geometry instead of accepting a delayed visibility flag.
-    const checkVisibility = () => { inView = inViewport(); if (inView) wake(); else stop(); };
-    const observer = new IntersectionObserver(checkVisibility);
+    const checkVisibility = () => {
+      visibilityFrame = null;
+      if (!alive) return;
+      inView = inViewport();
+      if (inView) start(); else stop();
+    };
+    const scheduleVisibility = () => {
+      if (visibilityFrame === null) visibilityFrame = requestAnimationFrame(checkVisibility);
+    };
+    const observer = new IntersectionObserver(scheduleVisibility);
     observer.observe(root);
-    const visibility = () => document.hidden ? stop() : checkVisibility();
+    const visibility = () => document.hidden ? stop() : scheduleVisibility();
     document.addEventListener('visibilitychange', visibility);
-    window.addEventListener('scroll', checkVisibility, { passive: true });
-    window.addEventListener('resize', checkVisibility);
+    window.addEventListener('scroll', scheduleVisibility, { passive: true });
+    window.addEventListener('resize', scheduleVisibility);
     wakeRef.current = wake; wake();
     return () => {
-      alive = false; stop(); observer.disconnect();
+      alive = false; stop(); cancelAnimationFrame(visibilityFrame); observer.disconnect();
       document.removeEventListener('visibilitychange', visibility);
-      window.removeEventListener('scroll', checkVisibility);
-      window.removeEventListener('resize', checkVisibility);
+      window.removeEventListener('scroll', scheduleVisibility);
+      window.removeEventListener('resize', scheduleVisibility);
       wakeRef.current = null;
     };
   }, [columnMeta, reduced, items.length, entrance]);
@@ -312,7 +321,7 @@ export default function DriftWall({
   </button>;
 
   return <>
-    <div ref={containerRef} className={`drift-wall${reduced ? ' drift-wall--reduced' : ''}${className ? ` ${className}` : ''}`}
+    <div ref={containerRef} data-image-viewport={reduced ? undefined : ""} className={`drift-wall${reduced ? ' drift-wall--reduced' : ''}${className ? ` ${className}` : ''}`}
       role="group" aria-label={ariaLabel} data-columns={visibleColumns}
       style={{ '--dw-tile-w': `${displayedWidth}px`, '--dw-gap': `${gap}px`, '--dw-radius': `${radius}px`,
         '--dw-perspective': `${perspective}px`, '--dw-lift': `${lift}px`, '--dw-dim': dim,
