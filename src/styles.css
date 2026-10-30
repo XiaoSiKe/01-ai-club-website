@@ -411,6 +411,19 @@ a {
   margin-top: 31px;
 }
 
+.hero-wordmark {
+  width: min(7.5em, 100%);
+}
+
+.hero-wordmark__shape {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1604.4762 / 208.7472;
+  background-color: currentColor;
+  -webkit-mask: var(--wordmark-image) center / contain no-repeat;
+  mask: var(--wordmark-image) center / contain no-repeat;
+}
+
 .slogan-echo {
   --echo-scale: 0.3197;
   height: 45.54px;

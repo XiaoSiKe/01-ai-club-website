@@ -1,6 +1,7 @@
 :root {
   --site-background: #090909;
   --site-ink: #f5f5f5;
+  --site-wordmark: #fff;
   --site-echo: #a3a3a3;
   --site-surface: rgba(10, 10, 12, .82);
   --menu-layer-one: #ffffff;
@@ -11,6 +12,7 @@
 html[data-theme='light'] {
   --site-background: #f4f4f2;
   --site-ink: #202024;
+  --site-wordmark: #000;
   --site-echo: #7b7b83;
   --site-muted: #62626b;
   --site-subtle: #73737c;
