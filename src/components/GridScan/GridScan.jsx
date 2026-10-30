@@ -498,6 +498,9 @@ export const GridScan = ({
       composer.addPass(renderPass);
 
       const bloom = new BloomEffect({
+        // Five mip levels retain the soft scan halo without the three smallest
+        // downsample/upsample pairs on every full-screen background frame.
+        levels: 5,
         intensity: 1.0,
         luminanceThreshold: bloomThreshold,
         luminanceSmoothing: bloomSmoothing

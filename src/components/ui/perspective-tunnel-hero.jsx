@@ -42,7 +42,11 @@ function TunnelCard({ card, progress, pointer, total, stage, reduce }) {
   const localProgress = useTransform(progress, [start, end], [0, 1]);
   const [loadImage, setLoadImage] = useState(false);
   useEffect(() => {
-    const prepare = value => setLoadImage(value > .001 && value >= start - .08 && value < end + .02);
+    let previous;
+    const prepare = value => {
+      const next = value > .001 && value >= start - .08 && value < end + .02;
+      if (next !== previous) { previous = next; setLoadImage(next); }
+    };
     prepare(progress.get());
     return progress.on('change', prepare);
   }, [progress, start, end]);
