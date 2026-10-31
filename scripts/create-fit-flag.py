@@ -1,4 +1,4 @@
-"""Create the FIT branch flag from the existing outlined club artwork.
+"""Create a branch flag from the existing outlined club artwork (FIT by default).
 
 The logo and main wordmark retain the supplied template paths. New branch
 lettering is outlined before export, so both SVG and PDF remain font-independent.
@@ -20,16 +20,19 @@ from reportlab.lib.colors import toColor
 from reportlab.pdfgen import canvas
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--template-pdf', type=Path, required=True)
+parser.add_argument('--template-pdf', type=Path)
+parser.add_argument('--branch-name', default='福州理工分社')
+parser.add_argument('--branch-code', default='FIT')
 parser.add_argument('--pdf', type=Path, required=True)
 parser.add_argument('--svg', type=Path, required=True)
 args = parser.parse_args()
 root = Path(__file__).resolve().parent.parent
-template = json.loads((root / 'src/data/branch-flags.json').read_text())['fuzc']
+template = json.loads((root / 'src/data/branch-flags.json').read_text())['fuzc' if args.template_pdf else 'fit']
 _, _, width, height = map(float, template['viewBox'].split())
-with pymupdf.open(args.template_pdf) as source:
-    drawings = source[0].get_drawings()
-assert len(drawings) == len(template['paths']), 'Template PDF must match its extracted paths'
+if args.template_pdf:
+    with pymupdf.open(args.template_pdf) as source:
+        drawings = source[0].get_drawings()
+    assert len(drawings) == len(template['paths']), 'Template PDF must match its extracted paths'
 
 def union(rectangles):
     result = pymupdf.Rect(rectangles[0])
@@ -37,9 +40,16 @@ def union(rectangles):
         result |= rectangle
     return result
 
-branch_box = union([d['rect'] for d in drawings if 400 < d['rect'].y0 < 450 and d['rect'].height > 5])
-footer_box = union([d['rect'] for d in drawings if d['rect'].y0 > 460 and d['rect'].height > 2])
-paths = [dict(path) for path, drawing in zip(template['paths'], drawings) if drawing['rect'].y0 < 400]
+if args.template_pdf:
+    branch_box = union([d['rect'] for d in drawings if 400 < d['rect'].y0 < 450 and d['rect'].height > 5])
+    footer_box = union([d['rect'] for d in drawings if d['rect'].y0 > 460 and d['rect'].height > 2])
+    paths = [dict(path) for path, drawing in zip(template['paths'], drawings) if drawing['rect'].y0 < 400]
+else:
+    # The bundled FIT flag preserves the original 36 brand paths, followed by
+    # outlined branch lettering. Reuse it without needing an external source PDF.
+    paths = [dict(path) for path in template['paths'][:36]]
+    branch_box = pymupdf.Rect(0, 414, width, 438)
+    footer_box = pymupdf.Rect(0, 475, width, 486.2582)
 brand_path_count = len(paths)
 
 def outline(text, font, size, tracking, center_y):
@@ -69,14 +79,14 @@ def outline(text, font, size, tracking, center_y):
 
 cjk = TTCollection('/System/Library/Fonts/STHeiti Medium.ttc').fonts[1]
 latin = TTFont('/System/Library/Fonts/Supplemental/Arial Bold.ttf')
-outline('福州理工分社', cjk, 26, 6.5, (branch_box.y0 + branch_box.y1) / 2)
+outline(args.branch_name, cjk, 26, 6.5, (branch_box.y0 + branch_box.y1) / 2)
 footer_y = (footer_box.y0 + footer_box.y1) / 2
-footer = outline('01 AI CLUB · FIT BRANCH', latin, 16, .8, footer_y)
+footer = outline(f'01 AI CLUB · {args.branch_code} BRANCH', latin, 16, .8, footer_y)
 for start, end in [(footer.x0 - 44, footer.x0 - 16), (footer.x1 + 16, footer.x1 + 44)]:
     paths.append({'d': f'M{start} {footer_y}H{end}', 'fill': 'none', 'stroke': '#fafafa', 'strokeWidth': '1.1'})
 
 svg = ET.Element('svg', {'xmlns': 'http://www.w3.org/2000/svg', 'viewBox': template['viewBox'], 'width': str(width), 'height': str(height)})
-ET.SubElement(svg, 'title').text = '零一 AI 日新社｜福州理工分社旗帜'
+ET.SubElement(svg, 'title').text = f'零一 AI 日新社｜{args.branch_name}旗帜'
 for attributes in paths:
     ET.SubElement(svg, 'path', {re.sub(r'[A-Z]', lambda m: '-' + m[0].lower(), key): str(value) for key, value in attributes.items()})
 args.svg.parent.mkdir(parents=True, exist_ok=True)
@@ -99,7 +109,7 @@ class CanvasPen(BasePen):
 
 args.pdf.parent.mkdir(parents=True, exist_ok=True)
 pdf = canvas.Canvas(str(args.pdf), pagesize=(width, height), pageCompression=1)
-pdf.setTitle('零一 AI 日新社｜福州理工分社旗帜')
+pdf.setTitle(f'零一 AI 日新社｜{args.branch_name}旗帜')
 pdf.setAuthor('零一 AI 日新社')
 pdf.setSubject('RGB vector flag; 3:2 layout; all lettering outlined')
 pdf.translate(0, height)

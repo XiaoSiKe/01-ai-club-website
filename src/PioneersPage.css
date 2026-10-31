@@ -26,6 +26,9 @@
 .pioneers-page .dtr-chip > span { display: block; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; font-size: 13px; font-weight: 500; opacity: .76; }
 .pioneers-page .dtr-name { font-size: 22px; line-height: 1.2; overflow-wrap: anywhere; }
 .pioneers-page .dtr-roleline { font-size: 15px; line-height: 1.5; }
+.pioneers-page .dtr-joined { margin: 8px 0 0; font-size: 12px; line-height: 1.5; color: color-mix(in srgb, var(--dtr-ink) 68%, transparent); }
+.pioneers-page .dtr-joined .dtr-founding-link { display: inline-block; max-width: 100%; margin: 0; font: inherit; color: inherit; text-underline-offset: 3px; }
+.pioneers-page .dtr-joined .dtr-founding-link:hover { color: var(--dtr-ink); }
 
 .pioneers-search { position: relative; width: min(100%, 340px); margin-top: 20px; pointer-events: auto; }
 .pioneers-search__field { display: grid; grid-template-columns: 20px minmax(0, 1fr) 40px; align-items: center; gap: 10px; min-height: 48px; border-bottom: 1px solid color-mix(in srgb, var(--site-ink) 32%, transparent); }
@@ -60,6 +63,7 @@
   .pioneers-page .dtr-col:nth-child(n+3) .dtr-panel { right: 0; left: auto; }
   .pioneers-page .dtr-name { font-size: 16px; }
   .pioneers-page .dtr-roleline { font-size: 11px; }
+  .pioneers-page .dtr-joined { font-size: 10px; margin-top: 6px; }
   .pioneers-page .dtr-panel a { font-size: 11px; margin-top: 5px; }
   .pioneers-page .dtr[data-static] .dtr-copy { position: relative; height: auto; min-height: 0; }
 }

@@ -4,7 +4,7 @@ import { memberPortraits } from './member-portraits.js';
 // Coordinates refer to the universities' public campuses, not an event venue.
 export const branches = [
   {
-    id: 'fzu', school: '福州大学', shortName: '福大', name: '零一 AI 日新社', role: '总社',
+    id: 'fzu', city: 'fuzhou', school: '福州大学', shortName: '福大', name: '零一 AI 日新社', role: '总社',
     founded: '2026-09-01',
     leader: { name: '零一扬', title: '社长', avatar: memberPortraits['零一扬'] },
     coordinates: [119.1933416, 26.0614068], osmId: 12658065, campus: '旗山校区',
@@ -16,7 +16,7 @@ export const branches = [
     labelSide: 'right',
   },
   {
-    id: 'fjnu', school: '福建师范大学', shortName: '福师大', name: '福师大分社', role: '分社',
+    id: 'fjnu', city: 'fuzhou', school: '福建师范大学', shortName: '福师大', name: '福师大分社', role: '分社',
     founded: '2026-10-25',
     leader: { name: 'Miracle', title: '分社长', avatar: memberPortraits.Miracle },
     coordinates: [119.2045602, 26.0327333], osmId: 12658062, campus: '旗山校区',
@@ -28,7 +28,7 @@ export const branches = [
     labelSide: 'right',
   },
   {
-    id: 'fjut', school: '福建理工大学', shortName: '福理工', name: '福理工分社', role: '分社',
+    id: 'fjut', city: 'fuzhou', school: '福建理工大学', shortName: '福理工', name: '福理工分社', role: '分社',
     founded: '2026-10-21',
     leader: { name: '黄铉', title: '分社长', avatar: memberPortraits['黄铉'] },
     coordinates: [119.1910378, 26.0383264], osmId: 12658060, campus: '旗山校区',
@@ -40,7 +40,7 @@ export const branches = [
     labelSide: 'right',
   },
   {
-    id: 'fuzc', school: '福州大学至诚学院', shortName: '福大至诚', name: '福大至诚分社', role: '分社',
+    id: 'fuzc', city: 'fuzhou', school: '福州大学至诚学院', shortName: '福大至诚', name: '福大至诚分社', role: '分社',
     founded: '2026-10-26',
     leader: { name: '郑航', title: '分社长', avatar: memberPortraits['郑航'] },
     coordinates: [119.2680121, 26.0786045], osmId: 717445438, campus: '杨桥西路50号',
@@ -52,7 +52,7 @@ export const branches = [
     labelSide: 'right',
   },
   {
-    id: 'fit', school: '福州理工学院', shortName: '福州理工', name: '福州理工分社', role: '分社',
+    id: 'fit', city: 'fuzhou', school: '福州理工学院', shortName: '福州理工', name: '福州理工分社', role: '分社',
     founded: '2026-10-26',
     leader: { name: 'Eug', title: '分社长', avatar: memberPortraits.Eug },
     coordinates: [119.4655281, 26.2428289], osmId: 582302622, campus: '连江校区',
@@ -63,8 +63,26 @@ export const branches = [
     addressSource: 'https://www.fit.edu.cn/html/1675325920.html',
     labelSide: 'left',
   },
+  {
+    id: 'qzoi', city: 'quanzhou', school: '泉州海洋学院', shortName: '泉州海洋', name: '泉州海洋分社', role: '分社',
+    founded: '2026-10-30',
+    leader: { name: '郑鑫尧', title: '分社长', avatar: memberPortraits['郑鑫尧'] },
+    coordinates: [118.74615565, 24.76465065], osmId: 621503484, campus: '石狮校区',
+    address: '福建省泉州市石狮市祥芝镇古浮二十区1号',
+    description: '和泉州海洋的同伴一起，在学习、交流与实践中探索 AI。',
+    crest: '/images/branches/qzoi-crest.jpg', crestBackground: '#fff',
+    searchTerms: '泉州海洋学院 泉州海洋职业学院 泉海 QZOI Quanzhou Ocean Institute 分社 福建 泉州 石狮 祥芝',
+    website: 'https://www.qzoi.edu.cn/',
+    addressSource: 'https://www.qzoi.edu.cn/xygk/lxwm.htm',
+    labelSide: 'right',
+  },
 ];
 
+export const branchCities = [
+  { id: 'fuzhou', name: '福州', adcode: '350100', coordinates: [119.200519, 26.047886] },
+  { id: 'quanzhou', name: '泉州', adcode: '350500', coordinates: [118.74615565, 24.76465065] },
+];
+export const cityById = Object.fromEntries(branchCities.map(city => [city.id, city]));
 export const branchById = Object.fromEntries(branches.map(branch => [branch.id, branch]));
 export const FUZHOU_CENTER = [119.200519, 26.047886];
 

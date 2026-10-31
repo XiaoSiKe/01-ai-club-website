@@ -2,13 +2,14 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { geoArea, geoMercator, geoPath, geoGraticule10 } from 'd3-geo';
 import { feature } from 'topojson-client';
 import { createRequire } from 'node:module';
-import { branches, FUZHOU_CENTER } from '../src/data/branches.js';
+import { branches, branchCities } from '../src/data/branches.js';
 
 const require = createRequire(import.meta.url);
 const read = name => JSON.parse(readFileSync(new URL(`../src/data/maps/${name}-full.geojson`, import.meta.url), 'utf8'));
 const china = read('china');
 const fujian = read('fujian');
 const fuzhou = read('fuzhou');
+const quanzhou = read('quanzhou');
 const world = require('world-atlas/countries-110m.json');
 // Rebase around the campus region to avoid million-pixel translations and
 // floating-point shimmer when a highly magnified SVG reaches its destination.
@@ -42,6 +43,7 @@ const serialize = data => data.features.map(f => ({
 const cn = normalize(china);
 const fj = normalize(fujian);
 const fz = normalize(fuzhou);
+const qz = normalize(quanzhou);
 const campusIds = Object.fromEntries(branches.map(branch => [branch.osmId, branch.id]));
 const campusFeatures = normalize({ type: 'FeatureCollection', features: campuses.map(item => ({ type: 'Feature', geometry: item.geojson, properties: { adcode: campusIds[item.osm_id], name: item.name } })) });
 const neighborhood = JSON.parse(readFileSync(new URL('../src/data/maps/fuzhou-neighborhood.geojson', import.meta.url), 'utf8'));
@@ -52,6 +54,10 @@ const schoolPoints = branches.map(branch => ({ id: branch.id, point: projection(
 const xs = schoolPoints.map(s => s.point[0]);
 const ys = schoolPoints.map(s => s.point[1]);
 const campusBounds = [[Math.min(...xs) - .045, Math.min(...ys) - .045], [Math.max(...xs) + .045, Math.max(...ys) + .045]];
+const cityViews = Object.fromEntries(branchCities.map(city => {
+  const points = schoolPoints.filter(s => branches.find(b => b.id === s.id).city === city.id).map(s => s.point);
+  return [city.id, [[Math.min(...points.map(p => p[0])) - .045, Math.min(...points.map(p => p[1])) - .045], [Math.max(...points.map(p => p[0])) + .045, Math.max(...points.map(p => p[1])) + .045]]];
+}));
 const campusShapes = serialize(campusFeatures);
 const localDetails = neighborhoodFeatures.filter(item => item.geometry.type !== 'Point').map(item => {
   const geometry = normalizeGeometry(item.geometry);
@@ -83,7 +89,8 @@ const localBoxes = [...campusShapes, ...localDetails].map(item => item.bounds);
 const localBounds = [[Math.min(...localBoxes.map(b => b[0][0])), Math.min(...localBoxes.map(b => b[0][1]))], [Math.max(...localBoxes.map(b => b[1][0])), Math.max(...localBoxes.map(b => b[1][1]))]];
 const data = {
   localClipBounds,
-  china: serialize(cn), fujian: serialize(fj), fuzhou: serialize(fz),
+  china: serialize(cn), fujian: serialize(fj), fuzhou: serialize(fz), quanzhou: serialize(qz),
+  cityViews,
   campuses: campusShapes,
   localDetails,
   localLabels,
@@ -91,8 +98,8 @@ const data = {
   // unique keys as well; String(undefined) creates reconciliation collisions.
   context: countryFeatures.map((f, index) => ({ id: f.id === undefined ? `world:${f.properties?.name || index}` : String(f.id), d: path(f), bounds: path.bounds(f) })),
   graticule: path(geoGraticule10()),
-  bounds: { world: path.bounds({ type: 'Sphere' }), china: path.bounds(cn), fujian: path.bounds(fj), fuzhou: path.bounds(fz), local: localBounds, campuses: campusBounds },
-  points: { fuzhou: projection(FUZHOU_CENTER), ...Object.fromEntries(schoolPoints.map(s => [s.id, s.point])) },
+  bounds: { world: path.bounds({ type: 'Sphere' }), china: path.bounds(cn), fujian: path.bounds(fj), fuzhou: path.bounds(fz), quanzhou: path.bounds(qz), local: localBounds, campuses: cityViews.fuzhou, allCampuses: campusBounds },
+  points: { fujian: projection(china.features.find(f => String(f.properties.adcode) === '350000').properties.center), ...Object.fromEntries(branchCities.map(city => [city.id, projection(city.coordinates)])), ...Object.fromEntries(schoolPoints.map(s => [s.id, s.point])) },
   campusViews: Object.fromEntries(schoolPoints.map(s => [s.id, [[s.point[0] - .085, s.point[1] - .065], [s.point[0] + .085, s.point[1] + .065]]])),
 };
 for (const name of ['台湾省','海南省','香港特别行政区','澳门特别行政区']) {

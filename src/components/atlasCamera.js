@@ -1,3 +1,5 @@
+import { branchById, cityById } from '../data/branches.js';
+
 // Camera coordinates use the atlas's projected geographic space. Interpolating
 // its centre and log-scale keeps the destination in view throughout a zoom.
 export function fitAtlasCamera(bounds, width, height, padding = 56, magnification = 1) {
@@ -65,7 +67,7 @@ export function atlasMarkerLabels(markers, height, gap = 6) {
   return placed;
 }
 
-export const parentAtlasView = view => view.startsWith('school:') ? 'fuzhou' : view === 'fuzhou' ? 'fujian' : 'china';
+export const parentAtlasView = view => view.startsWith('school:') ? branchById[view.slice(7)]?.city || 'fujian' : cityById[view] ? 'fujian' : 'china';
 
 const ramp = (value, start, end) => {
   const t = Math.max(0, Math.min(1, (value - start) / (end - start)));

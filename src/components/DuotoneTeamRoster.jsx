@@ -217,6 +217,7 @@ function Portrait(props) {
 	const close = () => { hitRef.current?.focus({ preventScroll: true }); onLeave(slot.key); if (hitRef.current) releaseNudge(hitRef.current.parentElement); };
 	const isRole = slot.kind === "role";
 	const member = slot.kind === "member" ? slot.member : null;
+	const milestoneDate = member?.founding?.date || member?.joinedAt;
 	const role = slot.kind === "role" ? slot.role : null;
 	const craft = member ? member.university || "" : role ? role.craft || labels.hiring : "";
 	const label = member ? [member.name, member.university].filter(Boolean).join('，') : role ? labels.openRole + ": " + role.title : "";
@@ -307,6 +308,10 @@ function Portrait(props) {
         {href ? <a href={href} target="_blank" rel="noopener noreferrer" aria-label={member ? `${member.name} 的 GitHub 主页（新窗口）` : undefined} tabIndex={hidden || !on ? -1 : 0}>
             {linkLabel} <span aria-hidden="true">↗</span>
           </a> : null}
+        {milestoneDate ? <p className="dtr-joined">
+          <time dateTime={milestoneDate}>{milestoneDate.split('-').map(Number).map((part, index) => `${part}${['年', '月', '日'][index]}`).join('')}</time>{' '}
+          {member.founding ? <a className="dtr-founding-link" href={member.founding.href} aria-label={`查看${member.founding.name}详情`} tabIndex={hidden || !on ? -1 : 0}>创办 {member.founding.name}</a> : '加入'}
+        </p> : null}
         <button type="button" className="dtr-close" tabIndex={hidden || !on ? -1 : 0} aria-label={`关闭${member ? member.name : role?.title || ""}的介绍`} onClick={close}>关闭 <span aria-hidden="true">×</span></button>
       </div>
     </div>;

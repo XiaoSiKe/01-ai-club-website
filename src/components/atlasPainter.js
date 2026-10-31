@@ -1,3 +1,4 @@
+import { branchCities, cityById } from '../data/branches';
 import { atlasLayerOpacity } from './atlasCamera';
 import { atlasRegionReveal } from './atlasReveal';
 
@@ -7,7 +8,7 @@ const intersects = (a, b) => !a || a[0][0] <= b[1][0] && a[1][0] >= b[0][0] && a
 function compile(atlas) {
   if (compiledMaps.has(atlas)) return compiledMaps.get(atlas);
   const result = {};
-  for (const key of ['context', 'china', 'fujian', 'fuzhou', 'localDetails', 'campuses']) {
+  for (const key of ['context', 'china', 'fujian', 'fuzhou', 'quanzhou', 'localDetails', 'campuses']) {
     result[key] = atlas[key].map(item => ({ ...item, path: new Path2D(item.d) }));
   }
   // A geographic wave from the northwest to the southeast, compiled once.
@@ -85,13 +86,14 @@ export function createAtlasPainter(canvas, atlas) {
       context.shadowBlur = 0;
     }
     if (opacity.fujian > .001) for (const item of geometry.fujian) {
-      const home = item.id === '350100';
-      const glowing = home && hoveredId === 'fuzhou';
+      const city = branchCities.find(city => city.adcode === item.id);
+      const home = Boolean(city);
+      const glowing = home && hoveredId === city.id;
       if (glowing) { context.shadowColor = p.ink; context.shadowBlur = 14 * ratio; }
       shape(item,glowing?p.line:home?p.highlight:p.land,home?p.ink:p.line,glowing?2:home?1:.65,opacity.fujian);
       context.shadowBlur = 0;
     }
-    if (opacity.fuzhou > .001) for (const item of geometry.fuzhou) shape(item,p.bg,p.line,.65,opacity.fuzhou,1,.55);
+    if (opacity.fuzhou > .001) for (const item of [...geometry.fuzhou, ...geometry.quanzhou]) shape(item,p.bg,p.line,.65,opacity.fuzhou,1,.55);
     const contextLabels = [];
     if (opacity.local > .001) {
       for (const item of geometry.localDetails) {
@@ -131,13 +133,13 @@ export function createAtlasPainter(canvas, atlas) {
       context.setLineDash([3/scale,6/scale]);
       for (const item of geometry.connections) {
         const active = selectedId && (selectedId === item.id || selectedId === 'fzu');
-        shape(item,null,p.ink,1,opacity.local*(active ? .35 : view === 'fuzhou' ? .28 : .12));
+        shape(item,null,p.ink,1,opacity.local*(active ? .35 : cityById[view] ? .28 : .12));
       }
       context.setLineDash([]);
 
       // Keep contextual labels in screen space and reserve room for the
       // interactive school labels, toolbar and map hints.
-      const occupied = Object.entries(atlas.points).filter(([id]) => id !== 'fuzhou').map(([, point]) => ({
+      const occupied = Object.entries(atlas.points).filter(([id]) => id !== 'fujian' && !cityById[id]).map(([, point]) => ({
         x: point[0]*scale+dx-150, y: point[1]*scale+dy-26, width: 300, height: 72,
       }));
       const overlaps = (a, b) => a.x < b.x+b.width && a.x+a.width > b.x && a.y < b.y+b.height && a.y+a.height > b.y;
@@ -205,13 +207,13 @@ export function createAtlasPainter(canvas, atlas) {
 
   const hitTest = (x,y,view) => {
     if (!last) return null;
-    const local = view === 'fuzhou' || view.startsWith('school:');
+    const local = Boolean(cityById[view]) || view.startsWith('school:');
     if (!local && !['china','fujian'].includes(view)) return null;
-    const items = local ? geometry.campuses : (view === 'china' ? geometry.china : geometry.fujian).filter(item => item.id === (view === 'china' ? '350000' : '350100'));
+    const items = local ? geometry.campuses : (view === 'china' ? geometry.china : geometry.fujian).filter(item => view === 'china' ? item.id === '350000' : branchCities.some(city => city.adcode === item.id));
     context.save(); context.setTransform(1,0,0,1,0,0);
     const hit = items.find(item => context.isPointInPath(item.path,(x-last.dx)/last.scale,(y-last.dy)/last.scale));
     context.restore();
-    return hit ? local ? `school:${hit.id}` : view === 'china' ? 'fujian' : 'fuzhou' : null;
+    return hit ? local ? `school:${hit.id}` : view === 'china' ? 'fujian' : branchCities.find(city => city.adcode === hit.id)?.id : null;
   };
   return { paint, hitTest };
 }

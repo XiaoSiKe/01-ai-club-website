@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { atlasFlightTarget, atlasMarkerLabels, atlasMarkerLayout, atlasSpringResponse, fitAtlasCamera, stepAtlasSpring } from './atlasCamera';
 import { createAtlasPainter } from './atlasPainter';
+import { branchById } from '../data/branches';
 
 const ZERO = { x: 0, y: 0, z: 0 };
 const cameraPadding = width => width < 500 ? 42 : 64;
@@ -11,7 +12,7 @@ export default function useAtlasCamera({ viewportRef, layerRef, painterRef, mark
   const pointsRef = useRef(points);
   const engineRef = useRef(null);
   const renderOptions = useRef(null);
-  renderOptions.current = { palette, selectedId, hoveredId, view, entrance: entranceRef.current, reduced, markerBounds: atlas?.bounds.campuses };
+  renderOptions.current = { palette, selectedId, hoveredId, view, entrance: entranceRef.current, reduced, markerBounds: atlas?.cityViews[branchById[selectedId]?.city || view] || atlas?.bounds.campuses };
   pointsRef.current = points;
   sizeRef.current = size;
 
