@@ -36,7 +36,12 @@ export default function ImageLightbox({ item, opener, onClose }) {
             alt={item.title || item.alt || ''} decoding="async" onLoad={() => setReady(true)} onError={() => setFailed(true)} />
           {!ready && !failed && <div className="image-lightbox__loading"><UniqueLoading /></div>}
         </div>
-        <figcaption id="lightbox-caption">{item.title || item.alt}{item.credit && <span className="image-lightbox__credit">{item.credit}</span>}{failed && <span>高清图暂时无法加载，当前显示预览图。</span>}</figcaption>
+        <figcaption id="lightbox-caption">
+          {item.title || item.alt}
+          {item.organization && <span className="image-lightbox__organization">{item.organization}</span>}
+          {item.credit && <span className="image-lightbox__credit">{item.credit}</span>}
+          {failed && <span>高清图暂时无法加载，当前显示预览图。</span>}
+        </figcaption>
       </figure>
       {item.downloadName ? <div className="image-lightbox__actions">
         <SpecularButton className="image-lightbox__save"

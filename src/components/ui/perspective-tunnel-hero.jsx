@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { activityPhotos } from '../../data/activity-photos';
 import BorderGlow, { clearBorderGlow, updateBorderGlow } from '../../BorderGlow';
 import ResponsiveImage from '../ResponsiveImage';
+import ImageLightbox from '../ImageLightbox';
 import { tunnelCardWidth } from '../heroImages';
 import './perspective-tunnel-hero.css';
 
@@ -26,6 +27,8 @@ function useCameraParallax(enabled) {
     if (!enabled) return undefined;
     const onMove = event => {
       if (window.scrollY > window.innerHeight) return;
+      // Keep a photo still while the pointer is targeting its click area.
+      if (event.target.closest?.('.tunnel-hero__card')) return;
       rawX.set((event.clientX / window.innerWidth - 0.5) * 2);
       rawY.set((event.clientY / window.innerHeight - 0.5) * 2);
     };
@@ -35,7 +38,7 @@ function useCameraParallax(enabled) {
   return { x, y };
 }
 
-function TunnelCard({ card, progress, pointer, total, stage, reduce }) {
+function TunnelCard({ card, progress, pointer, total, stage, reduce, onOpen }) {
   const staggerSpan = 0.55;
   const start = (card.index / total) * (1 - staggerSpan);
   const end = start + staggerSpan;
@@ -65,13 +68,15 @@ function TunnelCard({ card, progress, pointer, total, stage, reduce }) {
     return `translate3d(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px), ${reduce ? -400 : currZ}px) rotateZ(${reduce ? 0 : card.rotationZ}deg)`;
   });
 
-  return <motion.div className="tunnel-hero__card"
+  return <motion.button type="button" className="tunnel-hero__card"
+    aria-label={`查看照片 ${card.index + 1}：${card.item.title || card.item.alt}`} aria-haspopup="dialog"
+    onClick={event => onOpen(card.item, event.currentTarget)}
     style={{ width: cardWidth, aspectRatio: `${card.item.width} / ${card.item.height}`, transform, opacity, visibility, zIndex: card.index + 1 }}>
     <div className="tunnel-hero__card-inner">
       <ResponsiveImage active={loadImage} src={card.item.src} alt="" width={card.item.width} height={card.item.height} fetchPriority="low" draggable={false} />
     </div>
     <BorderGlow as="span" className="media-edge-glow tunnel-hero__photo-glow" backgroundColor="transparent" borderRadius={16} glowRadius={24} glowIntensity={2.1} />
-  </motion.div>;
+  </motion.button>;
 }
 
 export default function PerspectiveTunnelHero({ children }) {
@@ -79,6 +84,8 @@ export default function PerspectiveTunnelHero({ children }) {
   const glowPointerRef = useRef(null);
   const requestGlowRef = useRef(null);
   const reduce = useReducedMotion();
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const openerRef = useRef(null);
   const [stage, setStage] = useState(() => ({ width: window.innerWidth, height: window.innerHeight, isMobile: window.innerWidth < 768 }));
   useEffect(() => {
     const update = () => setStage({ width: window.innerWidth, height: window.innerHeight, isMobile: window.innerWidth < 768 });
@@ -90,6 +97,7 @@ export default function PerspectiveTunnelHero({ children }) {
   const rawProgress = useMotionValue(0);
   const smoothProgress = useSpring(rawProgress, { stiffness: 80, damping: 30, restDelta: 0.0001 });
   useEffect(() => {
+    if (selectedPhoto) return undefined;
     const stageElement = containerRef.current.parentElement;
     let touchY = null, previousScrollY = window.scrollY;
     const advance = (delta, event) => {
@@ -130,10 +138,22 @@ export default function PerspectiveTunnelHero({ children }) {
       stageElement.removeEventListener('touchcancel', touchEnd);
       window.removeEventListener('scroll', scroll);
     };
-  }, [rawProgress]);
+  }, [rawProgress, selectedPhoto]);
 
-  const pointer = useCameraParallax(!reduce);
+  const pointer = useCameraParallax(!reduce && !selectedPhoto);
   const progress = reduce ? rawProgress : smoothProgress;
+  const openPhoto = (item, opener) => {
+    const position = progress.get();
+    rawProgress.set(position);
+    smoothProgress.jump(position);
+    openerRef.current = opener;
+    setSelectedPhoto({
+      ...item,
+      organization: item.organization || '零一 AI 日新社',
+      title: item.title || item.alt,
+      aspectRatio: item.width / item.height,
+    });
+  };
   const titleScale = useTransform(progress, [0, 0.5, 1], [1, 1.15, 1.35]);
   const titleOpacity = useTransform(progress, [0, 0.85, 1], [1, 1, 0]);
 
@@ -165,7 +185,7 @@ export default function PerspectiveTunnelHero({ children }) {
 
   return <div ref={containerRef} className="tunnel-hero" style={{ perspective: stage.isMobile ? '900px' : '1200px', transformStyle: 'preserve-3d' }}
     onPointerMove={event => {
-      if (event.pointerType === 'touch') return;
+      if (selectedPhoto || event.pointerType === 'touch') return;
       glowPointerRef.current = { x: event.clientX, y: event.clientY };
       requestGlowRef.current?.();
     }}
@@ -176,8 +196,9 @@ export default function PerspectiveTunnelHero({ children }) {
     <motion.div className="tunnel-hero__anchor" style={{ scale: reduce ? 1 : titleScale, opacity: reduce ? 1 : titleOpacity }}>
       {children}
     </motion.div>
-    <div className="tunnel-hero__photos" aria-hidden="true">
-      {TUNNEL_CARDS.map(card => <TunnelCard key={card.item.id} card={card} progress={progress} pointer={pointer} total={TUNNEL_CARDS.length} stage={stage} reduce={reduce} />)}
+    <div className="tunnel-hero__photos" role="group" aria-label="社团活动照片">
+      {TUNNEL_CARDS.map(card => <TunnelCard key={card.item.id} card={card} progress={progress} pointer={pointer} total={TUNNEL_CARDS.length} stage={stage} reduce={reduce} onOpen={openPhoto} />)}
     </div>
+    {selectedPhoto && <ImageLightbox item={selectedPhoto} opener={openerRef.current} onClose={() => setSelectedPhoto(null)} />}
   </div>;
 }

@@ -9,6 +9,7 @@
 .image-lightbox__loading { position: absolute; inset: 0; z-index: 1; display: grid; place-items: center; pointer-events: none; }
 .image-lightbox__figure figcaption { max-width: 70ch; color: inherit; font-size: 14px; line-height: 1.7; text-align: center; pointer-events: auto; }
 .image-lightbox__figure figcaption span { display: block; font-size: 12px; }
+.image-lightbox__figure figcaption .image-lightbox__organization { margin-top: 4px; color: var(--site-muted, #b8b8bf); font-size: clamp(15px, 1.5vw, 18px); font-weight: 600; }
 .image-lightbox__figure figcaption .image-lightbox__credit { margin-top: 6px; color: var(--site-muted, #b8b8bf); font-size: clamp(14px, 1.4vw, 17px); font-weight: 600; }
 .image-lightbox .image-lightbox__close { position: fixed; right: 32px; bottom: 28px; min-width: 180px; min-height: 56px; }
 .image-lightbox__close .specular-button__label { display: inline-flex; align-items: center; gap: 28px; }
@@ -19,6 +20,7 @@
 }
 @media (max-width: 600px) {
   .image-lightbox { padding: 24px 12px 104px; }
+  .image-lightbox__figure figcaption .image-lightbox__organization { font-size: 13px; }
   .image-lightbox__media { width: min(calc(100vw - 24px), calc((100dvh - 230px) * var(--lightbox-aspect))); }
   .image-lightbox .image-lightbox__close { right: 20px; bottom: max(20px, env(safe-area-inset-bottom)); }
 }
