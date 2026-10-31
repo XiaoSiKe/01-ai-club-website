@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { branches, branchById, searchBranches } from '../data/branches';
+import { branches, branchById, branchCities, cityById, searchBranches } from '../data/branches';
 import { pioneers } from '../data/pioneers';
 import { parentAtlasView } from './atlasCamera';
 import useAtlasCamera from './useAtlasCamera';
@@ -38,7 +38,10 @@ export default function BranchAtlas({ borderGlowProps }) {
   const [atlas, setAtlas] = useState(null);
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
-  const [view, setView] = useState('china');
+  const [view, setView] = useState(() => {
+    const branchId = new URLSearchParams(window.location.search).get('branch');
+    return Object.hasOwn(branchById, branchId) ? `school:${branchId}` : 'china';
+  });
   const [reduced, setReduced] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [hovered, setHovered] = useState(null);
   const [query, setQuery] = useState('');
@@ -48,7 +51,9 @@ export default function BranchAtlas({ borderGlowProps }) {
   const selected = view.startsWith('school:') ? branchById[view.slice(7)] : null;
   const leaderMember = selected?.leader ? pioneers.find(member => member.name === selected.leader.name) : null;
   const LeaderProfile = leaderMember ? 'a' : 'div';
-  const local = view === 'fuzhou' || Boolean(selected);
+  const currentCity = selected?.city || (cityById[view] ? view : null);
+  const local = Boolean(currentCity);
+  const visibleBranches = currentCity ? branches.filter(branch => branch.city === currentCity) : branches;
   const selectedIndex = selected ? branches.findIndex(branch => branch.id === selected.id) : -1;
   useAtlasEntrance(rootRef, Boolean(atlas), reduced, entranceRef, atlas?.china.length || 0);
 
@@ -74,8 +79,8 @@ export default function BranchAtlas({ borderGlowProps }) {
     return () => { cancelled = true; };
   }, [dataReady, attempt]);
 
-  const bounds = atlas ? selected ? atlas.campusViews[selected.id] : view === 'fuzhou' ? atlas.bounds.campuses : atlas.bounds[view] : null;
-  const points = useMemo(() => atlas ? Object.fromEntries(Object.entries(atlas.points).map(([key, point]) => [key, { point, side: branchById[key]?.labelSide || 'right', minScale: key === 'fuzhou' ? 0 : 450 }])) : {}, [atlas]);
+  const bounds = atlas ? selected ? atlas.campusViews[selected.id] : cityById[view] ? atlas.cityViews[view] : atlas.bounds[view] : null;
+  const points = useMemo(() => atlas ? Object.fromEntries(Object.entries(atlas.points).map(([key, point]) => [key, { point, side: branchById[key]?.labelSide || 'right', minScale: key === 'fujian' || cityById[key] ? 0 : 450 }])) : {}, [atlas]);
   useAtlasCamera({ viewportRef, layerRef, painterRef, markerRefs, entranceRef, points, bounds, reduced, overview: view === 'china', atlas, palette, selectedId: selected?.id, hoveredId: hovered, view });
 
   const go = useCallback((next, keyboard = false) => {
@@ -91,9 +96,9 @@ export default function BranchAtlas({ borderGlowProps }) {
 
   const crumbs = [{ view: 'china', label: '全国' }];
   if (view !== 'china') crumbs.push({ view: 'fujian', label: '福建' });
-  if (local) crumbs.push({ view: 'fuzhou', label: '福州' });
+  if (local) crumbs.push({ view: currentCity, label: cityById[currentCity].name });
   if (selected) crumbs.push({ view, label: selected.shortName });
-  const title = selected?.school || (view === 'china' ? '福建·福州：梦开始的地方' : view === 'fujian' ? '福建' : '福州');
+  const title = selected?.school || (view === 'china' ? '从福建出发，连接更多高校' : view === 'fujian' ? '福建' : cityById[view]?.name);
   const schoolButton = branch => (
     <button type="button" key={branch.id} className={`branch-atlas__school-row${selected?.id === branch.id ? ' is-selected' : ''}`} onClick={follow(`school:${branch.id}`)} onPointerEnter={() => setHovered(branch.id)} onPointerLeave={() => setHovered(null)} onFocus={() => setHovered(branch.id)} onBlur={() => setHovered(null)} aria-label={`查看${branch.school}${branch.role}`} aria-describedby={`${id}-founded-${branch.id}${branch.leader ? ` ${id}-leader-${branch.id}` : ''}`}>
       <ResponsiveImage src={branch.crest} alt="" className="branch-atlas__crest" style={{ backgroundColor: branch.crestBackground }} />
@@ -126,19 +131,19 @@ export default function BranchAtlas({ borderGlowProps }) {
             onPointerLeave={() => setHovered(null)}
           />
           <div className="branch-atlas__vignette" aria-hidden="true" />
-          {atlas && !local && <div ref={el => { markerRefs.current.fuzhou = el; }} className="branch-atlas__pin branch-atlas__pin--city">
-            <button type="button" onClick={follow(view === 'china' ? 'fujian' : 'fuzhou')} aria-label={view === 'china' ? '进入福建分社地图' : '进入福州高校地图'} onPointerEnter={() => setHovered(view === 'china' ? 'fujian' : 'fuzhou')} onPointerLeave={() => setHovered(null)} onFocus={() => setHovered(view === 'china' ? 'fujian' : 'fuzhou')} onBlur={() => setHovered(null)}>
+          {atlas && !local && (view === 'china' ? [{ id: 'fujian', name: '福建', count: branches.length }] : branchCities.map(city => ({ ...city, count: branches.filter(branch => branch.city === city.id).length }))).map(place => <div key={place.id} ref={el => { markerRefs.current[place.id] = el; }} className="branch-atlas__pin branch-atlas__pin--city">
+            <button type="button" onClick={follow(place.id)} aria-label={view === 'china' ? '进入福建分社地图' : `进入${place.name}高校地图`} onPointerEnter={() => setHovered(place.id)} onPointerLeave={() => setHovered(null)} onFocus={() => setHovered(place.id)} onBlur={() => setHovered(null)}>
               <span className="branch-atlas__pulse" /><span className="branch-atlas__dot" />
-              <span className="branch-atlas__pin-label"><strong>{view === 'china' ? '福建 · 福州' : '福州'}</strong><small>{branches.length} 所高校 <span aria-hidden="true">↗</span></small></span>
+              <span className="branch-atlas__pin-label"><strong>{place.name}</strong><small>{place.count} 所高校 <span aria-hidden="true">↗</span></small></span>
             </button>
-          </div>}
-          {atlas && local && branches.map(branch => <div key={branch.id} ref={el => { markerRefs.current[branch.id] = el; }} className={`branch-atlas__pin branch-atlas__pin--${branch.labelSide}${selected?.id === branch.id || hovered === branch.id ? ' is-active' : ''}${branch.role === '总社' ? ' is-head' : ''}`}>
+          </div>)}
+          {atlas && local && visibleBranches.map(branch => <div key={branch.id} ref={el => { markerRefs.current[branch.id] = el; }} className={`branch-atlas__pin branch-atlas__pin--${branch.labelSide}${selected?.id === branch.id || hovered === branch.id ? ' is-active' : ''}${branch.role === '总社' ? ' is-head' : ''}`}>
             <button type="button" onClick={follow(`school:${branch.id}`)} onPointerEnter={() => setHovered(branch.id)} onPointerLeave={() => setHovered(null)} aria-label={`在地图中查看${branch.school}`} aria-pressed={selected?.id === branch.id}>
               <span className="branch-atlas__pulse" /><span className="branch-atlas__dot" />
               <span className="branch-atlas__pin-label"><strong>{branch.role === '总社' ? `${branch.school}总社` : branch.name}</strong></span>
             </button>
           </div>)}
-          <div className="branch-atlas__map-top"><span>{local ? '福州' : view === 'fujian' ? '福建' : '中国'}</span><span className="branch-atlas__north" aria-label="北方">N <svg viewBox="0 0 12 16" aria-hidden="true"><path d="M6 0 12 16 6 12 0 16Z" /></svg></span></div>
+          <div className="branch-atlas__map-top"><span>{local ? cityById[currentCity].name : view === 'fujian' ? '福建' : '中国'}</span><span className="branch-atlas__north" aria-label="北方">N <svg viewBox="0 0 12 16" aria-hidden="true"><path d="M6 0 12 16 6 12 0 16Z" /></svg></span></div>
           <div className="branch-atlas__map-bottom">
             <span id={`${id}-map-help`}>{local ? '点击校名，探索分社' : '点击地点，逐级探索'}</span>
             <button type="button" className="branch-atlas__map-back" aria-label="地图内返回上一级" disabled={!atlas || view === 'china'} onClick={follow(parentAtlasView(view))}><Arrow back />返回上一级</button>
@@ -160,7 +165,7 @@ export default function BranchAtlas({ borderGlowProps }) {
             {!searching && selected && <header className="branch-atlas__school-heading">
               <SchoolCrest branch={selected} />
               <div>
-                <div className="branch-atlas__overline">{selected.role} · 福建福州</div>
+                <div className="branch-atlas__overline">{selected.role} · 福建{cityById[selected.city].name}</div>
                 <h3 ref={titleRef} tabIndex={-1}>{selected.school}</h3>
                 <p className="branch-atlas__branch-name">
                   <span>{selected.role === '总社' ? '零一 AI 日新社' : selected.name}</span>
@@ -186,7 +191,7 @@ export default function BranchAtlas({ borderGlowProps }) {
               </LeaderProfile>}
               <BranchFlag branch={selected} />
             </div> : <>
-              <div className="branch-atlas__school-list"><div className="branch-atlas__list-label">{view === 'china' ? '全国高校' : view === 'fujian' ? '福建高校' : '福州高校'}<span>{branches.length}</span></div>{branches.map(schoolButton)}</div>
+              <div className="branch-atlas__school-list"><div className="branch-atlas__list-label">{view === 'china' ? '全国高校' : view === 'fujian' ? '福建高校' : `${cityById[view]?.name}高校`}<span>{visibleBranches.length}</span></div>{visibleBranches.map(schoolButton)}</div>
             </>}
           </div>
           <footer className="branch-atlas__panel-actions">

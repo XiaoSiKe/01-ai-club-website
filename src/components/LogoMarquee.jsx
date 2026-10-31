@@ -14,6 +14,7 @@ function PartnerMark({ logo }) {
   const imageStyle = {
     width: `calc(${logo.width || 120}px * var(--partner-logo-scale, 1))`,
     height: `calc(${logo.height || 36}px * var(--partner-logo-scale, 1))`,
+    ...(logo.offsetY ? { transform: `translateY(calc(${logo.offsetY}px * var(--partner-logo-scale, 1)))` } : {}),
   };
   return (
     <span className={`logo-marquee__mark${logo.monochrome ? ' logo-marquee__mark--mono' : ''}${logo.lightInk ? ' logo-marquee__mark--light-ink' : ''}`}>

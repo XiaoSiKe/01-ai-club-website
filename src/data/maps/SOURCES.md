@@ -114,3 +114,30 @@ The user supplied 福州理工分社, founding date 2026-10-26 and leader Eug. T
 - Geographic reference: OpenStreetMap way 582302622, `amenity=university`, with Nominatim lookup centre 119.4655281° E, 26.2428289° N. The OSM area is unnamed. It was matched to the public FIT campus reference near its official address, using https://www.bigemap.net/city-26898.html only as a location clue; that page's map-coordinate datum is unspecified, so its coordinates were not copied directly. The polygon is an approximate campus-area reference, not an official surveyed institutional boundary. Initial fuzzy Nominatim search results naming 福建理工大学 were discarded.
 - Local geographic context: https://api.openstreetmap.org/api/0.6/map?bbox=119.455,26.225,119.490,26.255 . The curated addition contains 207 nonduplicate OSM ways: 130 roads, 15 water features, 44 buildings, 1 neighboring university area and 17 land-use areas. Original OSM IDs are retained; the featured area is rendered through its separate campus polygon. The finite clipping rectangle now derives from all supplied campus extents plus padding.
 - Branch flag: generated with `scripts/create-fit-flag.py`, preserving 36 logo/main-wordmark paths from the user's 福大至诚 template. New Heiti SC Medium and Arial Bold lettering is converted to paths. The PDF and SVG contain no raster images and no live text; the final PDF is extracted into 62 inline paths for `branch-flags.json`.
+
+## Quanzhou Ocean branch (2026-10-30)
+
+The user supplied the display name 泉州海洋学院, leader 郑鑫尧 and founding
+date 2026-10-30. The existing pioneer ID `qwq2008123-star` and supplied portrait
+are reused. The official website uses 泉州海洋职业学院; both names are searchable.
+
+- Official address: https://www.qzoi.edu.cn/xygk/lxwm.htm — 福建省石狮市祥芝镇古浮二十区1号.
+- Official crest reference: https://www.qzoi.edu.cn/sjxxsbxt_/xh.htm . The original
+  image https://www.qzoi.edu.cn/__local/6/D2/FD/1F5D95085C9711420795F9343AA_9994A2A6_154E0.jpg
+  is cropped to its existing crest (no redraw) and resized to 480px in
+  `public/images/branches/qzoi-crest.jpg`.
+- Campus outline: OpenStreetMap way 621503484, named 泉州海洋学院, retrieved from
+  https://api.openstreetmap.org/api/0.6/map?bbox=118.735,24.755,118.77,24.79 .
+  The marker uses the outline bounding-box centre, WGS84 118.74615565,24.76465065.
+  The original polygon is retained; 125 surrounding OSM ways are added to the
+  existing local-context dataset with source IDs preserved. Fuzzy Nominatim
+  matches outside this campus were discarded.
+- Quanzhou district geometry: https://geo.datav.aliyun.com/areas_v3/bound/350500_full.json,
+  using the same administrative map source as the existing city map.
+- The atlas now groups branches by city: 福州 has five campuses and 泉州 has one.
+  The Fujian view has separate city markers, school views return to their own
+  city, and all geography is bundled locally.
+- Flag: `scripts/create-fit-flag.py --branch-name 泉州海洋分社 --branch-code QZOI`
+  preserves the 36 shared brand paths from the bundled FIT flag and outlines
+  the new branch lettering. The SVG and PDF have no live fonts or raster images;
+  `branch-flags.json` contains 63 paths for `qzoi`.

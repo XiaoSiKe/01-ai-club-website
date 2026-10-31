@@ -71,6 +71,8 @@
 .branch-atlas__panel-content > .branch-atlas__intro,
 .branch-atlas__panel-content > .branch-atlas__school-heading,
 .branch-atlas__panel-content > .branch-atlas__toolbar { flex-shrink: 0; }
+.branch-atlas[data-view='school'] .branch-atlas__body { height: auto; min-height: calc(776px - 60pt); }
+.branch-atlas[data-view='school'] .branch-atlas__panel-content { flex: 0 0 auto; overflow: visible; }
 .branch-atlas__school-list,
 .branch-atlas__search-results { min-height: 0; overflow-y: auto; scrollbar-width: thin; }
 .branch-atlas__intro { margin-bottom: 24px; }
@@ -144,6 +146,7 @@ a.branch-atlas__leader-profile:is(:hover, :focus-visible) strong { text-decorati
   .branch-atlas__map-top { top: 24px; }
   .branch-atlas__map-bottom { bottom: 24px; }
   .branch-atlas__panel { height: 600px; min-height: 0; flex: none; padding: 24px; border-left: 0; border-top: 1px solid var(--atlas-border); }
+  .branch-atlas[data-view='school'] .branch-atlas__panel { height: auto; min-height: 600px; }
   .branch-atlas__school-row { gap: 10px; padding-left: 4px; }
   .branch-atlas__search { margin-bottom: 28px; }
   .branch-atlas__search input { font-size: 16px; }

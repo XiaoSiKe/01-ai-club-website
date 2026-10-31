@@ -30,6 +30,15 @@ supplied, so the marquee contains no invented links. Retrieved 2026-10-21.
   https://assets.workbuddy.cn/web/workbuddy/7e170c91f6fb3aa5720dd4381254492d08bf980c/assets/logo.svg
   The accompanying display name uses the user-supplied lowercase spelling.
 
+- **闽客松 — `minkesong.png`:** user-supplied logo, added 2026-10-30.
+  Prepared with the built-in image editor as a solid black, transparent PNG;
+  trimmed to the artwork and resized to 600px wide for local website use.
+  Edit prompt: remove the white background and outer border, turn blue/cyan
+  artwork black, preserve the emblem, Chinese lettering and original proportions,
+  and retain antialiased edges without shadows or gradients.
+  Displayed at 118 × 49.56px, offset upward 5px before the shared scale,
+  with theme-aware monochrome CSS.
+
 Official assets are stored locally without changing their source files. CSS
 adapts monochrome wordmarks to the page theme and displays all product icons in
 grayscale, including on hover. If an image cannot be loaded, its actual

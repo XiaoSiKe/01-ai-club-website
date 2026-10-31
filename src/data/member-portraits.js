@@ -33,4 +33,5 @@ export const memberPortraits = {
   '冬思韦': '/images/pioneers/dong-siwei-upload.jpg',
   '吴浩然': '/images/pioneers/wu-haoran.jpg',
   '张荣晖': '/images/pioneers/zhang-ronghui.jpg',
+  '郑鑫尧': '/images/pioneers/zheng-xinyao.jpg',
 };

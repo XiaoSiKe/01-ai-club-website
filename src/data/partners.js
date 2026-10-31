@@ -12,4 +12,5 @@ export const partners = [
     mask: { viewBox: '150 205 1135 720', width: 1400, height: 1280 } },
   { id: 'dewu', name: '得物', src: '/images/partners/dewu.ico', width: 32, height: 32, showName: true },
   { id: 'workbuddy', name: 'workbuddy', src: '/images/partners/workbuddy.svg', width: 32, height: 32, showName: true },
+  { id: 'minkesong', name: '闽客松', src: '/images/partners/minkesong.png', width: 118, height: 49.56, offsetY: -5, monochrome: true },
 ];

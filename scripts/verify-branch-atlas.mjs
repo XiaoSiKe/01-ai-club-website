@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { atlasFlightTarget, atlasLayerOpacity, atlasMarkerLabels, atlasMarkerLayout, atlasSpringResponse, fitAtlasCamera, stepAtlasSpring, parentAtlasView } from '../src/components/atlasCamera.js';
-import { branches, searchBranches } from '../src/data/branches.js';
+import { branches, branchCities, searchBranches } from '../src/data/branches.js';
 
 const atlas = JSON.parse(readFileSync(new URL('../src/data/maps/branch-atlas.json', import.meta.url)));
-for (const name of ['china', 'fujian', 'fuzhou', 'campuses', 'localDetails', 'context']) {
+for (const name of ['china', 'fujian', 'fuzhou', 'quanzhou', 'campuses', 'localDetails', 'context']) {
   const ids = atlas[name].map(item => item.id);
   assert(ids.every(id => id && id !== 'undefined'), `${name} render IDs must be defined`);
   assert.equal(new Set(ids).size, ids.length, `${name} render IDs must be unique`);
@@ -96,7 +96,20 @@ assert.deepEqual(searchBranches(' 福理工 ').map(item => item.id), ['fjut']);
 assert.deepEqual(searchBranches('闽江学院'), []);
 assert.deepEqual(searchBranches('闽江大学'), []);
 assert.deepEqual(searchBranches('FZU').map(item => item.id), ['fzu']);
-assert.equal(searchBranches('福州').length, branches.length);
+assert.equal(searchBranches('福州').length, 5);
+assert.deepEqual(searchBranches('泉州').map(item => item.id), ['qzoi']);
+assert.deepEqual(searchBranches('郑鑫尧').map(item => item.id), ['qzoi']);
+assert.equal(parentAtlasView('school:qzoi'), 'quanzhou');
+assert.equal(parentAtlasView('quanzhou'), 'fujian');
+for (const city of branchCities) {
+  const bounds = atlas.cityViews[city.id];
+  assert(bounds.flat().every(Number.isFinite));
+  for (const branch of branches.filter(item => item.city === city.id)) {
+    const [x, y] = atlas.points[branch.id];
+    assert(x >= bounds[0][0] && x <= bounds[1][0] && y >= bounds[0][1] && y <= bounds[1][1]);
+    assert.equal(parentAtlasView(`school:${branch.id}`), city.id);
+  }
+}
 assert.deepEqual(searchBranches('福师大').map(item => item.id), ['fjnu']);
 assert.deepEqual(searchBranches('至诚').map(item => item.id), ['fuzc']);
 assert.deepEqual(searchBranches('FUZC').map(item => item.id), ['fuzc']);
@@ -104,7 +117,7 @@ assert.deepEqual(searchBranches('郑航').map(item => item.id), ['fuzc']);
 assert.deepEqual(searchBranches('福州理工').map(item => item.id), ['fit']);
 assert.deepEqual(searchBranches('Eug').map(item => item.id), ['fit']);
 assert.deepEqual(searchBranches('FIT').map(item => item.id), ['fit']);
-assert.deepEqual(branches.map(item => item.id), ['fzu', 'fjnu', 'fjut', 'fuzc', 'fit']);
+assert.deepEqual(branches.map(item => item.id), ['fzu', 'fjnu', 'fjut', 'fuzc', 'fit', 'qzoi']);
 assert.deepEqual(atlas.campuses.map(item => item.id).sort(), branches.map(item => item.id).sort());
 assert.equal(atlas.points.mju, undefined);
 assert.equal(atlas.campusViews.mju, undefined);
@@ -118,7 +131,7 @@ for (const branch of branches) {
   assert(readFileSync(new URL(`../public${branch.crest}`, import.meta.url)).length > 1000, 'Crest must be bundled locally');
 }
 for (const [width, height, padding] of [[804, 776, 64], [286, 400, 42]]) {
-  for (const [from, to] of [['fzu', 'fit'], ['fit', 'fzu']]) {
+  for (const [from, to] of [['fzu', 'fit'], ['fit', 'fzu'], ['fzu', 'qzoi'], ['qzoi', 'fit']]) {
     const start = fitAtlasCamera(atlas.campusViews[from], width, height, padding);
     const target = fitAtlasCamera(atlas.campusViews[to], width, height, padding);
     let pose = { ...start }, speed = { x: 0, y: 0, z: 0 }, minScale = Math.exp(start.z);

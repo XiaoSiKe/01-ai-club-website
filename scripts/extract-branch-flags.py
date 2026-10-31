@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 import pymupdf
 
 parser = argparse.ArgumentParser()
-campuses = ('fzu', 'fjnu', 'fjut', 'fuzc', 'mju', 'fit')
+campuses = ('fzu', 'fjnu', 'fjut', 'fuzc', 'mju', 'fit', 'qzoi')
 for campus in campuses:
     parser.add_argument(f'--{campus}', type=Path)
 parser.add_argument('--output', type=Path, default=Path('src/data/branch-flags.json'))
