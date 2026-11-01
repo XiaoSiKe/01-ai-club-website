@@ -468,12 +468,12 @@ export default function App() {
               <p className="home-cooperation-intro">创造力，就是把事物连接起来。</p>
             </div>
             <div className="home-partners-row">
+              <ViewportMount className="home-partners-marquee" minHeight={168}><LogoMarquee /></ViewportMount>
               <div className="home-cooperation-actions">
                 <SpecularButton href="https://scn96l2kzmbn.feishu.cn/wiki/X7h6wI8SCiAuZAkpYF2caNv7nTG" target="_blank" rel="noopener noreferrer" className="home-cooperation-link">
-                  关于合作生态 <span aria-hidden="true">↗</span>
+                  关于零一合作生态 <span aria-hidden="true">↗</span>
                 </SpecularButton>
               </div>
-              <ViewportMount className="home-partners-marquee" minHeight={96}><LogoMarquee /></ViewportMount>
             </div>
           </section>
 
@@ -590,6 +590,9 @@ export default function App() {
         <ShutterWordmark />
         <div className="home-footer-copyright">
           <span>版权所有 © 2026 零一 AI 日新社</span>
+          <span className="home-footer-credit">
+            官网设计与制作：<a className="home-about-president" href={`./?page=pioneers&member=${encodeURIComponent(PRESIDENT.id)}`} aria-label="查看官网设计与制作者零一扬的领航先锋介绍"><ResponsiveImage src={PRESIDENT.photo} alt="" width="28" height="28" fit="cover" /><span>{PRESIDENT.name}</span></a>
+          </span>
           <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">
             地图数据 © OpenStreetMap 贡献者
           </a>

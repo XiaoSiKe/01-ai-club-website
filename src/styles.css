@@ -412,13 +412,13 @@ a {
 }
 
 .hero-wordmark {
-  width: min(7.5em, 100%);
+  width: min(7.739365em, 100%);
 }
 
 .hero-wordmark__shape {
   display: block;
   width: 100%;
-  aspect-ratio: 1604.4762 / 208.7472;
+  aspect-ratio: 1655.763393 / 208.7472;
   background-color: currentColor;
   -webkit-mask: var(--wordmark-image) center / contain no-repeat;
   mask: var(--wordmark-image) center / contain no-repeat;
@@ -800,13 +800,12 @@ a {
 .home-partners-heading > .home-cooperation-intro { margin-bottom: 0; }
 .home-partners-row {
   display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
-  align-items: center;
-  gap: clamp(32px, 4vw, 64px);
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
 }
 .home-partners-marquee { min-width: 0; }
 .home-cooperation-actions { display: flex; justify-content: flex-start; }
-.home-cooperation-link { min-height: 56px; }
+.home-cooperation-link { width: 100%; min-height: 56px; }
 .home-cooperation-link .specular-button__label { display: inline-flex; align-items: center; gap: 20px; }
 
 .home-note {
@@ -1045,6 +1044,18 @@ a {
 
 .home-footer-copyright a:hover {
   color: #f5f5f5;
+}
+
+.home-footer-credit {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.home-footer-credit a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 
 @media (max-width: 900px) {
