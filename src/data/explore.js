@@ -1,7 +1,6 @@
 const albumUrl = id => `https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzYzNzg5MjMyOQ==&action=getalbum&album_id=${id}#wechat_redirect`;
 
 export const learningFolderItems = [
-  { id: 'weekly', title: '零一周刊', href: albumUrl('4739817711382593536') },
   { id: 'thinking', title: '零一文章', href: albumUrl('4707060559798894592') },
   { id: 'experience', title: '零一大学', href: albumUrl('4739814244253466626') }
 ];

@@ -24,7 +24,7 @@ const documentItems = (items, categories) => items.map((item, index) => ({
     </span>
   ),
 }));
-const learningItems = documentItems(learningFolderItems, ['周刊 · 分享', '文章 · 观点', '大学 · 成长']);
+const learningItems = documentItems(learningFolderItems, ['文章 · 观点', '大学 · 成长']);
 const practiceItems = documentItems(practiceFolderItems, ['黑客松 · 创造', '沙龙 · 交流', '商业 · 产品', '科研 · 竞赛', '日常 · 耍起']);
 const folderGroups = [
   { id: 'learn', title: '从零到一', label: '学习与分享', items: learningItems },
