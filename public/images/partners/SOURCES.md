@@ -1,7 +1,30 @@
 # Partner display assets
 
-Names and order were supplied by the club. No partner destination URLs were
-supplied, so the marquee contains no invented links. Retrieved 2026-10-21.
+Names and assets were supplied by the club. Asset retrieval began 2026-10-21.
+Verified official destinations were added on 2026-11-01 and open in a new tab
+with `noopener noreferrer`. Unconfirmed destinations remain display-only.
+
+## Official destinations
+
+| Partner | Official destination |
+| --- | --- |
+| 中国移动 | https://www.10086.cn/ |
+| MoneyAI | https://moneyai.top/ |
+| 百度搭子 | https://www.dumate.cn/ |
+| Trae | https://www.trae.cn/ |
+| 华为 | https://www.huawei.com/cn/ |
+| 得物 | https://www.dewu.com/ |
+| workbuddy | https://www.workbuddy.cn/ |
+| Adventure X | https://www.adventure-x.cn/zh/ |
+| NextStep | https://portal.nextstep.org.cn/ |
+
+MoneyAI's own Fuzhou hackathon at https://join.moneyai.top/ identifies
+MoneyAI-Agents and links back to `moneyai.top`. NextStep's official portal is
+titled `NEXTSTEP 2026 黑客松`. Both were checked to distinguish similarly named
+products. At the user's request, Linkathon, XCombinator and 闽客松 remain
+display-only because no official destinations were supplied.
+
+## Logo assets
 
 - **中国移动 — `chinamobile.svg`:** original header SVG from the official corporate
   website. Page: https://www.chinamobileltd.com/en/media/corpimage.php
@@ -38,6 +61,20 @@ supplied, so the marquee contains no invented links. Retrieved 2026-10-21.
   and retain antialiased edges without shadows or gradients.
   Displayed at 118 × 49.56px, offset upward 5px before the shared scale,
   with theme-aware monochrome CSS.
+
+- **Adventure X — `adventure-x.png`:** user-supplied transparent white logo,
+  added 2026-11-01. Original 1646 × 256px PNG preserved byte-for-byte.
+  Displayed at 210 × 32.66px before the shared scale, preserving its wide
+  proportions; existing monochrome CSS adapts it to dark and light themes.
+
+- **XCombinator — `xcombinator.png`:** user-supplied `XC 透明.png`, added
+  2026-11-01. Original 2172 × 724px transparent PNG preserved byte-for-byte.
+  Displayed at 192 × 64px before the shared scale. Grayscale is inverted only
+  on dark backgrounds, retaining contrast between the square emblem and its X.
+- **NextStep — `nextstep.svg`:** user-supplied black vector wordmark from
+  `NextStep/svg/Black·nextstep 1 [Vectorized].svg`, added 2026-11-01 and preserved
+  byte-for-byte. Displayed at 210 × 24.48px before the shared scale, using the
+  existing theme-aware monochrome CSS.
 
 Official assets are stored locally without changing their source files. CSS
 adapts monochrome wordmarks to the page theme and displays all product icons in

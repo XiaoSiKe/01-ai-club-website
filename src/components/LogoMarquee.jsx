@@ -17,7 +17,7 @@ function PartnerMark({ logo }) {
     ...(logo.offsetY ? { transform: `translateY(calc(${logo.offsetY}px * var(--partner-logo-scale, 1)))` } : {}),
   };
   return (
-    <span className={`logo-marquee__mark${logo.monochrome ? ' logo-marquee__mark--mono' : ''}${logo.lightInk ? ' logo-marquee__mark--light-ink' : ''}`}>
+    <span className={`logo-marquee__mark${logo.monochrome ? ' logo-marquee__mark--mono' : ''}${logo.lightInk ? ' logo-marquee__mark--light-ink' : ''}${logo.invertOnDark ? ' logo-marquee__mark--invert-dark' : ''}`}>
       {hasImage && (logo.mask ? (
         <svg className="logo-marquee__image logo-marquee__image--mask" viewBox={logo.mask.viewBox} style={imageStyle} aria-hidden="true" focusable="false">
           <defs>
@@ -51,25 +51,31 @@ export default function LogoMarquee({
 }) {
   const list = Array.isArray(logos) ? logos : partners;
   const marks = useMemo(() => list.map(logo => ({
-    title: logo.name || logo.alt || '',
+    title: logo.href ? `${logo.name || logo.alt} 官网（新窗口）` : logo.name || logo.alt || '',
+    href: logo.href,
     node: <PartnerMark logo={logo} />,
   })), [list]);
+  const midpoint = Math.ceil(marks.length / 2);
+  const rows = [marks.slice(0, midpoint), marks.slice(midpoint)].filter(row => row.length);
 
   if (!marks.length) return null;
   return (
-    <LogoLoop
-      logos={marks}
+    <div className={`logo-marquee${className ? ` ${className}` : ''}`} role="group" aria-label={ariaLabel}>
+    {rows.map((row, index) => <LogoLoop
+      key={index}
+      logos={row}
       speed={90}
-      direction="left"
-      logoHeight={80}
+      direction={index === 0 ? 'left' : 'right'}
+      logoHeight={64}
       gap={48}
       hoverSpeed={0}
       scaleOnHover
       fadeOut
       fadeOutColor="var(--site-background, #090909)"
-      ariaLabel={ariaLabel}
+      ariaLabel={`${ariaLabel}，第${index + 1}行`}
       tabIndex={0}
-      className={`logo-marquee${className ? ` ${className}` : ''}`}
-    />
+      className="logo-marquee__row"
+    />)}
+    </div>
   );
 }
