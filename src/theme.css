@@ -173,7 +173,6 @@ html[data-theme='light'] .logo-loop-item { color: var(--site-muted); }
 html[data-theme='light'] .home-footer-copyright a:hover,
 html[data-theme='light'] .logo-loop-item:hover { color: var(--site-ink); }
 html[data-theme='light'] .home-footer-copyright { border-color: var(--site-border); }
-html[data-theme='light'] .logo-loop-fade { --logo-loop-fade-color: #eeeeec !important; }
 
 /* Independent project pages inherit the same saved background choice. */
 html[data-theme='light'] .project-page { color: var(--site-ink); background: radial-gradient(ellipse at 85% 0%,#e3e3e780,transparent 45%),var(--site-background); }

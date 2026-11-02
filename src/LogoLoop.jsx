@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import './LogoLoop.css';
+import { easeLoopPlaybackRate } from './components/loopPlaybackRate';
 
 const EMPTY_LOGOS = [];
 
@@ -12,7 +13,6 @@ export default function LogoLoop({
   hoverSpeed = 0,
   scaleOnHover = false,
   fadeOut = false,
-  fadeOutColor = '#ffffff',
   ariaLabel = 'Logo loop',
   tabIndex,
   className = ''
@@ -20,6 +20,25 @@ export default function LogoLoop({
   const rootRef = useRef(null);
   const groupRef = useRef(null);
   const [groupCount, setGroupCount] = useState(2);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    let stop;
+    const changeRate = target => {
+      stop?.();
+      const animation = root.querySelector('.logo-loop-track').getAnimations()[0];
+      if (animation) stop = easeLoopPlaybackRate(animation, target);
+    };
+    const enter = event => { if (event.pointerType !== 'touch') changeRate(Math.max(0, hoverSpeed) / Math.max(1, speed)); };
+    const leave = () => changeRate(1);
+    root.addEventListener('pointerenter', enter);
+    root.addEventListener('pointerleave', leave);
+    return () => {
+      stop?.();
+      root.removeEventListener('pointerenter', enter);
+      root.removeEventListener('pointerleave', leave);
+    };
+  }, [hoverSpeed, speed]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -43,12 +62,15 @@ export default function LogoLoop({
     const group = groupRef.current;
     if (!root || !group) return undefined;
 
+    let previousDistance = 0;
     const updateDurations = () => {
       const distance = group.getBoundingClientRect().width;
       if (!distance) return;
-      root.style.setProperty('--logo-loop-distance', `${distance}px`);
-      root.style.setProperty('--logo-loop-duration', `${distance / Math.max(speed, 1)}s`);
-      root.style.setProperty('--logo-loop-hover-duration', `${distance / Math.max(hoverSpeed, 1)}s`);
+      if (Math.abs(distance - previousDistance) >= .01) {
+        previousDistance = distance;
+        root.style.setProperty('--logo-loop-distance', `${distance}px`);
+        root.style.setProperty('--logo-loop-duration', `${distance / Math.max(speed, 1)}s`);
+      }
       setGroupCount(Math.max(2, Math.ceil(root.clientWidth / distance) + 1));
     };
 
@@ -102,14 +124,14 @@ export default function LogoLoop({
       ref={rootRef}
       className={`logo-loop${fadeOut ? ' logo-loop-fade' : ''}${scaleOnHover ? ' logo-loop-scale' : ''}${className ? ` ${className}` : ''}`}
       data-direction={direction}
+      data-image-viewport=""
       data-pause-on-hover={hoverSpeed === 0 || undefined}
       role="group"
       aria-label={ariaLabel}
       tabIndex={tabIndex}
       style={{
         '--logo-loop-height': `${logoHeight}px`,
-        '--logo-loop-gap': `${gap}px`,
-        '--logo-loop-fade-color': fadeOutColor
+        '--logo-loop-gap': `${gap}px`
       }}
     >
       <div className="logo-loop-track">

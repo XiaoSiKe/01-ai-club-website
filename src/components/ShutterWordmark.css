@@ -6,6 +6,7 @@
 .shutter-wordmark__glyph:focus-visible > .shutter-wordmark__hit,
 .shutter-wordmark__club-logo:focus-visible > .shutter-wordmark__hit { stroke: currentColor; stroke-dasharray: 3 3; }
 .shutter-wordmark__logo-parts { visibility: hidden; }
+html[data-theme='light'] .shutter-wordmark__club-logo use { filter: invert(1); }
 .shutter-wordmark__half { transition: transform 450ms cubic-bezier(.2,.9,.25,1); }
 .shutter-wordmark__glyph:is(:hover,:focus-visible) .shutter-wordmark__up { transform: translate(5px, -1.5px); }
 .shutter-wordmark__glyph:is(:hover,:focus-visible) .shutter-wordmark__down { transform: translate(-5px, 1.5px); }

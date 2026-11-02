@@ -2,7 +2,6 @@
  * The closing emblem is the original club logo, with a gentle fragment interaction.
  */
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { imageSource } from './imageSource';
 import './ShutterWordmark.css';
 
 const CAP = 100;
@@ -149,10 +148,9 @@ export default function ShutterWordmark() {
         <defs>
           <clipPath id={`${uid}-up`}><rect x="-40" y="-200" width="400" height="252.6" /></clipPath>
           <clipPath id={`${uid}-down`}><rect x="-40" y="51.4" width="400" height="250" /></clipPath>
-          <filter id={`${uid}-logo-ink`} colorInterpolationFilters="sRGB"><feComponentTransfer><feFuncR type="linear" slope="1.07" intercept="-.055" /><feFuncG type="linear" slope="1.07" intercept="-.055" /><feFuncB type="linear" slope="1.07" intercept="-.055" /></feComponentTransfer></filter>
-          <mask id={`${uid}-club-logo`} x="0" y="0" width="100" height="100" maskUnits="userSpaceOnUse" style={{ maskType: 'luminance' }}>
-            <svg width="100" height="100" viewBox="350 371 561 585"><image href={visible ? imageSource('/lingyi-logo.jpg', 320, 320, Math.min(window.devicePixelRatio || 1, 1.5)) : undefined} width="1254" height="1254" filter={`url(#${uid}-logo-ink)`} /></svg>
-          </mask>
+          <g id={`${uid}-club-logo`}>
+            <image href={visible ? '/images/club-logo-white.svg' : undefined} width="100" height="100" />
+          </g>
           <clipPath id={`${uid}-logo-part-0`}><polygon points="0,0 100,0 50,50" /></clipPath>
           <clipPath id={`${uid}-logo-part-1`}><polygon points="0,0 50,50 50,100 0,100" /></clipPath>
           <clipPath id={`${uid}-logo-part-2`}><polygon points="100,0 100,100 50,100 50,50" /></clipPath>
@@ -175,8 +173,8 @@ export default function ShutterWordmark() {
             <g className="shutter-wordmark__club-logo" role="button" tabIndex={reduced ? -1 : 0} aria-disabled={reduced || undefined} aria-pressed={expanded} aria-label={expanded ? '聚合社团 Logo' : '展开社团 Logo'} onClick={toggleLogo} onKeyDown={keyboard(toggleLogo)}>
               <rect className="shutter-wordmark__hit" width="100" height="100" />
               <g ref={logoTiltRef} aria-hidden="true">
-                <rect ref={logoBaseRef} width="100" height="100" mask={`url(#${uid}-club-logo)`} />
-                <g ref={logoPartsRef} className="shutter-wordmark__logo-parts">{[0, 1, 2].map(i => <g key={i} ref={el => { fragmentRefs.current[i] = el; }}><g clipPath={`url(#${uid}-logo-part-${i})`}><rect width="100" height="100" mask={`url(#${uid}-club-logo)`} /></g></g>)}</g>
+                <use ref={logoBaseRef} href={`#${uid}-club-logo`} />
+                <g ref={logoPartsRef} className="shutter-wordmark__logo-parts">{[0, 1, 2].map(i => <g key={i} ref={el => { fragmentRefs.current[i] = el; }}><g clipPath={`url(#${uid}-logo-part-${i})`}><use href={`#${uid}-club-logo`} /></g></g>)}</g>
               </g>
             </g>
           </g>

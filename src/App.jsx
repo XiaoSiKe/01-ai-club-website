@@ -2,14 +2,14 @@ import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useRef, useSta
 import { gsap } from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { SiGithub, SiQq, SiX } from 'react-icons/si';
+import { SiGithub, SiX } from 'react-icons/si';
 import SiteBackground from './components/SiteBackground';
 import ViewportMount from './components/ViewportMount';
 import ResponsiveImage from './components/ResponsiveImage';
 import ImageLightbox from './components/ImageLightbox';
 import renderDisplayedQr from './components/renderDisplayedQr';
-import { LoadingSlot } from './components/UniqueLoading';
 import { imageSource } from './components/imageSource';
+import { LoadingSlot } from './components/UniqueLoading';
 import EchoText from './EchoText';
 import { BRAND_ECHO_PROPS as ECHO_TEXT_PROPS } from './components/EchoText/brandEchoProps';
 import SpecularButton from './SpecularButton';
@@ -52,16 +52,15 @@ const BORDER_GLOW_PROPS = {
   coneSpread: 25,
   animated: false,
 };
-const footerMask = (source, scale = 1) => ({ '--brand-mask': `url("${imageSource(source, 48 * scale, 48 * scale)}")` });
 const FOOTER_LOGOS = [
   ...socialChannels.map(channel => ({ ...channel, node: <SocialIcon platform={channel.id} /> })),
   { ...telegramChannel, node: <SocialIcon platform={telegramChannel.id} /> },
-  { node: <span className="home-footer-brand-mark home-footer-club-mark" style={footerMask('/lingyi-logo.jpg', 2.1)} />, title: '日新社', href: 'https://club.01aiedu.com/' },
-  { node: <SiGithub />, title: 'GitHub' },
-  { node: <SiX />, title: 'X', href: 'https://x.com/01yang2026?s=11' },
-  { node: <span className="home-footer-brand-mark home-footer-feishu-mark" style={footerMask('/images/feishu-logo.png')} />, title: '飞书', href: LEARNING_WIKI_URL },
-  { node: <span className="home-footer-brand-mark home-footer-lingyiyang-mark" style={footerMask('/images/lingyiyang-logo.jpg', 1.6)} />, title: '零一扬', href: 'https://www.01yang.space' },
-  { node: <SiQq />, title: 'QQ', href: 'https://qun.qq.com/universal-share/share?ac=1&authKey=Y6PHDoQm%2BSNy%2Bdr0SJTyHZ7Vt2jQfwQCR6sidHUatABcMNltCtupL24cigSRxTYc&busi_data=eyJncm91cENvZGUiOiI5NjY2NTQ2MzMiLCJ0b2tlbiI6IllLUmVXNXM4WS8zMG1MRHlGeFFkUUd4M0R1ZG8wekpXMVB1a0N2dkhubVp6KzF5b2xOVjRKakxFZHQ4Q3dCRFQiLCJ1aW4iOiIxNzg1ODY3NzkyIn0%3D&data=-Yz2JZMQgTAM5BkEf9Vrw9lDLH6BkX2nFl4-tH8ska8WC6OQPqpmTcvM5f24z7x5jSg--p3b18JBNtQeMn3Tzg&svctype=4&tempid=h5_group_info' },
+  { node: <span className="home-footer-brand-mark home-footer-club-mark"><ResponsiveImage eager src="/images/club-logo-white.svg" alt="" width={48} height={48} /></span>, title: '零一', href: 'https://club.01aiedu.com/' },
+  { node: <SiGithub style={{ color: 'var(--site-ink)' }} />, title: 'GitHub' },
+  { node: <SiX style={{ color: 'var(--site-ink)' }} />, title: 'X', href: 'https://x.com/01yang2026?s=11' },
+  { node: <span className="home-footer-brand-mark"><ResponsiveImage eager src="/images/feishu-logo.png" alt="" width={48} height={48} /></span>, title: '飞书', href: LEARNING_WIKI_URL },
+  { node: <span className="home-footer-brand-mark home-footer-lingyiyang-mark" style={{ '--brand-mask': `url("${imageSource('/images/lingyiyang-logo.jpg', 77, 77)}")` }} />, title: '零一扬', href: 'https://www.01yang.space' },
+  { node: <span className="home-footer-brand-mark"><ResponsiveImage eager src="/images/qq-logo.png" alt="" width={48} height={48} /></span>, title: 'QQ', href: 'https://qun.qq.com/universal-share/share?ac=1&authKey=Y6PHDoQm%2BSNy%2Bdr0SJTyHZ7Vt2jQfwQCR6sidHUatABcMNltCtupL24cigSRxTYc&busi_data=eyJncm91cENvZGUiOiI5NjY2NTQ2MzMiLCJ0b2tlbiI6IllLUmVXNXM4WS8zMG1MRHlGeFFkUUd4M0R1ZG8wekpXMVB1a0N2dkhubVp6KzF5b2xOVjRKakxFZHQ4Q3dCRFQiLCJ1aW4iOiIxNzg1ODY3NzkyIn0%3D&data=-Yz2JZMQgTAM5BkEf9Vrw9lDLH6BkX2nFl4-tH8ska8WC6OQPqpmTcvM5f24z7x5jSg--p3b18JBNtQeMn3Tzg&svctype=4&tempid=h5_group_info' },
 ];
 export default function App() {
   const borderGlowProps = BORDER_GLOW_PROPS;
@@ -581,7 +580,6 @@ export default function App() {
             hoverSpeed={0}
             scaleOnHover
             fadeOut
-            fadeOutColor="#0d0d0d"
             ariaLabel="社团与社交平台"
           />
           </ViewportMount>

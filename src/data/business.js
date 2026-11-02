@@ -3,6 +3,7 @@ import { ezcutBusinessMembers, exdrinkBusinessMembers, smartbotBusinessMembers, 
 export const businesses = [
   {
     id: 'ezcut',
+    cutout: true,
     src: '/images/business-ezcut.png',
     alt: '零一快剪 Logo',
     title: '零一快剪',
@@ -14,6 +15,7 @@ export const businesses = [
   },
   {
     id: 'exdrink',
+    cutout: true,
     src: '/images/business-exdrink.png',
     alt: '零一拓饮 Logo',
     title: '零一拓饮',
@@ -24,6 +26,7 @@ export const businesses = [
   },
   {
     id: 'smartbot',
+    cutout: true,
     src: '/images/business-smartbot.png',
     alt: '零一智械 Logo',
     title: '零一智械',
@@ -35,6 +38,7 @@ export const businesses = [
   },
   {
     id: 'timetable',
+    cutout: true,
     src: '/images/business-timetable.png',
     alt: '零一课表 Logo',
     title: '零一课表',
@@ -50,7 +54,6 @@ export const businesses = [
     alt: 'physicsOS Logo',
     title: 'physicsOS',
     imageScale: 0.702,
-    monochrome: true,
     subtitle: '让物理看得见，让思考有过程！',
     href: 'https://physics.dongsiwei.com/',
     members: physicsosBusinessMembers,

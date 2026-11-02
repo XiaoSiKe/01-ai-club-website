@@ -30,6 +30,19 @@ function browser(t) {
 }
 const image = root => ({ closest: () => root });
 
+test('small loop artwork stays loaded across horizontal clipping and releases with its row', t => {
+  const env = browser(t), root = {}, node = image(root); let state;
+  const stop = env.observe(node, { eager: true, update: value => { state = value; } }); t.after(stop);
+  env.size(node, 144, 36);
+  env.observer(undefined, 600).intersect(root, true);
+  assert.equal(state.ready, true, 'preload the complete nearby loop');
+  env.observer(root, 320).intersect(node, false);
+  env.observer(root, 640).intersect(node, false);
+  assert.equal(state.ready, true, 'crossing the horizontal clip must not unload and decode again');
+  env.observer(undefined, 600).intersect(root, false);
+  assert.equal(state.ready, false, 'retain the existing offscreen memory bound');
+});
+
 // These cases drive the subscription used by ResponsiveImage, including the
 // ordering differences delivered by separate browser observers.
 test('a clipped wall preloads relative to its frame and releases when the whole wall leaves', t => {
