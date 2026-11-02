@@ -16,7 +16,7 @@ export const memberPortraits = {
   Melon: '/images/pioneers/melon.png',
   Sora: '/images/pioneers/sora.jpg',
   '刘韦辰': '/images/pioneers/liu-weichen.jpg',
-  KevenChen: '/images/pioneers/kevenchen.jpg',
+  KevinChen: '/images/pioneers/kevenchen.jpg',
   zsq: '/images/pioneers/zsq.jpg',
   Spark: '/images/pioneers/spark.jpg',
   '郑航': '/images/pioneers/zheng-hang.jpg',
