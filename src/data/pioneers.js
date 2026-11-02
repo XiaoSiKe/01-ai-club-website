@@ -8,7 +8,7 @@ const roster = [
   ['San', '韶关学院', 'SadSan233', null, '2026-10-12'],
   ['顾星宇', '福州大学', 'xy821178142gxy-web', null, '2026-09-18'],
   ['徐裕恒', '福州大学', 'CurvatureSoup', null, '2026-09-18'],
-  ['KevenChen', '福州大学', 'KevinChen-KC', null, '2026-10-11'],
+  ['KevinChen', '福州大学', 'KevinChen-KC', null, '2026-10-11'],
   ['DH', '福州大学', 'dh108888', null, '2026-09-18'],
   ['Eug', '福州理工学院', 'Eug-Y', null, '2026-09-01'],
   ['Sora', '福州大学', 'sora-de-su', null, '2026-10-11'],

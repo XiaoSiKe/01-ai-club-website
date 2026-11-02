@@ -10,7 +10,7 @@ test('name search accepts partial Chinese names and ignores surrounding spaces',
 
 test('English names accept case and full-width input', () => {
   assert.deepEqual(searchPioneers('ＳＡＮ').map(member => member.name), ['San']);
-  assert.deepEqual(searchPioneers('keven').map(member => member.name), ['KevenChen']);
+  assert.deepEqual(searchPioneers('kevin').map(member => member.name), ['KevinChen']);
 });
 
 test('blank and unmatched input do not expose unrelated members', () => {
