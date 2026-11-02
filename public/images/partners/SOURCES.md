@@ -31,7 +31,7 @@ display-only because no official destinations were supplied.
   Asset: https://www.chinamobileltd.com/en/images/global/logo.svg
 - **MoneyAI — `moneyai.png`:** user-provided visual reference, prepared as a
   transparent asset by the image-generation task. The marquee displays the
-  planet/ring in grayscale and adds the supplied MoneyAI name as live text.
+  planet/ring in its original purple/yellow colors and adds the supplied MoneyAI name as live text.
 - **百度搭子 — `dumate.svg`:** official DuMate wordmark linked by its product page,
   https://www.dumate.cn/ . Asset:
   https://now.bdstatic.com/store/v2/d33e0f5/dumate-portal/7724021/static/svg/dumate-wordmark.96cd8019.svg
@@ -41,10 +41,10 @@ display-only because no official destinations were supplied.
 - **华为 — `huawei.png`:** original logo referenced by https://www.huawei.com/en .
   Asset: https://www.huawei.com/-/media/hcomponent-header/1.0.1.20260908162100/component/img/huawei_logo.png
 - **Linkathon — `linkathon-original.jpg`:** the user's original JPEG is preserved
-  byte-for-byte. An SVG luminance mask removes the original near-black backdrop
-  and outer padding, then renders the original emblem and full wordmark in the
-  current theme's ink. The mask removes background values below 6% to avoid a
-  rectangular haze; no generated replacement or solid backing is used.
+  byte-for-byte. An SVG viewport crops only the outer padding to
+  `150 205 1135 720`. A source-pixel alpha filter removes the near-black backdrop
+  while retaining the colored dots; neutral white ink changes to black only
+  in the light theme.
 - **得物 — `dewu.ico`:** the 64px icon referenced by the official homepage
   https://www.dewu.com/ at https://www.dewu.com/static/favicon.ico, displayed
   alongside the supplied Chinese brand name.
@@ -53,30 +53,58 @@ display-only because no official destinations were supplied.
   https://assets.workbuddy.cn/web/workbuddy/7e170c91f6fb3aa5720dd4381254492d08bf980c/assets/logo.svg
   The accompanying display name uses the user-supplied lowercase spelling.
 
-- **闽客松 — `minkesong.png`:** user-supplied logo, added 2026-10-30.
-  Prepared with the built-in image editor as a solid black, transparent PNG;
-  trimmed to the artwork and resized to 600px wide for local website use.
-  Edit prompt: remove the white background and outer border, turn blue/cyan
-  artwork black, preserve the emblem, Chinese lettering and original proportions,
-  and retain antialiased edges without shadows or gradients.
-  Displayed at 118 × 49.56px, offset upward 5px before the shared scale,
-  with theme-aware monochrome CSS.
+- **闽客松 — `minkesong.png`:** the transparent monochrome version supplied
+  by the earlier logo preparation is restored at the user's request on
+  2026-11-02. Displayed at 118 × 49.56px, offset upward 5px before the shared
+  scale; black on light backgrounds and white on dark backgrounds. The color
+  cutout and original supplied photograph remain preserved as earlier assets.
 
 - **Adventure X — `adventure-x.png`:** user-supplied transparent white logo,
   added 2026-11-01. Original 1646 × 256px PNG preserved byte-for-byte.
   Displayed at 210 × 32.66px before the shared scale, preserving its wide
-  proportions; existing monochrome CSS adapts it to dark and light themes.
+  proportions. The white-only artwork uses black ink in the light theme;
+  neither theme adds a backing surface.
 
 - **XCombinator — `xcombinator.png`:** user-supplied `XC 透明.png`, added
   2026-11-01. Original 2172 × 724px transparent PNG preserved byte-for-byte.
-  Displayed at 192 × 64px before the shared scale. Grayscale is inverted only
-  on dark backgrounds, retaining contrast between the square emblem and its X.
+  Displayed at 192 × 64px before the shared scale, retaining the original blue
+  emblem. Generated WebP sizes retain the PNG's embedded ICC profile,
+  preventing the blue square and X from becoming dull gray. An alpha mask
+  changes only text to white in the dark theme,
+  beginning at x=580 in the original 2172px canvas; no backing surface is added.
 - **NextStep — `nextstep.svg`:** user-supplied black vector wordmark from
   `NextStep/svg/Black·nextstep 1 [Vectorized].svg`, added 2026-11-01 and preserved
   byte-for-byte. Displayed at 210 × 24.48px before the shared scale, using the
-  existing theme-aware monochrome CSS.
+  original black artwork on light backgrounds. `nextstep-white.svg` is the
+  same vector geometry with white neutral ink for dark backgrounds.
 
-Official assets are stored locally without changing their source files. CSS
-adapts monochrome wordmarks to the page theme and displays all product icons in
-grayscale, including on hover. If an image cannot be loaded, its actual
-partner name is displayed as plain text instead of a broken image or demo logo.
+- **Emerge — `emerge.svg` / `emerge-white.svg`:** user-supplied black and white
+  vector wordmarks from `Emerge logo/Emerge（黑）_深蓝点.svg` and
+  `Emerge logo/Emerge_白字深蓝点.svg`, added 2026-11-02. Each website copy's root
+  viewport is trimmed to `787 544 1804 454`; original vector paths and fills
+  are preserved, including the blue dot. The desktop source files remain
+  unchanged. Displayed at 144 × 36.24px before the shared scale (20% smaller
+  than the first integration), using the supplied white version on dark
+  backgrounds and black version on light backgrounds. No destination was
+  supplied, so the mark remains display-only.
+
+## Original-color display (2026-11-02)
+
+Partner artwork has no added backing surface, outline, border or plate. Color
+pixels are retained; only neutral ink changes for theme contrast. China Mobile
+and DuMate have vector variants changing neutral gray/black to white while
+preserving blue/green/purple colors. Huawei's alpha mask changes only lettering
+at x>=80 to white on dark backgrounds, leaving its original red emblem intact.
+Trae and 得物 remove dark favicon backgrounds through the same source-pixel
+alpha filter as Linkathon. Failed images fall back to their actual partner name.
+
+Footer 飞书 and QQ render their transparent original images. The navigation,
+footer and closing club emblem use the existing transparent club SVG exports;
+零一扬 uses the source monochrome image's luminance as alpha to remove black
+background pixels. These neutral marks adapt ink to each theme. Existing social glyphs use platform colors; the Douyin glyph
+retains its cyan/red offsets. GitHub and X use their black/white theme variants.
+QQ uses the original multicolor penguin from the official QQ homepage,
+https://im.qq.com/index , whose logo asset is
+https://static-res.qq.com/static-res/imqq/qq-logo.png . The asset is stored
+locally as `public/images/qq-logo.png` without alteration. The closing club
+emblem retains its existing fragment interaction without an opaque tile.

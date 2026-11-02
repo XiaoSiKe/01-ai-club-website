@@ -1,43 +1,38 @@
 /** Partner marks use the footer's LogoLoop for matching motion and interaction. */
-import { useId, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import LogoLoop from '../LogoLoop';
 import ResponsiveImage from './ResponsiveImage';
 import { imageSource } from './imageSource';
 import { partners } from '../data/partners';
+import { useTheme } from '../Theme';
 import './LogoMarquee.css';
+import LogoArtwork from './LogoArtwork';
 
 function PartnerMark({ logo }) {
-  const id = useId();
+  const { theme } = useTheme();
   const [failedSource, setFailedSource] = useState(null);
   const name = logo.name || logo.alt || '';
-  const hasImage = Boolean(logo.src && failedSource !== logo.src);
+  const source = theme === 'dark' && logo.darkSrc ? logo.darkSrc : logo.src;
+  const hasImage = Boolean(source && failedSource !== source);
   const imageStyle = {
     width: `calc(${logo.width || 120}px * var(--partner-logo-scale, 1))`,
     height: `calc(${logo.height || 36}px * var(--partner-logo-scale, 1))`,
     ...(logo.offsetY ? { transform: `translateY(calc(${logo.offsetY}px * var(--partner-logo-scale, 1)))` } : {}),
   };
   return (
-    <span className={`logo-marquee__mark${logo.monochrome ? ' logo-marquee__mark--mono' : ''}${logo.lightInk ? ' logo-marquee__mark--light-ink' : ''}${logo.invertOnDark ? ' logo-marquee__mark--invert-dark' : ''}`}>
-      {hasImage && (logo.mask ? (
-        <svg className="logo-marquee__image logo-marquee__image--mask" viewBox={logo.mask.viewBox} style={imageStyle} aria-hidden="true" focusable="false">
-          <defs>
-            {/* Remove the original near-black backdrop, preserving its antialiased artwork. */}
-            <filter id={`${id}-ink`} colorInterpolationFilters="sRGB">
-              <feComponentTransfer>
-                <feFuncR type="linear" slope="1.08" intercept="-0.06" />
-                <feFuncG type="linear" slope="1.08" intercept="-0.06" />
-                <feFuncB type="linear" slope="1.08" intercept="-0.06" />
-              </feComponentTransfer>
-            </filter>
-            <mask id={`${id}-mask`} maskUnits="userSpaceOnUse" x="0" y="0" width={logo.mask.width} height={logo.mask.height} style={{ maskType: 'luminance' }}>
-              <image href={imageSource(logo.src, 192, 192, 1)} width={logo.mask.width} height={logo.mask.height} filter={`url(#${id}-ink)`} onError={() => setFailedSource(logo.src)} />
-            </mask>
-          </defs>
-          <rect width={logo.mask.width} height={logo.mask.height} fill="currentColor" mask={`url(#${id}-mask)`} />
+    <span className={`logo-marquee__mark${logo.invertOnLight ? ' logo-marquee__mark--white-artwork' : ''}${logo.invertOnDark ? ' logo-marquee__mark--black-artwork' : ''}`}>
+      {hasImage && (logo.artwork ? (
+        <LogoArtwork source={imageSource(source, logo.width, logo.height)} {...logo.artwork}
+          darkInk={theme === 'dark' ? logo.artwork.darkInk : undefined}
+          lightInk={theme === 'light' && logo.artwork.adaptNeutral}
+          style={imageStyle} onError={() => setFailedSource(source)} />
+      ) : logo.crop ? (
+        <svg className="logo-marquee__image" viewBox={logo.crop.viewBox} style={imageStyle} aria-hidden="true" focusable="false">
+          <image href={imageSource(source, 320, 320, 1)} width={logo.crop.width} height={logo.crop.height} onError={() => setFailedSource(source)} />
         </svg>
       ) : (
-        <ResponsiveImage className="logo-marquee__image" src={logo.src} alt="" width={logo.width || 120} height={logo.height || 36} draggable={false}
-          style={imageStyle} onError={() => setFailedSource(logo.src)} />
+        <ResponsiveImage eager className="logo-marquee__image" src={source} alt="" width={logo.width || 120} height={logo.height || 36} draggable={false}
+          style={imageStyle} onError={() => setFailedSource(source)} />
       ))}
       {(!hasImage || logo.showName) && <span className="logo-marquee__name">{name}</span>}
     </span>
@@ -71,7 +66,6 @@ export default function LogoMarquee({
       hoverSpeed={0}
       scaleOnHover
       fadeOut
-      fadeOutColor="var(--site-background, #090909)"
       ariaLabel={`${ariaLabel}，第${index + 1}行`}
       tabIndex={0}
       className="logo-marquee__row"

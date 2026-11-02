@@ -1,5 +1,5 @@
 import StaggeredMenu from '../StaggeredMenu';
-import { ThemeToggle } from '../Theme';
+import { ThemeToggle, useTheme } from '../Theme';
 
 const HOME_ITEMS = [
   { label: '首页', ariaLabel: '返回首页', link: '#top' },
@@ -15,6 +15,7 @@ const RETURN_ITEMS = HOME_ITEMS.map(item => ({ ...item, link: `./${item.link}` }
 const MENU_COLORS = ['var(--menu-layer-one)', 'var(--menu-layer-two)', 'var(--menu-layer-three)'];
 
 export default function SiteNavigation({ standalone = false }) {
+  const { theme } = useTheme();
   return (
     <StaggeredMenu
       position="right"
@@ -25,7 +26,7 @@ export default function SiteNavigation({ standalone = false }) {
       openMenuButtonColor="var(--site-ink)"
       changeMenuColorOnOpen={false}
       colors={MENU_COLORS}
-      logoUrl="/lingyi-logo.jpg"
+      logoUrl={theme === 'light' ? '/images/club-logo-black.svg' : '/images/club-logo-white.svg'}
       logoHref={standalone ? './#top' : '#top'}
       accentColor="var(--site-ink)"
       headerActions={<ThemeToggle />}

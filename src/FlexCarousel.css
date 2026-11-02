@@ -176,11 +176,12 @@
   width: min(50%, 280px);
   height: calc(var(--flex-carousel-half) * 2);
   transform: translate(-50%, -50%);
-  background: #000;
+  background: transparent;
   border-radius: 20px;
   overflow: visible;
 }
-.flex-carousel__fallback-image img { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: inherit; }
+.flex-carousel__fallback-image img,
+.flex-carousel__fallback-artwork { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: inherit; }
 .flex-carousel__stage--fallback > canvas { display: none !important; }
 @media (max-width: 760px) {
   .home-business-carousel .flex-carousel { --business-ui-shift: 36.75pt; margin-inline: auto; }

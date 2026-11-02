@@ -51,7 +51,7 @@
   width: 46.2px;
   height: 46.2px;
   overflow: hidden;
-  background: #000000;
+  background: transparent;
   border-radius: 11.3px;
   user-select: none;
 }
@@ -63,8 +63,7 @@
   height: 36.8px;
   object-fit: cover;
   border-radius: inherit;
-  /* 外框与右侧按钮等高，图案保持原来的 36.8px 画布和 2 倍缩放。 */
-  transform: scale(2);
+  transform: none;
 }
 
 .sm-toggle {

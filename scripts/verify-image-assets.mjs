@@ -3,6 +3,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
+import { inflateSync } from 'node:zlib';
 import { imageSource } from '../src/components/imageSource.js';
 import { pioneers } from '../src/data/pioneers.js';
 import { businesses } from '../src/data/business.js';
@@ -11,6 +12,24 @@ import assets from '../src/data/image-assets.json' with { type: 'json' };
 
 const publicRoot = fileURLToPath(new URL('../public/', import.meta.url));
 const variants = new Map();
+function pngProfile(buffer) {
+  if (buffer.toString('ascii', 1, 4) !== 'PNG') return undefined;
+  for (let offset = 8; offset + 12 <= buffer.length;) {
+    const length = buffer.readUInt32BE(offset);
+    if (buffer.toString('ascii', offset + 4, offset + 8) === 'iCCP') {
+      const data = buffer.subarray(offset + 8, offset + 8 + length);
+      return inflateSync(data.subarray(data.indexOf(0) + 2));
+    }
+    offset += length + 12;
+  }
+}
+function webpProfile(buffer) {
+  for (let offset = 12; offset + 8 <= buffer.length;) {
+    const length = buffer.readUInt32LE(offset + 4);
+    if (buffer.toString('ascii', offset, offset + 4) === 'ICCP') return buffer.subarray(offset + 8, offset + 8 + length);
+    offset += 8 + length + (length % 2);
+  }
+}
 function webpSize(buffer) {
   assert.equal(buffer.toString('ascii', 0, 4), 'RIFF');
   assert.equal(buffer.toString('ascii', 8, 12), 'WEBP');
@@ -26,12 +45,15 @@ function webpSize(buffer) {
 for (const [src, image] of Object.entries(assets)) {
   assert.ok(!/qr|wechat/.test(src), 'QR images must keep their original pixels.');
   assert.ok(existsSync(join(publicRoot, src)));
-  assert.equal(createHash('sha256').update(readFileSync(join(publicRoot, src))).digest('hex'), image.sourceHash,
+  const original = readFileSync(join(publicRoot, src));
+  const profile = /\/partners\/|\/business-/.test(src) ? pngProfile(original) : undefined;
+  assert.equal(createHash('sha256').update(original).digest('hex'), image.sourceHash,
     `${src} changed; run npm run images:build to regenerate its display variants.`);
   assert.ok(image.variants.length > 0);
   let previous = 0;
   for (const variant of image.variants) {
     const buffer = readFileSync(join(publicRoot, variant.src));
+    if (profile) assert.ok(webpProfile(buffer)?.equals(profile), `${variant.src}: preserve the original logo color profile`);
     assert.deepEqual(webpSize(buffer), [variant.width, variant.height], variant.src);
     assert.equal(buffer.length, variant.bytes);
     const edge = Math.max(variant.width, variant.height);

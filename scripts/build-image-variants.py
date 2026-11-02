@@ -46,11 +46,14 @@ def generate(path):
     edges = widths(path)
     if not edges: return None
     raw = path.read_bytes()
-    # Keep the existing recipe hash so adding intermediate sizes preserves the
-    # URLs and immutable browser/CDN caches of previously generated variants.
-    digest = hashlib.sha256(raw + str(edges).encode() + b'webp-v1').hexdigest()[:12]
     with Image.open(path) as source:
         if getattr(source, 'is_animated', False): return None
+        logo = path.name.startswith('business-') or '/partners/' in path.as_posix()
+        profile = source.info.get('icc_profile') if logo else None
+        # Profiled brand artwork needs its original color interpretation. Use a
+        # new URL only for those assets; all other immutable variants stay valid.
+        recipe = b'webp-v2-icc' if profile else b'webp-v1'
+        digest = hashlib.sha256(raw + str(edges).encode() + recipe).hexdigest()[:12]
         image = ImageOps.exif_transpose(source)
         longest = max(image.size)
         variants = []
@@ -63,8 +66,8 @@ def generate(path):
             elif not target.exists():
                 buffer = io.BytesIO()
                 # Logos must keep their transparency, edges and gray gradients.
-                logo = path.name.startswith('business-') or '/partners/' in path.as_posix()
-                copy.save(buffer, 'WEBP', lossless=logo, quality=88 if '/competition/' in path.as_posix() else 82, method=6)
+                copy.save(buffer, 'WEBP', lossless=logo, quality=88 if '/competition/' in path.as_posix() else 82, method=6,
+                          **({'icc_profile': profile} if profile else {}))
                 target.write_bytes(buffer.getvalue())
             variants.append({'src': '/' + target.relative_to(ROOT / 'public').as_posix(),
                              'width': copy.width, 'height': copy.height, 'bytes': target.stat().st_size})

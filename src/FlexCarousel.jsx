@@ -39,11 +39,12 @@ import { useEffect, useRef, useState } from 'react';
 import { Color, Renderer, Program, Mesh, Triangle, Plane, Texture, RenderTarget } from 'ogl';
 
 import SpecularButton from './SpecularButton';
-import BorderGlow, { clearBorderGlow, updateBorderGlow } from './BorderGlow';
 import AvatarStack from './components/AvatarStack';
 import { imageSource } from './components/imageSource';
 import ResponsiveImage from './components/ResponsiveImage';
 import './FlexCarousel.css';
+import { useTheme } from './Theme';
+import LogoArtwork from './components/LogoArtwork';
 
 const DEFAULT_ITEMS = [];
 
@@ -188,12 +189,13 @@ uniform vec2 uSize;
 uniform vec2 uImage;
 uniform float uImageScale;
 uniform float uMonochrome;
+uniform float uCutout;
+uniform float uLightTheme;
 uniform float uRadius;
 uniform float uAlpha;
 uniform float uReady;
 uniform float uShift;
 uniform float uDpr;
-uniform vec3 uPlaceholder;
 uniform vec2 uPointer;
 uniform float uGlow;
 uniform vec3 uGlowColor;
@@ -216,11 +218,17 @@ void main() {
   vec2 uv = (vec2(local.x, 1.0 - local.y) - 0.5) * scale / uImageScale + 0.5;
   float inside = step(0.0, uv.x) * step(uv.x, 1.0) * step(0.0, uv.y) * step(uv.y, 1.0);
   vec4 texel = texture(tMap, clamp(uv, 0.0, 1.0));
-  vec3 image = mix(texel.rgb, texel.rgb * texel.a, uMonochrome);
-  // Letterboxing stays black throughout the image-loading transition.
-  vec3 color = mix(vec3(0.0), mix(uPlaceholder, image, uReady), inside);
+  vec3 color = texel.rgb;
+  float imageAlpha = texel.a * inside * uReady;
+  if (uCutout > 0.5) {
+    float brightest = max(color.r, max(color.g, color.b));
+    float darkest = min(color.r, min(color.g, color.b));
+    imageAlpha *= smoothstep(0.035, 0.12, brightest);
+    float neutral = 1.0 - smoothstep(0.03, 0.12, brightest - darkest);
+    color = mix(color, 1.0 - color, neutral * uLightTheme);
+  }
   color = mix(color, vec3(dot(color, vec3(0.2126, 0.7152, 0.0722))), uMonochrome);
-  float alpha = mask * uAlpha;
+  float alpha = mask * uAlpha * imageAlpha;
   if (uGlow < 0.5) {
     fragColor = vec4(color * alpha, alpha);
     return;
@@ -346,6 +354,7 @@ const FlexCarousel = ({
   className = '',
   style
 }) => {
+  const { theme } = useTheme();
   const containerRef = useRef(null);
   const settingsRef = useRef(null);
   const itemsRef = useRef(items);
@@ -388,6 +397,7 @@ const FlexCarousel = ({
       interval,
       captureWheel,
       captions,
+      lightTheme: theme === 'light',
       glowColor: new Color('#ffffff')
     };
     engineRef.current?.wake();
@@ -475,12 +485,13 @@ const FlexCarousel = ({
         uImage: { value: [1, 1] },
         uImageScale: { value: 1 },
         uMonochrome: { value: 0 },
+        uCutout: { value: 0 },
+        uLightTheme: { value: 0 },
         uRadius: { value: 16 },
         uAlpha: { value: 1 },
         uReady: { value: 0 },
         uShift: { value: 0 },
         uDpr: { value: 1 },
-        uPlaceholder: { value: [0.5, 0.5, 0.5] },
         uPointer: { value: [0, 0] },
         uGlow: { value: 0 },
         uGlowColor: { value: [1, 1, 1] }
@@ -589,7 +600,6 @@ const FlexCarousel = ({
         loaded: false,
         failed: false,
         ready: 0,
-        color: [0.5, 0.5, 0.5],
         image: [1, 1],
         dispose: () => {}
       };
@@ -600,25 +610,6 @@ const FlexCarousel = ({
         if (!alive || !slots.includes(slot)) return;
         slot.image = [image.naturalWidth || 1, image.naturalHeight || 1];
         slot.aspect = slot.image[0] / slot.image[1];
-        try {
-          const probe = document.createElement('canvas');
-          probe.width = 8;
-          probe.height = 8;
-          const ctx = probe.getContext('2d', { willReadFrequently: true });
-          if (ctx) {
-            ctx.drawImage(image, 0, 0, 8, 8);
-            const data = ctx.getImageData(0, 0, 8, 8).data;
-            const avg = [0, 0, 0];
-            for (let i = 0; i < data.length; i += 4) {
-              avg[0] += data[i];
-              avg[1] += data[i + 1];
-              avg[2] += data[i + 2];
-            }
-            slot.color = avg.map(v => v / 64 / 255);
-          }
-        } catch {
-          slot.color = [0.5, 0.5, 0.5];
-        }
         // The GPU owns its pixels after upload. OGL's onUpdate runs before it
         // records the source, so clearing it here also marks the upload settled;
         // later draws reuse the texture without retaining a CPU decoded bitmap.
@@ -1021,6 +1012,7 @@ const FlexCarousel = ({
         cardProgram.uniforms.uDpr.value = dpr;
         cardProgram.uniforms.uRadius.value = s.radius;
         cardProgram.uniforms.uGlowColor.value = s.glowColor;
+        cardProgram.uniforms.uLightTheme.value = s.lightTheme ? 1 : 0;
         lensUniforms.uResolution.value = [width, height];
         lensUniforms.uDpr.value = dpr;
         lensUniforms.uCenter.value = [lensX, lens.y];
@@ -1075,10 +1067,10 @@ const FlexCarousel = ({
           cardProgram.uniforms.uImage.value = slot.image;
           cardProgram.uniforms.uImageScale.value = imageScaleFor(itemsRef.current[draw.i]);
           cardProgram.uniforms.uMonochrome.value = itemsRef.current[draw.i]?.monochrome ? 1 : 0;
+          cardProgram.uniforms.uCutout.value = itemsRef.current[draw.i]?.cutout ? 1 : 0;
           cardProgram.uniforms.uAlpha.value = draw.alpha;
           cardProgram.uniforms.uReady.value = slot.ready;
           cardProgram.uniforms.uShift.value = reducedMotion ? 0 : Math.max(-1, Math.min(1, draw.rel / (width * 0.75)));
-          cardProgram.uniforms.uPlaceholder.value = slot.color;
           cardProgram.uniforms.uPointer.value = [glowX - draw.x, glowY - draw.y];
           cardProgram.uniforms.uGlow.value = pointer.over && !pointer.dragging && !pointer.touch && Math.abs(glowX - draw.x) <= draw.cw / 2 && Math.abs(glowY - draw.y) <= draw.ch / 2 ? 1 : 0;
           renderer.render({ scene: cardMesh, target, clear: first });
@@ -1524,11 +1516,10 @@ const FlexCarousel = ({
         onKeyDown={onFallbackKeyDown}
       >
         {webglFailed && current && (
-          <div className="flex-carousel__fallback-image"
-            onPointerMove={event => updateBorderGlow(event.currentTarget.querySelector('.border-glow'), event.clientX, event.clientY)}
-            onPointerLeave={event => clearBorderGlow(event.currentTarget.querySelector('.border-glow'))}>
-            <ResponsiveImage src={current.src} alt={current.alt || current.title || ''} draggable="false" style={{ transform: `scale(${imageScaleFor(current)})`, filter: current.monochrome ? 'grayscale(1)' : undefined }} />
-            <BorderGlow as="span" className="media-edge-glow" backgroundColor="transparent" borderRadius={20} glowRadius={24} glowIntensity={2.1} />
+          <div className="flex-carousel__fallback-image">
+            {current.cutout ? <LogoArtwork className="flex-carousel__fallback-artwork" source={imageSource(current.src, 280, 280)} width={768} height={768} cutout backdropThreshold={.6}
+              lightInk={theme === 'light'} style={{ width: '100%', height: '100%', transform: `scale(${imageScaleFor(current)})` }} />
+              : <ResponsiveImage src={current.src} alt={current.alt || current.title || ''} draggable="false" style={{ transform: `scale(${imageScaleFor(current)})` }} />}
           </div>
         )}
         <div className="flex-carousel__live" aria-live="polite" aria-atomic="true">
