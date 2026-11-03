@@ -467,7 +467,7 @@ export default function App() {
               <p className="home-cooperation-intro">创造力，就是把事物连接起来。</p>
             </div>
             <div className="home-partners-row">
-              <ViewportMount className="home-partners-marquee" minHeight={168}><LogoMarquee /></ViewportMount>
+              <ViewportMount className="home-partners-marquee" minHeight={256}><LogoMarquee /></ViewportMount>
               <div className="home-cooperation-actions">
                 <SpecularButton href="https://scn96l2kzmbn.feishu.cn/wiki/X7h6wI8SCiAuZAkpYF2caNv7nTG" target="_blank" rel="noopener noreferrer" className="home-cooperation-link">
                   关于零一合作生态 <span aria-hidden="true">↗</span>

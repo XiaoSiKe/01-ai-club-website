@@ -100,6 +100,17 @@ display-only because no official destinations were supplied.
   preserve transparency. No destination was supplied, so the mark remains
   display-only.
 
+- **HackFlows — `hackflows.png` / `hackflows-dark.png`:** user-supplied
+  transparent horizontal lockups from `HackFlows_Brand(1).zip`, added
+  2026-11-03. Website copies preserve `png_clean/02_lockup_horizontal_on_light.png`
+  (1168 × 222px) and `png_clean/03_lockup_horizontal_on_dark.png`
+  (1167 × 222px) byte-for-byte. An SVG viewport of `52 52 1064 118`
+  removes only outer transparent padding for display at 192 × 21.29px before
+  the shared scale. The original blue gradient emblem is retained in both
+  themes; the supplied dark lettering is used on light backgrounds and white
+  lettering on dark backgrounds. Lossless WebP variants preserve transparency.
+  No destination was supplied, so the mark remains display-only.
+
 ## Original-color display (2026-11-02)
 
 Partner artwork has no added backing surface, outline, border or plate. Color
