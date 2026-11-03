@@ -18,6 +18,7 @@ function PartnerMark({ logo }) {
     width: `calc(${logo.width || 120}px * var(--partner-logo-scale, 1))`,
     height: `calc(${logo.height || 36}px * var(--partner-logo-scale, 1))`,
     ...(logo.offsetY ? { transform: `translateY(calc(${logo.offsetY}px * var(--partner-logo-scale, 1)))` } : {}),
+    ...(theme === 'dark' && logo.darkBrightness ? { filter: `brightness(${logo.darkBrightness})` } : {}),
   };
   return (
     <span className={`logo-marquee__mark${logo.invertOnLight ? ' logo-marquee__mark--white-artwork' : ''}${logo.invertOnDark ? ' logo-marquee__mark--black-artwork' : ''}`}>
