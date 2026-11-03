@@ -1,3 +1,4 @@
+import { useLanguage } from '../Language';
 /**
  * @license React Bits Folder — David Haz, 2026.
  * Adapted from DavidHDev/react-bits, commit e12c22192ac7b4b452c5e2feb9b586d74765d696.
@@ -682,27 +683,29 @@ const paintBack = (g, top, bottom, dpr) => {
   return canvas;
 };
 
-const DocumentCard = ({ title, description }) => (
-  <div className="folder-doc">
-    {title ? <span className="folder-doc-title">{title}</span> : <span className="folder-doc-heading" />}
-    {description && <span className="folder-doc-text">{description}</span>}
+const DocumentCard = ({ title, description }) => {
+  const { t } = useLanguage();
+  return (<div className="folder-doc">
+    {title ? <span className="folder-doc-title">{t(title)}</span> : <span className="folder-doc-heading" />}
+    {description && <span className="folder-doc-text">{t(description)}</span>}
     <span className="folder-doc-line" style={{ width: '92%' }} />
     <span className="folder-doc-line" style={{ width: '84%' }} />
     <span className="folder-doc-line" style={{ width: '88%' }} />
     <span className="folder-doc-block" />
     <span className="folder-doc-line" style={{ width: '80%' }} />
     <span className="folder-doc-line" style={{ width: '62%' }} />
-  </div>
-);
+  </div>);
+};
 
 const FolderPhoto = ({ item }) => {
+  const { t } = useLanguage();
   const [failed, setFailed] = useState(false);
   useEffect(() => setFailed(false), [item.image]);
   const invalidate = event => event.currentTarget.closest('.folder-root')?.dispatchEvent(new Event('folder-content-update'));
-  if (failed) return <DocumentCard title={item.title} description={item.description} />;
+  if (failed) return <DocumentCard title={t(item.title)} description={item.description} />;
   return (
     <div className="folder-photo">
-      <img src={item.image} alt={item.alt ?? item.title ?? ''} draggable={false}
+      <img src={item.image} alt={t(item.alt ?? item.title ?? '')} draggable={false}
         onLoad={invalidate} onError={event => { setFailed(true); invalidate(event); }} />
     </div>
   );
@@ -826,6 +829,7 @@ const Folder = ({
   style,
   children
 }) => {
+  const { t } = useLanguage();
   const rootRef = useRef(null);
   const backRef = useRef(null);
   const frontRef = useRef(null);
@@ -1955,13 +1959,13 @@ const Folder = ({
           </svg>
           {label && (
             <span className="folder-tab-text" style={{ left: g.tabX, width: g.tabW }}>
-              {label}
+              {t(label)}
             </span>
           )}
         </div>
 
         <button ref={frontRef} type="button" className="folder-layer folder-front" data-face="outer"
-          aria-label={`${isOpen ? '收起' : '打开'}${label || '文件夹'}`} aria-expanded={isOpen}
+          aria-label={t(isOpen ? '收起{0}' : '打开{0}', [label || '文件夹'])} aria-expanded={isOpen}
           onClick={event => { event.stopPropagation(); toggle(); }}>
           <span className="folder-face folder-face-outer" aria-hidden="true" />
           {book && (
@@ -1983,7 +1987,7 @@ const Folder = ({
               href={href}
               target={href && /^https?:/i.test(href) ? '_blank' : undefined}
               rel={href && /^https?:/i.test(href) ? 'noopener noreferrer' : undefined}
-              aria-label={item?.title ? `${item.title}${href && /^https?:/i.test(href) ? '（新窗口）' : ''}` : undefined}
+              aria-label={item?.title ? (href && /^https?:/i.test(href) ? t('{0}（新窗口）', [item.title]) : t(item.title)) : undefined}
               aria-hidden={!interactive || undefined}
               data-interactive={interactive ? '' : undefined}
               ref={node => {
@@ -2014,7 +2018,7 @@ const Folder = ({
 
       {label && (
         <span ref={measureRef} className="folder-tab-text folder-measure" aria-hidden="true">
-          {label}
+          {t(label)}
         </span>
       )}
     </div>

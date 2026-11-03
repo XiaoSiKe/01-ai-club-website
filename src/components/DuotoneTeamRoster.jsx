@@ -1,4 +1,5 @@
 "use client";
+import { useLanguage } from '../Language';
 /** Adapted from the user-supplied DuotoneTeamRoster, with local placeholder portraits. */
 import * as React from "react";
 import ResponsiveImage from './ResponsiveImage';
@@ -208,6 +209,7 @@ function releaseNudge(card) {
 	if (track) track.style.translate = "";
 }
 function Portrait(props) {
+  const { t, locale, formatDate } = useLanguage();
 	const { slot, on, filterId, labels, onEnter, onLeave, onToggle, onSelect, follows } = props;
 	const [failed, setFailed] = React.useState(false);
 	const pointer = React.useRef("mouse");
@@ -220,7 +222,7 @@ function Portrait(props) {
 	const milestoneDate = member?.founding?.date || member?.joinedAt;
 	const role = slot.kind === "role" ? slot.role : null;
 	const craft = member ? member.university || "" : role ? role.craft || labels.hiring : "";
-	const label = member ? [member.name, member.university].filter(Boolean).join('，') : role ? labels.openRole + ": " + role.title : "";
+	const label = member ? [t(member.name), t(member.university)].filter(Boolean).join(' · ') : role ? labels.openRole + ": " + role.title : "";
 	const photo = member && member.photo && !failed ? member.photo : "";
 	const originalColor = member?.photoPlaceholder === false;
 	const href = member ? member.href : role ? role.href : undefined;
@@ -259,14 +261,14 @@ function Portrait(props) {
 	}} onError={() => setFailed(true)} />
             <ResponsiveImage className="dtr-true" src={photo} alt="" width={720} height={960} draggable={false} style={{ objectPosition: focus, objectFit: member.photoFit }} />
           </> : <div className="dtr-plate" aria-hidden="true">
-            <span>{member ? initials(member.name) : role && role.mark || "You?"}</span>
-            {role ? <em>{role.title}</em> : null}
+            <span>{t(member ? initials(member.name) : role && role.mark || "You?")}</span>
+            {role ? <em>{t(role.title)}</em> : null}
           </div>}
       </div>
       <span className="dtr-chip" aria-hidden="true">
-        {member ? <><strong>{member.name}</strong><span>{member.university}</span></> : craft}
+        {member ? <><strong>{t(member.name)}</strong><span>{t(member.university)}</span></> : craft}
       </span>
-      <button ref={hitRef} type="button" className="dtr-hit" tabIndex={hidden ? -1 : 0} aria-label={label} aria-expanded={hidden ? undefined : on} aria-controls={panelId} onFocus={(e) => {
+      <button ref={hitRef} type="button" className="dtr-hit" tabIndex={hidden ? -1 : 0} aria-label={t(label)} aria-expanded={hidden ? undefined : on} aria-controls={panelId} onFocus={(e) => {
 		// Pointer focus is handled by hover and tap; keyboard focus unfolds here.
 		if (!e.currentTarget.matches(":focus-visible")) return;
 		onEnter(slot.key);
@@ -303,20 +305,22 @@ function Portrait(props) {
 		e.stopPropagation();
 		close();
 	}}>
-        <p className="dtr-name">{member ? member.name : role ? role.title : ""}</p>
-        {member || role && role.note ? <p className="dtr-roleline">{member ? member.university : role ? role.note : ""}</p> : null}
-        {href ? <a href={href} target="_blank" rel="noopener noreferrer" aria-label={member ? `${member.name} 的 GitHub 主页（新窗口）` : undefined} tabIndex={hidden || !on ? -1 : 0}>
-            {linkLabel} <span aria-hidden="true">↗</span>
+        <p className="dtr-name">{t(member ? member.name : role ? role.title : "")}</p>
+        {member || role && role.note ? <p className="dtr-roleline">{t(member ? member.university : role ? role.note : "")}</p> : null}
+        {href ? <a href={href} target="_blank" rel="noopener noreferrer" aria-label={member ? t("{0} 的 GitHub 主页（新窗口）", [member.name]) : undefined} tabIndex={hidden || !on ? -1 : 0}>
+            {t(linkLabel)} <span aria-hidden="true">↗</span>
           </a> : null}
         {milestoneDate ? <p className="dtr-joined">
-          <time dateTime={milestoneDate}>{milestoneDate.split('-').map(Number).map((part, index) => `${part}${['年', '月', '日'][index]}`).join('')}</time>{' '}
-          {member.founding ? <a className="dtr-founding-link" href={member.founding.href} aria-label={`查看${member.founding.name}详情`} tabIndex={hidden || !on ? -1 : 0}>创办 {member.founding.name}</a> : '加入'}
+          {locale !== 'en' && <><time dateTime={milestoneDate}>{formatDate(milestoneDate)}</time>{' '}</>}
+          {member.founding ? <a className="dtr-founding-link" href={member.founding.href} aria-label={t("查看{0}详情", [member.founding.name])} tabIndex={hidden || !on ? -1 : 0}>{t("创办 ")}{t(member.founding.name)}</a> : t('加入')}
+          {locale === 'en' && <> · <time dateTime={milestoneDate}>{formatDate(milestoneDate)}</time></>}
         </p> : null}
-        <button type="button" className="dtr-close" tabIndex={hidden || !on ? -1 : 0} aria-label={`关闭${member ? member.name : role?.title || ""}的介绍`} onClick={close}>关闭 <span aria-hidden="true">×</span></button>
+        <button type="button" className="dtr-close" tabIndex={hidden || !on ? -1 : 0} aria-label={t("关闭{0}的介绍", [member ? member.name : role?.title || ""])} onClick={close}>{t("关闭 ")}<span aria-hidden="true">×</span></button>
       </div>
     </div>;
 }
 export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles = [], eyebrow = "Meet", title = "The\ncrew", intro = "", cta = null, secondaryCta = null, preset = "ember", palette, columns = 3, mobileRows = 1, mobileColumns = 0, mobileWallScale = 1, driftSeconds = 9, cardScale = 1, speedMultiplier = 1, drift = true, height = "100svh", fontFamily = DISPLAY_STACK, stretch = 1.16, uppercase = true, grain = true, labels, className = "", onMemberSelect, clickFollowsLink = true, targetMemberId = null, targetRequestId = 0, initialMemberId = null, titleAs: Title = "h2", renderTitleLine = null, titleControls = null }) {
+  const { t, locale } = useLanguage();
 	const pal = resolvePalette(preset, palette);
 	const text = {
 		...DEFAULT_LABELS,
@@ -346,7 +350,7 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 	const [outOfView, setOutOfView] = React.useState(false);
 	const [tabHidden, setTabHidden] = React.useState(false);
 	const offscreen = outOfView || tabHidden;
-	const lines = splitLines(title);
+	const lines = splitLines(t(title));
 	// The shadow end is lifted toward the field so dark skin and dark clothes keep their detail.
 	const mid = palette && palette.mid || mixHex(pal.hot, pal.highlight, .35);
 	const tables = tritoneTables(mixHex(pal.shadow, pal.deep, .4), mid, mixHex(pal.highlight, pal.ink, .5));
@@ -414,7 +418,7 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 			}
 			const maxByHeight = strip ? 200 : Math.max(56, h * .52 / Math.max(1, lines.length + .45));
 			// On the wall layout the widest line runs on into the first column of portraits, like a poster.
-			const overhang = strip ? 1 : 1.18;
+			const overhang = strip || locale === 'en' ? 1 : 1.18;
 			setTitleSize(fitTitleSize(avail * overhang, widestAt100, stretch, 40, Math.min(280, maxByHeight)));
 		};
 		fit();
@@ -429,6 +433,7 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 		cardScale,
 		stretch,
 		title,
+		locale,
 		fontFamily,
 		uppercase,
 		lines.length
@@ -670,34 +675,34 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
       <div className="dtr-in">
         <div className="dtr-copy" ref={copyRef}>
           <Title className="dtr-title" id={titleId} ref={titleRef}>
-            {eyebrow ? <span className="dtr-eyebrow">{eyebrow} </span> : null}
+            {eyebrow ? <span className="dtr-eyebrow">{t(eyebrow)} </span> : null}
             {lines.map((l, i) => <span className="dtr-line" key={i} style={{ ["--i"]: i }}>
                 <span>
-                  {renderTitleLine ? renderTitleLine(l, i) : <span>{l}</span>}
+                  {renderTitleLine ? renderTitleLine(l, i) : <span>{t(l)}</span>}
                 </span>
                 {i < lines.length - 1 ? " " : null}
               </span>)}
           </Title>
           {titleControls}
-          {intro ? <p className="dtr-intro">{intro}</p> : null}
+          {intro ? <p className="dtr-intro">{t(intro)}</p> : null}
           {cta || secondaryCta ? <div className="dtr-actions">
               {cta ? <a className="dtr-cta" href={cta.href}>
                   <span className="dtr-cta-label">
-                    <span>{cta.label}</span>
-                    <span aria-hidden="true">{cta.label}</span>
+                    <span>{t(cta.label)}</span>
+                    <span aria-hidden="true">{t(cta.label)}</span>
                   </span>
                   <span className="dtr-cta-arrow" aria-hidden="true">
                     →
                   </span>
                 </a> : null}
               {secondaryCta ? <a className="dtr-link" href={secondaryCta.href}>
-                  {secondaryCta.label}
+                  {t(secondaryCta.label)}
                 </a> : null}
             </div> : null}
         </div>
 
         {cols === 0 ? <div className="dtr-strips">
-          {plan.map((row, rowIndex) => <div className="dtr-strip" data-image-viewport={still ? undefined : ""} key={rowIndex} role="group" aria-label={`${text.team}，第${rowIndex + 1}排`}>
+          {plan.map((row, rowIndex) => <div className="dtr-strip" data-image-viewport={still ? undefined : ""} key={rowIndex} role="group" aria-label={t("{0}，第{1}排", [text.team, rowIndex + 1])}>
             <div className="dtr-strip-track">
               {copies.map((copy) => row.map((e, i) => {
 		const slot = slotFor({
@@ -708,7 +713,7 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 	}))}
             </div>
           </div>)}
-          </div> : <div className="dtr-wall" data-image-viewport={still ? undefined : ""} role="group" aria-label={text.team}>
+          </div> : <div className="dtr-wall" data-image-viewport={still ? undefined : ""} role="group" aria-label={t(text.team)}>
             {plan.map((col, c) => {
 		const dur = Math.max(6, col.length * Math.max(1, driftSeconds)) * stepRatio / Math.max(.1, speedMultiplier);
 		const phase = phases[c % phases.length];

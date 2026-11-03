@@ -1,3 +1,4 @@
+import { useLanguage } from './Language';
 import React, { useCallback, useId, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import ResponsiveImage from './components/ResponsiveImage';
@@ -28,6 +29,7 @@ export const StaggeredMenu = ({
   onMenuOpen,
   onMenuClose
 }) => {
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const keyboardOpenRef = useRef(false);
@@ -506,11 +508,11 @@ export const StaggeredMenu = ({
           ));
         })()}
       </div>
-      <header className="staggered-menu-header" aria-label="零一 AI 日新社导航">
-        <a className="sm-logo" href={logoHref} aria-label="返回零一 AI 日新社首页顶部">
+      <header className="staggered-menu-header" aria-label={t("零一 AI 日新社导航")}>
+        <a className="sm-logo" href={logoHref} aria-label={t("返回零一 AI 日新社首页顶部")}>
           <ResponsiveImage eager
             src={logoUrl || '/src/assets/logos/reactbits-gh-white.svg'}
-            alt="零一 AI 日新社"
+            alt={t("零一 AI 日新社")}
             className="sm-logo-img"
             draggable={false}
             width={110}
@@ -522,7 +524,7 @@ export const StaggeredMenu = ({
           <button
             ref={toggleBtnRef}
             className="sm-toggle"
-            aria-label={open ? '关闭社团菜单' : '打开社团菜单'}
+            aria-label={t(open ? '关闭社团菜单' : '打开社团菜单')}
             aria-expanded={open}
             aria-controls={panelId}
             onClick={toggleMenu}
@@ -532,7 +534,7 @@ export const StaggeredMenu = ({
               <span ref={textInnerRef} className="sm-toggle-textInner">
                 {textLines.map((l, i) => (
                   <span className="sm-toggle-line" key={i}>
-                    {l}
+                    {t(l)}
                   </span>
                 ))}
               </span>
@@ -549,7 +551,7 @@ export const StaggeredMenu = ({
         id={panelId}
         ref={panelRef}
         className="staggered-menu-panel"
-        aria-label="社团导航"
+        aria-label={t("社团导航")}
         aria-hidden={!open}
         inert={!open}
       >
@@ -561,11 +563,11 @@ export const StaggeredMenu = ({
                   <a
                     className="sm-panel-item"
                     href={it.link}
-                    aria-label={it.ariaLabel}
+                    aria-label={t(it.ariaLabel)}
                     data-index={idx + 1}
                     onClick={() => closeMenu(true)}
                   >
-                    <span className="sm-panel-itemLabel">{it.label}</span>
+                    <span className="sm-panel-itemLabel">{t(it.label)}</span>
                   </a>
                 </li>
               ))
@@ -584,7 +586,7 @@ export const StaggeredMenu = ({
                 {socialItems.map((s, i) => (
                   <li key={s.label + i} className="sm-socials-item">
                     <a href={s.link} target="_blank" rel="noopener noreferrer" className="sm-socials-link" onClick={() => closeMenu(true)}>
-                      {s.label}
+                      {t(s.label)}
                     </a>
                   </li>
                 ))}

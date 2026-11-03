@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ThemeProvider } from './Theme';
+import { LanguageProvider } from './Language';
 import StartupGate from './components/StartupGate';
 import './styles.css';
 import './theme.css';
@@ -19,8 +20,10 @@ const loadPage = Object.hasOwn(pages, pageId) ? pages[pageId]
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ThemeProvider>
-      <StartupGate loadPage={loadPage} homepage={homepage} projectId={projectId} />
-    </ThemeProvider>
+    <LanguageProvider>
+      <ThemeProvider>
+        <StartupGate loadPage={loadPage} homepage={homepage} projectId={projectId} />
+      </ThemeProvider>
+    </LanguageProvider>
   </StrictMode>,
 );

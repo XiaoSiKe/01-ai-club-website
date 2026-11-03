@@ -1,4 +1,5 @@
 import { memberPortraits } from './member-portraits.js';
+import { localizedSearchText } from '../i18n/translate.js';
 import { branches } from './branches.js';
 
 // Source: https://scn96l2kzmbn.feishu.cn/wiki/HLEfwV9BFiutsQkFxAQcPAB1nvb
@@ -63,7 +64,7 @@ export const pioneers = roster.map(([name, university, github, memberId, joinedA
   };
 });
 
-export function searchPioneers(query) {
+export function searchPioneers(query, translate = value => value) {
   const name = query.trim().normalize('NFKC').toLocaleLowerCase();
-  return name ? pioneers.filter(member => member.name.normalize('NFKC').toLocaleLowerCase().includes(name)) : [];
+  return name ? pioneers.filter(member => `${localizedSearchText(member.name)} ${translate(member.name)}`.normalize('NFKC').toLocaleLowerCase().includes(name)) : [];
 }

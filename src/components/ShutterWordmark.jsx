@@ -1,3 +1,4 @@
+import { useLanguage } from '../Language';
 /** Geometric glyphs adapted from the user's Shutter Glyph Footer.
  * The closing emblem is the original club logo, with a gentle fragment interaction.
  */
@@ -38,6 +39,7 @@ const GLYPHS = {
 const approach = (from, to, dt) => to + (from - to) * Math.pow(.88, Math.min(dt, .1) * 60);
 
 export default function ShutterWordmark() {
+  const { t } = useLanguage();
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, '');
   const rootRef = useRef(null);
   const svgRef = useRef(null);
@@ -143,7 +145,7 @@ export default function ShutterWordmark() {
 
   return (
     <div ref={rootRef} className={`shutter-wordmark${seen ? ' is-seen' : ''}`} onPointerMove={onPointer} onPointerLeave={onPointer}>
-      <svg ref={svgRef} viewBox={`-8 -8 ${width + 16} ${height + 16}`} role="group" aria-label="01 AI CLUB 互动字标">
+      <svg ref={svgRef} viewBox={`-8 -8 ${width + 16} ${height + 16}`} role="group" aria-label={t("01 AI CLUB 互动字标")}>
         <title>01 AI CLUB</title>
         <defs>
           <clipPath id={`${uid}-up`}><rect x="-40" y="-200" width="400" height="252.6" /></clipPath>
@@ -158,7 +160,7 @@ export default function ShutterWordmark() {
         {items.filter(item => item.ch !== ' ').map((item, index) => (
           <g key={index} transform={`translate(${item.x} ${item.y})`}>
             <g className="shutter-wordmark__rise" style={{ '--glyph-delay': `${index * 55}ms` }}>
-              <g className="shutter-wordmark__glyph" role="button" tabIndex={reduced ? -1 : 0} aria-disabled={reduced || undefined} aria-label={`翻转字形 ${item.ch}`} onClick={flip} onKeyDown={keyboard(flip)}>
+              <g className="shutter-wordmark__glyph" role="button" tabIndex={reduced ? -1 : 0} aria-disabled={reduced || undefined} aria-label={t("翻转字形 {0}", [item.ch])} onClick={flip} onKeyDown={keyboard(flip)}>
                 <rect className="shutter-wordmark__hit" width={item.w} height={CAP} />
                 <g className="shutter-wordmark__flip" onAnimationEnd={event => event.currentTarget.classList.remove('is-flipping')} aria-hidden="true">
                   <g clipPath={`url(#${uid}-up)`}><g className="shutter-wordmark__half shutter-wordmark__up">{item.d.map((d, i) => <path key={i} d={d} fillRule="evenodd" />)}</g></g>
@@ -170,7 +172,7 @@ export default function ShutterWordmark() {
         ))}
         <g transform={`translate(${logoX} ${logoY})`}>
           <g className="shutter-wordmark__rise" style={{ '--glyph-delay': '440ms' }}>
-            <g className="shutter-wordmark__club-logo" role="button" tabIndex={reduced ? -1 : 0} aria-disabled={reduced || undefined} aria-pressed={expanded} aria-label={expanded ? '聚合社团 Logo' : '展开社团 Logo'} onClick={toggleLogo} onKeyDown={keyboard(toggleLogo)}>
+            <g className="shutter-wordmark__club-logo" role="button" tabIndex={reduced ? -1 : 0} aria-disabled={reduced || undefined} aria-pressed={expanded} aria-label={t(expanded ? '聚合社团 Logo' : '展开社团 Logo')} onClick={toggleLogo} onKeyDown={keyboard(toggleLogo)}>
               <rect className="shutter-wordmark__hit" width="100" height="100" />
               <g ref={logoTiltRef} aria-hidden="true">
                 <use ref={logoBaseRef} href={`#${uid}-club-logo`} />

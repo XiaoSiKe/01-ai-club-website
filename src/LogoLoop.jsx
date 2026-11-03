@@ -1,3 +1,4 @@
+import { useLanguage } from './Language';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import './LogoLoop.css';
 import { easeLoopPlaybackRate } from './components/loopPlaybackRate';
@@ -17,6 +18,7 @@ export default function LogoLoop({
   tabIndex,
   className = ''
 }) {
+  const { t } = useLanguage();
   const rootRef = useRef(null);
   const groupRef = useRef(null);
   const [groupCount, setGroupCount] = useState(2);
@@ -85,7 +87,7 @@ export default function LogoLoop({
     const content = logo.node ? (
       <span className="logo-loop-node" aria-hidden="true">{logo.node}</span>
     ) : (
-      <img className="logo-loop-image" src={logo.src} alt={duplicate ? '' : logo.alt} loading="lazy" />
+      <img className="logo-loop-image" src={logo.src} alt={t(duplicate ? '' : logo.alt)} loading="lazy" />
     );
 
     if (logo.href) {
@@ -97,8 +99,8 @@ export default function LogoLoop({
           target={external ? '_blank' : undefined}
           rel={external ? 'noopener noreferrer' : undefined}
           tabIndex={duplicate ? -1 : undefined}
-          aria-label={logo.title || logo.alt}
-          title={logo.title || logo.alt}
+          aria-label={t(logo.title || logo.alt)}
+          title={t(logo.title || logo.alt)}
           key={`${logo.title || logo.alt || index}-${index}`}
         >
           {content}
@@ -110,8 +112,8 @@ export default function LogoLoop({
       <span
         className="logo-loop-item"
         role={duplicate ? undefined : 'img'}
-        aria-label={duplicate ? undefined : logo.title || logo.alt}
-        title={duplicate ? undefined : logo.title || logo.alt}
+        aria-label={t(duplicate ? undefined : logo.title || logo.alt)}
+        title={t(duplicate ? undefined : logo.title || logo.alt)}
         key={`${duplicate ? 'duplicate' : 'logo'}-${logo.title || logo.alt || index}-${index}`}
       >
         {content}
@@ -127,7 +129,7 @@ export default function LogoLoop({
       data-image-viewport=""
       data-pause-on-hover={hoverSpeed === 0 || undefined}
       role="group"
-      aria-label={ariaLabel}
+      aria-label={t(ariaLabel)}
       tabIndex={tabIndex}
       style={{
         '--logo-loop-height': `${logoHeight}px`,
