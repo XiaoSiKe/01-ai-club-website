@@ -111,6 +111,17 @@ display-only because no official destinations were supplied.
   lettering on dark backgrounds. Lossless WebP variants preserve transparency.
   No destination was supplied, so the mark remains display-only.
 
+- **FluxTech 南客松 — `fluxtech-nankesong.png` / `fluxtech-nankesong-dark.png`:**
+  user-supplied transparent horizontal wordmarks from
+  `(新 10.7)FluxTech 南客松品牌 logo(3)(2).zip`, added 2026-11-03.
+  Website copies preserve `fluxtech-nankesong-black-transparent-tight.png`
+  (409 × 100px) and `fluxtech-nankesong-white-transparent-tight.png`
+  (409 × 107px) byte-for-byte. Both fit within a 210 × 54.94px display box
+  before the shared scale, retaining each original's proportions and transparent
+  padding. The black version appears on light backgrounds and the supplied
+  white version on dark backgrounds. Lossless WebP display variants preserve
+  transparency. No destination was supplied, so the mark remains display-only.
+
 ## Original-color display (2026-11-02)
 
 Partner artwork has no added backing surface, outline, border or plate. Color
