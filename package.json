@@ -14,11 +14,12 @@
     "preview": "vite preview",
     "verify:dist": "node scripts/verify-dist.mjs",
     "verify:atlas": "node scripts/verify-branch-atlas.mjs",
-    "test:runtime": "node --test scripts/viewport-readiness.test.mjs scripts/pioneers-search.test.mjs scripts/image-visibility.test.mjs scripts/logo-loop-motion.test.mjs",
+    "test:runtime": "node --test scripts/viewport-readiness.test.mjs scripts/pioneers-search.test.mjs scripts/image-visibility.test.mjs scripts/logo-loop-motion.test.mjs scripts/language.test.mjs",
     "release:package": "bash deploy/package-release.sh",
     "ops:check": "node scripts/ops.mjs check",
     "ops:status": "node scripts/ops.mjs status",
-    "ops:runs": "node scripts/ops.mjs runs"
+    "ops:runs": "node scripts/ops.mjs runs",
+    "i18n:build": "node scripts/build-translations.mjs"
   },
   "dependencies": {
     "face-api.js": "^0.22.2",
@@ -36,7 +37,8 @@
     "d3-geo": "^3.1.1",
     "topojson-client": "^3.1.0",
     "vite": "8.2.2",
-    "world-atlas": "^2.0.2"
+    "world-atlas": "^2.0.2",
+    "opencc-js": "^1.4.2"
   },
   "overrides": {
     "node-fetch": "2.6.7"

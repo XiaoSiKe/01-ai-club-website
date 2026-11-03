@@ -1,3 +1,4 @@
+import { useLanguage } from '../Language';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { atlasFlightTarget, atlasMarkerLabels, atlasMarkerLayout, atlasSpringResponse, fitAtlasCamera, stepAtlasSpring } from './atlasCamera';
 import { createAtlasPainter } from './atlasPainter';
@@ -7,12 +8,13 @@ const ZERO = { x: 0, y: 0, z: 0 };
 const cameraPadding = width => width < 500 ? 42 : 64;
 
 export default function useAtlasCamera({ viewportRef, layerRef, painterRef, markerRefs, entranceRef, points, bounds, reduced, overview, atlas, palette, selectedId, hoveredId, view }) {
+  const { t } = useLanguage();
   const [size, setSize] = useState({ width: 800, height: 580 });
   const sizeRef = useRef(size);
   const pointsRef = useRef(points);
   const engineRef = useRef(null);
   const renderOptions = useRef(null);
-  renderOptions.current = { palette, selectedId, hoveredId, view, entrance: entranceRef.current, reduced, markerBounds: atlas?.cityViews[branchById[selectedId]?.city || view] || atlas?.bounds.campuses };
+  renderOptions.current = { translate: t, palette, selectedId, hoveredId, view, entrance: entranceRef.current, reduced, markerBounds: atlas?.cityViews[branchById[selectedId]?.city || view] || atlas?.bounds.campuses };
   pointsRef.current = points;
   sizeRef.current = size;
 
@@ -167,7 +169,7 @@ export default function useAtlasCamera({ viewportRef, layerRef, painterRef, mark
     return () => { painterRef.current = null; };
   }, [atlas, layerRef, painterRef]);
 
-  useLayoutEffect(() => { engineRef.current?.redraw(); }, [palette, hoveredId]);
+  useLayoutEffect(() => { engineRef.current?.redraw(); }, [palette, hoveredId, t]);
 
   useLayoutEffect(() => {
     if (!bounds) return;

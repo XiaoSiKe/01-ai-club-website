@@ -1,3 +1,4 @@
+import { useLanguage } from './Language';
 import { useEffect, useState } from 'react';
 import { useTheme } from './Theme';
 import DuotoneTeamRoster from './components/DuotoneTeamRoster';
@@ -23,6 +24,7 @@ const LABELS = {
 };
 
 export default function PioneersPage() {
+  const { t } = useLanguage();
   const { theme } = useTheme();
   const mobile = useMediaQuery('(max-width: 699px)');
   const [searchTarget, setSearchTarget] = useState(null);
@@ -32,22 +34,22 @@ export default function PioneersPage() {
 
   useEffect(() => {
     const previousTitle = document.title;
-    document.title = '领航先锋 · 零一 AI 日新社';
+    document.title = t('领航先锋 · 零一 AI 日新社');
     return () => { document.title = previousTitle; };
-  }, []);
+  }, [t]);
 
   return (
     <main className="pioneers-page">
       <SiteBackground />
-      <a className="pioneers-page__skip" href="#pioneers-roster">跳到领航先锋</a>
+      <a className="pioneers-page__skip" href="#pioneers-roster">{t("跳到领航先锋")}</a>
       <SiteNavigation standalone />
       <div id="pioneers-roster" className="pioneers-page__roster" tabIndex={-1}>
         <DuotoneTeamRoster
           members={pioneers}
           titleAs="h1"
-          title={'领航\n先锋'}
-          eyebrow={<BrandTitle text="零一 AI 日新社｜01 AI CLUB" />}
-          renderTitleLine={line => <BrandTitle text={line} />}
+          title={t("领航\n先锋")}
+          eyebrow={<BrandTitle text={t("零一 AI 日新社｜01 AI CLUB")} />}
+          renderTitleLine={line => <BrandTitle text={t(line)} />}
           titleControls={<PioneerSearch onSelect={id => setSearchTarget(previous => ({ id, request: (previous?.request || 0) + 1 }))} />}
           preset="mono"
           palette={theme === 'light' ? LIGHT_PALETTE : DARK_PALETTE}

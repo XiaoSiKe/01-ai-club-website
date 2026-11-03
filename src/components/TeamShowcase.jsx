@@ -1,3 +1,4 @@
+import { useLanguage } from '../Language';
 // Adapted from the user's TeamShowcase: staggered portraits and linked names.
 // Native CSS matches the existing app; no framework migration is needed.
 import { useId, useState } from 'react';
@@ -5,6 +6,7 @@ import ResponsiveImage from './ResponsiveImage';
 import './TeamShowcase.css';
 
 export default function TeamShowcase({ members, headingAs: Heading = 'h4', headingContent = 'Mentor' }) {
+  const { t } = useLanguage();
   const id = useId();
   const [hoveredId, setHoveredId] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
@@ -22,14 +24,14 @@ export default function TeamShowcase({ members, headingAs: Heading = 'h4', headi
     <section className="team-showcase" aria-labelledby={`${id}-title`}>
       <Heading id={`${id}-title`} className="team-showcase__title">{headingContent}</Heading>
       <div className="team-showcase__layout">
-        <div className="team-showcase__portraits" aria-label="导师头像">
+        <div className="team-showcase__portraits" aria-label={t("导师头像")}>
           {[0, 1, 2].map(column => <div className={`team-showcase__column team-showcase__column--${column + 1}`} key={column}>
             {members.filter((_, i) => i % 3 === column).map(member => <button
               key={member.id} type="button" className="team-showcase__portrait"
               data-active={activeId === member.id} data-dimmed={Boolean(activeId && activeId !== member.id)}
-              aria-label={`查看${member.name}介绍`} {...interact(member.id)}
+              aria-label={t("查看{0}介绍", [member.name])} {...interact(member.id)}
             >
-              {member.image ? <ResponsiveImage src={member.image} alt={member.name} fit="cover" /> : <span className="team-showcase__name-tile" aria-hidden="true">{member.name}</span>}
+              {member.image ? <ResponsiveImage src={member.image} alt={t(member.name)} fit="cover" /> : <span className="team-showcase__name-tile" aria-hidden="true">{t(member.name)}</span>}
             </button>)}
           </div>)}
         </div>
@@ -37,11 +39,11 @@ export default function TeamShowcase({ members, headingAs: Heading = 'h4', headi
           {members.map(member => <button
             key={member.id} type="button" className="team-showcase__member"
             data-active={activeId === member.id} data-dimmed={Boolean(activeId && activeId !== member.id)}
-            aria-label={`${member.name}，${member.role}`} {...interact(member.id)}
+            aria-label={t("{0}，{1}", [member.name, member.role])} {...interact(member.id)}
           >
-            <span className="team-showcase__member-name"><i aria-hidden="true" /><strong>{member.name}</strong></span>
-            <span className="team-showcase__role">{member.role}</span>
-            <span className="team-showcase__description">{member.description}</span>
+            <span className="team-showcase__member-name"><i aria-hidden="true" /><strong>{t(member.name)}</strong></span>
+            <span className="team-showcase__role">{t(member.role)}</span>
+            <span className="team-showcase__description">{t(member.description)}</span>
           </button>)}
         </div>
       </div>

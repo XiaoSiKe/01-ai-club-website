@@ -1,3 +1,4 @@
+import { useLanguage } from './Language';
 /*! @license
  * Adapted from React Bits FlexCarousel by David Haz.
  * Source: https://github.com/DavidHDev/react-bits/blob/e12c22192ac7b4b452c5e2feb9b586d74765d696/src/content/Components/FlexCarousel/FlexCarousel.jsx
@@ -354,6 +355,7 @@ const FlexCarousel = ({
   className = '',
   style
 }) => {
+  const { t } = useLanguage();
   const { theme } = useTheme();
   const containerRef = useRef(null);
   const settingsRef = useRef(null);
@@ -1497,11 +1499,11 @@ const FlexCarousel = ({
     <div className={`flex-carousel${className ? ` ${className}` : ''}`} style={style} data-revealed={revealed || undefined} data-captions={captions || undefined}>
       {current && (captions || focusOpen) && (
         <header className="flex-carousel__header">
-          {focusOpen && <SpecularButton className="flex-carousel__close" onClick={() => engineRef.current?.closeFocus()} ariaLabel="收起品牌标志">收起</SpecularButton>}
+          {focusOpen && <SpecularButton className="flex-carousel__close" onClick={() => engineRef.current?.closeFocus()} ariaLabel={t("收起品牌标志")}>{t("收起")}</SpecularButton>}
           {captions && <>
-            <h3 key={active} className="flex-carousel__title">{current.title || current.alt}</h3>
-            {current.subtitle && <p className="flex-carousel__subtitle">{current.subtitle}</p>}
-            {credit && <p className="flex-carousel__credit">{credit}</p>}
+            <h3 key={active} className="flex-carousel__title">{t(current.title || current.alt)}</h3>
+            {current.subtitle && <p className="flex-carousel__subtitle">{t(current.subtitle)}</p>}
+            {credit && <p className="flex-carousel__credit">{t(credit)}</p>}
           </>}
         </header>
       )}
@@ -1511,7 +1513,7 @@ const FlexCarousel = ({
         style={{ '--flex-carousel-half': `${Math.max(cardHeight, 0.05) * 50}%` }}
         role="region"
         aria-roledescription="carousel"
-        aria-label={ariaLabel}
+        aria-label={t(ariaLabel)}
         tabIndex={0}
         onKeyDown={onFallbackKeyDown}
       >
@@ -1519,33 +1521,33 @@ const FlexCarousel = ({
           <div className="flex-carousel__fallback-image">
             {current.cutout ? <LogoArtwork className="flex-carousel__fallback-artwork" source={imageSource(current.src, 280, 280)} width={768} height={768} cutout backdropThreshold={.6}
               lightInk={theme === 'light'} style={{ width: '100%', height: '100%', transform: `scale(${imageScaleFor(current)})` }} />
-              : <ResponsiveImage src={current.src} alt={current.alt || current.title || ''} draggable="false" style={{ transform: `scale(${imageScaleFor(current)})` }} />}
+              : <ResponsiveImage src={current.src} alt={t(current.alt || current.title || '')} draggable="false" style={{ transform: `scale(${imageScaleFor(current)})` }} />}
           </div>
         )}
         <div className="flex-carousel__live" aria-live="polite" aria-atomic="true">
-          {`${label}, ${active + 1} of ${list.length}`}
+          {t("{0}, {1} of {2}", [label, active + 1, list.length])}
         </div>
       </div>
       {current && (captions || list.length > 1) && (
         <div className="flex-carousel__footer">
           {captions && members.length > 0 && (
             <div className="flex-carousel__members">
-              <AvatarStack key={current.id || current.src} items={members} max={4} size="lg" ariaLabel={`${current.title || current.alt}成员${current.membersExample ? '示例' : ''}`} />
+              <AvatarStack key={current.id || current.src} items={members} max={4} size="lg" ariaLabel={t("{0}成员{1}", [current.title || current.alt, current.membersExample ? '示例' : ''])} />
             </div>
           )}
-          <div className="flex-carousel__actions" role="group" aria-label="项目操作">
+          <div className="flex-carousel__actions" role="group" aria-label={t("项目操作")}>
             {list.length > 1 && (
-              <SpecularButton size="md" className="flex-carousel__arrow" onClick={() => move(-1)} ariaLabel="上一个品牌">
+              <SpecularButton size="md" className="flex-carousel__arrow" onClick={() => move(-1)} ariaLabel={t("上一个品牌")}>
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m14 6-6 6 6 6" /></svg>
               </SpecularButton>
             )}
             {captions && current.href && (
-              <SpecularButton size="md" className="flex-carousel__website" href={current.href} target="_blank" rel="noopener noreferrer" ariaLabel={`访问${current.title || current.alt}项目官网（新窗口）`}>
-                <span className="flex-carousel__website-label">访问项目官网 <span aria-hidden="true">↗</span></span>
+              <SpecularButton size="md" className="flex-carousel__website" href={current.href} target="_blank" rel="noopener noreferrer" ariaLabel={t("访问{0}项目官网（新窗口）", [current.title || current.alt])}>
+                <span className="flex-carousel__website-label">{t("访问项目官网 ")}<span aria-hidden="true">↗</span></span>
               </SpecularButton>
             )}
             {list.length > 1 && (
-              <SpecularButton size="md" className="flex-carousel__arrow" onClick={() => move(1)} ariaLabel="下一个品牌">
+              <SpecularButton size="md" className="flex-carousel__arrow" onClick={() => move(1)} ariaLabel={t("下一个品牌")}>
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m10 6 6 6-6 6" /></svg>
               </SpecularButton>
             )}

@@ -1,3 +1,4 @@
+import { useLanguage } from '../Language';
 /*! @license
  * React Bits DriftWall — David Haz.
  * Source: https://github.com/DavidHDev/react-bits/blob/e12c22192ac7b4b452c5e2feb9b586d74765d696/src/content/Components/DriftWall/DriftWall.jsx
@@ -49,9 +50,10 @@ const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: r
 const columnFactor = (index, variance) => 1 + variance * (((index * 0.6180339887 + 0.35) % 1) * 2 - 1);
 
 function WallImage({ item, active }) {
+  const { t } = useLanguage();
   const [failed, setFailed] = useState(false);
-  return failed ? <span className="drift-wall__fallback" role="img" aria-label={item.title}>{item.title || '图片暂不可用'}</span> :
-    <ResponsiveImage src={item.image} active={active} alt={item.title || ''} draggable={false} onError={() => setFailed(true)} />;
+  return failed ? <span className="drift-wall__fallback" role="img" aria-label={t(item.title)}>{t(item.title || '图片暂不可用')}</span> :
+    <ResponsiveImage src={item.image} active={active} alt={t(item.title || '')} draggable={false} onError={() => setFailed(true)} />;
 }
 
 export default function DriftWall({
@@ -61,6 +63,7 @@ export default function DriftWall({
   dim = 0.55, grayscale = false, brightness = 1, overlayColor = '#060010', entrance = false,
   ariaLabel = '活动照片墙', className = '', style,
 }) {
+  const { t } = useLanguage();
   const containerRef = useRef(null), planeRef = useRef(null), trackRefs = useRef([]);
   const offsetsRef = useRef([]), velocitiesRef = useRef([]), wakeRef = useRef(null);
   const wallHoveredRef = useRef(false), hoverTileRef = useRef(null), pressedRef = useRef(null);
@@ -298,7 +301,7 @@ export default function DriftWall({
     style={{ '--dw-item-h': `${itemHeight(item)}px`, '--dw-item-aspect': item.aspectRatio || tileWidth / tileHeight }}
     data-tile-id={id} data-item-id={item.id} data-col={col} data-orientation={item.orientation}
     tabIndex={duplicate ? -1 : 0} aria-hidden={duplicate && focusedTileRef.current?.dataset.tileId !== id ? true : undefined}
-    aria-label={item.title || '活动照片'} aria-haspopup="dialog"
+    aria-label={t(item.title || '活动照片')} aria-haspopup="dialog"
     onFocus={event => {
       finishEntrance();
       const tile = event.currentTarget;
@@ -322,7 +325,7 @@ export default function DriftWall({
 
   return <>
     <div ref={containerRef} data-image-viewport={reduced ? undefined : ""} className={`drift-wall${reduced ? ' drift-wall--reduced' : ''}${className ? ` ${className}` : ''}`}
-      role="group" aria-label={ariaLabel} data-columns={visibleColumns}
+      role="group" aria-label={t(ariaLabel)} data-columns={visibleColumns}
       style={{ '--dw-tile-w': `${displayedWidth}px`, '--dw-gap': `${gap}px`, '--dw-radius': `${radius}px`,
         '--dw-perspective': `${perspective}px`, '--dw-lift': `${lift}px`, '--dw-dim': dim,
         '--dw-gray': Number(grayscale), '--dw-brightness': brightness, '--dw-overlay': overlayColor,

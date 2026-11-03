@@ -1,4 +1,5 @@
 import { memberPortraits } from './member-portraits.js';
+import { localizedSearchText } from '../i18n/translate.js';
 
 // Branch names, statuses and leaders supplied by the user.
 // Coordinates refer to the universities' public campuses, not an event venue.
@@ -86,7 +87,11 @@ export const cityById = Object.fromEntries(branchCities.map(city => [city.id, ci
 export const branchById = Object.fromEntries(branches.map(branch => [branch.id, branch]));
 export const FUZHOU_CENTER = [119.200519, 26.047886];
 
-export function searchBranches(query) {
+export function searchBranches(query, translate = value => value) {
   const terms = query.normalize('NFKC').trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
-  return branches.filter(branch => terms.every(term => `${branch.school} ${branch.name} ${branch.searchTerms} ${branch.leader?.title || ''} ${branch.leader?.name || ''}`.toLocaleLowerCase().includes(term)));
+  return branches.filter(branch => {
+    const text = [branch.school, branch.name, branch.role, branch.searchTerms, branch.leader?.title || '', branch.leader?.name || '']
+      .map(value => `${localizedSearchText(value)} ${translate(value)}`).join(' ').normalize('NFKC').toLocaleLowerCase();
+    return terms.every(term => text.includes(term));
+  });
 }

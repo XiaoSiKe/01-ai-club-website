@@ -1,3 +1,4 @@
+import { useLanguage } from '../Language';
 import { memo, useLayoutEffect, useRef, useState } from 'react';
 import { imageSource } from './imageSource';
 
@@ -27,6 +28,7 @@ export function prepareSchoolCrest(source) {
 }
 
 export default memo(function SchoolCrest({ branch }) {
+  const { t } = useLanguage();
   const ref = useRef(null);
   const [ready, setReady] = useState(false);
   useLayoutEffect(() => {
@@ -42,7 +44,7 @@ export default memo(function SchoolCrest({ branch }) {
     else prepareSchoolCrest(branch.crest).then(paint).catch(() => {});
     return () => { active = false; };
   }, [branch]);
-  return <span className="school-crest branch-atlas__crest" role="img" aria-label={`${branch.school}校徽`} style={{ backgroundColor: branch.crestBackground }}>
+  return <span className="school-crest branch-atlas__crest" role="img" aria-label={t('{0}校徽', [branch.school])} style={{ backgroundColor: branch.crestBackground }}>
     {!ready && <img src={imageSource(branch.crest, 144, 144, 1)} alt="" />}
     <canvas ref={ref} width="144" height="144" aria-hidden="true" />
   </span>;

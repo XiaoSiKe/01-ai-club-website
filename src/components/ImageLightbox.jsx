@@ -1,3 +1,4 @@
+import { useLanguage } from '../Language';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import SpecularButton from '../SpecularButton';
@@ -6,6 +7,7 @@ import UniqueLoading from './UniqueLoading';
 import './ImageLightbox.css';
 
 export default function ImageLightbox({ item, opener, onClose }) {
+  const { t } = useLanguage();
   const dialogRef = useRef(null);
   const [ready, setReady] = useState(false), [failed, setFailed] = useState(false);
   const close = () => {
@@ -20,9 +22,7 @@ export default function ImageLightbox({ item, opener, onClose }) {
     document.body.style.overflow = 'hidden';
     return () => { dialog.close(); document.body.style.overflow = previousOverflow; };
   }, []);
-  const closeButton = <SpecularButton className="image-lightbox__close" ariaLabel="退出" autoFocus onClick={close}>
-    退出
-  </SpecularButton>;
+  const closeButton = <SpecularButton className="image-lightbox__close" ariaLabel={t("退出")} autoFocus onClick={close}>{t("退出")}</SpecularButton>;
 
   return createPortal(
     <dialog ref={dialogRef} className={`image-lightbox${item.downloadName ? ' image-lightbox--qr' : ''}`} aria-labelledby="lightbox-caption"
@@ -33,21 +33,19 @@ export default function ImageLightbox({ item, opener, onClose }) {
         <div className="image-lightbox__media" aria-busy={!ready && !failed}>
           {!ready && <ResponsiveImage className="image-lightbox__preview" src={item.image || item.src} alt="" aria-hidden="true" eager />}
           <ResponsiveImage className={`image-lightbox__full${ready ? ' is-ready' : ''}`} src={item.fullImage || item.image || item.src} eager
-            alt={item.title || item.alt || ''} decoding="async" onLoad={() => setReady(true)} onError={() => setFailed(true)} />
+            alt={t(item.title || item.alt || '')} decoding="async" onLoad={() => setReady(true)} onError={() => setFailed(true)} />
           {!ready && !failed && <div className="image-lightbox__loading"><UniqueLoading /></div>}
         </div>
         <figcaption id="lightbox-caption">
-          {item.title || item.alt}
-          {item.organization && <span className="image-lightbox__organization">{item.organization}</span>}
-          {item.credit && <span className="image-lightbox__credit">{item.credit}</span>}
-          {failed && <span>高清图暂时无法加载，当前显示预览图。</span>}
+          {t(item.title || item.alt)}
+          {item.organization && <span className="image-lightbox__organization">{t(item.organization)}</span>}
+          {item.credit && <span className="image-lightbox__credit">{t(item.credit)}</span>}
+          {failed && <span>{t("高清图暂时无法加载，当前显示预览图。")}</span>}
         </figcaption>
       </figure>
       {item.downloadName ? <div className="image-lightbox__actions">
         <SpecularButton className="image-lightbox__save"
-          href={item.fullImage || item.image || item.src} download={item.downloadName} ariaLabel={`保存${item.title || '二维码'}`}>
-          保存二维码
-        </SpecularButton>
+          href={item.fullImage || item.image || item.src} download={item.downloadName} ariaLabel={t("保存{0}", [item.title || '二维码'])}>{t("保存二维码")}</SpecularButton>
         {closeButton}
       </div> : closeButton}
     </dialog>, document.body

@@ -1,3 +1,4 @@
+import { useLanguage } from '../Language';
 /** Adapted from the Spectrum UI AvatarStack supplied with this project. */
 import { useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -30,6 +31,7 @@ export function AvatarStack({
   ariaLabel,
   className = '',
 }) {
+  const { t } = useLanguage();
   const [hovered, setHovered] = useState(false);
   const [focusWithin, setFocusWithin] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
@@ -161,7 +163,7 @@ export function AvatarStack({
     <div
       ref={groupRef}
       role="group"
-      aria-label={ariaLabel || `${items.length} 位项目成员`}
+      aria-label={ariaLabel ? t(ariaLabel) : t('{0} 位项目成员', [items.length])}
       className={`avatar-stack${fanned ? ' avatar-stack--fanned' : ''}${expanded ? ' avatar-stack--expanded' : ''} ${className}`.trim()}
       style={{ '--avatar-size': `${SIZES[size] || SIZES.md}px` }}
       onPointerEnter={event => { if (event.pointerType !== 'touch') setHovered(true); }}
@@ -191,7 +193,7 @@ export function AvatarStack({
             type={item.href ? undefined : 'button'}
             href={item.href}
             className="avatar-stack__avatar"
-            aria-label={item.href ? `查看${item.name}的领航先锋介绍` : item.name}
+            aria-label={item.href ? t("查看{0}的领航先锋介绍", [item.name]) : t(item.name)}
             tabIndex={roving === index ? 0 : -1}
             onPointerEnter={event => { if (event.pointerType !== 'touch') setActiveIndex(index); }}
             onPointerLeave={event => {
@@ -225,7 +227,7 @@ export function AvatarStack({
           type="button"
           className="avatar-stack__more"
           aria-expanded={expanded}
-          aria-label={expanded ? '收起成员列表' : `展开另外 ${overflowCount} 位成员`}
+          aria-label={expanded ? t('收起成员列表') : t("展开另外 {0} 位成员", [overflowCount])}
           tabIndex={roving === pillIndex ? 0 : -1}
           onFocus={() => {
             setActiveIndex(null);
@@ -239,7 +241,7 @@ export function AvatarStack({
         >
           <span key={expanded ? 'collapse' : 'count'} aria-hidden="true">{expanded ? '−' : `+${overflowCount}`}</span>
         </button>
-      ) : <span className="avatar-stack__more avatar-stack__more--static" aria-label={`另有 ${overflowCount} 位成员`}>+{overflowCount}</span>)}
+      ) : <span className="avatar-stack__more avatar-stack__more--static" aria-label={t("另有 {0} 位成员", [overflowCount])}>+{overflowCount}</span>)}
       {activeItem && typeof document !== 'undefined' && createPortal(
         <span
           ref={tooltipRef}
@@ -247,7 +249,7 @@ export function AvatarStack({
           aria-hidden="true"
           data-placement={tooltipPosition?.placement || 'above'}
           style={tooltipPosition ? { left: tooltipPosition.left, top: tooltipPosition.top } : { visibility: 'hidden' }}
-        >{activeItem.name}</span>,
+        >{t(activeItem.name)}</span>,
         document.body,
       )}
     </div>

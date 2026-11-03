@@ -1,4 +1,5 @@
-import { lazy, Suspense, useLayoutEffect, useRef, useState } from 'react';
+import { useLanguage } from '../Language';
+import { lazy, Suspense, useMemo, useLayoutEffect, useRef, useState } from 'react';
 import ViewportMount from './ViewportMount';
 import BorderGlow from '../BorderGlow';
 import { useTheme } from '../Theme';
@@ -12,26 +13,29 @@ import './ExploreSection.css';
 const Folder = lazy(() => import('./Folder'));
 const mediaChannels = socialChannels.filter(channel => channel.id !== 'channels');
 
-const documentItems = (items, categories) => items.map((item, index) => ({
+const documentItems = (items, categories, t, locale) => items.map((item, index) => ({
   ...item,
   content: (
     <span className="home-folder-document">
       <span className="home-folder-document__masthead"><span>01 AI CLUB</span><span aria-hidden="true">↗</span></span>
       <span className="home-folder-document__rule" />
-      <strong className="home-folder-document__title">{item.id === 'research' ? <><span>零一科研</span><span>与竞赛</span></> : item.title}</strong>
-      <span className="home-folder-document__category">{categories[index]}</span>
-      <span className="home-folder-document__footer"><span className="home-folder-document__index">{String(index + 1).padStart(2, '0')}</span><span>阅读专栏</span></span>
+      <strong className="home-folder-document__title">{item.id === 'research' && locale !== 'en' ? <><span>{t("零一科研")}</span><span>{t("与竞赛")}</span></> : t(item.title)}</strong>
+      <span className="home-folder-document__category">{t(categories[index])}</span>
+      <span className="home-folder-document__footer"><span className="home-folder-document__index">{String(index + 1).padStart(2, '0')}</span><span>{t("阅读专栏")}</span></span>
     </span>
   ),
 }));
-const learningItems = documentItems(learningFolderItems, ['文章 · 观点', '大学 · 成长']);
-const practiceItems = documentItems(practiceFolderItems, ['黑客松 · 创造', '沙龙 · 交流', '商业 · 产品', '科研 · 竞赛', '日常 · 耍起']);
-const folderGroups = [
-  { id: 'learn', title: '从零到一', label: '学习与分享', items: learningItems },
-  { id: 'practice', title: '零一实践', label: '探索与创新', items: practiceItems },
-];
 
 export default function ExploreSection({ borderGlowProps, knowledgeUrl, onItemClick }) {
+  const { t, locale } = useLanguage();
+  const folderGroups = useMemo(() => {
+    const learningItems = documentItems(learningFolderItems, ['文章 · 观点', '大学 · 成长'], t, locale);
+    const practiceItems = documentItems(practiceFolderItems, ['黑客松 · 创造', '沙龙 · 交流', '商业 · 产品', '科研 · 竞赛', '日常 · 耍起'], t, locale);
+    return [
+      { id: 'learn', title: '从零到一', label: '学习与分享', items: learningItems },
+      { id: 'practice', title: '零一实践', label: '探索与创新', items: practiceItems },
+    ];
+  }, [t, locale]);
   const { theme } = useTheme();
   const [openFolder, setOpenFolder] = useState(null);
   const [folderLayouts, setFolderLayouts] = useState(() => folderGroups.map(() => ({ size: .99, documentScale: 1.276, documentOffsetX: 0 })));
@@ -75,38 +79,38 @@ export default function ExploreSection({ borderGlowProps, knowledgeUrl, onItemCl
   return (
     <section className="home-section home-how-section" id="directions" aria-labelledby="directions-title">
       <header className="home-explore-heading">
-        <h2 className="home-flow-title" id="directions-title" tabIndex={-1}>我们在做什么？</h2>
-        <p className="home-directions-quote">那些疯狂到相信自己能够改变世界的人，正是改变世界的人！</p>
+        <h2 className="home-flow-title" id="directions-title" tabIndex={-1}>{t("我们在做什么？")}</h2>
+        <p className="home-directions-quote">{t("那些疯狂到相信自己能够改变世界的人，正是改变世界的人！")}</p>
       </header>
 
       <div className="home-explore-bento">
-        <nav className="home-explore-links" aria-label="探索入口">
+        <nav className="home-explore-links" aria-label={t("探索入口")}>
           {entries.map(entry => {
             const Icon = entry.icon;
             return <BorderGlow key={entry.id} {...borderGlowProps} borderRadius={16} className={`home-explore-entry-frame home-explore-entry-frame--${entry.id}`}>
               <a className={`home-explore-link home-explore-link--${entry.id}`} href={entry.href}
-                aria-label={entry.label} target={entry.external ? '_blank' : undefined}
+                aria-label={t(entry.label)} target={entry.external ? '_blank' : undefined}
                 rel={entry.external ? 'noopener noreferrer' : undefined} data-external={entry.external || undefined}>
                 <ExploreModuleIcon kind={entry.id} icon={Icon} />
                 <div className="home-explore-link-copy">
-                  <h3><span>{entry.titleParts ? entry.titleParts.map(part => <span className="home-explore-word" key={part}>{part}</span>) : entry.title}</span></h3>
-                  {entry.description && <p>{entry.description}</p>}
+                  <h3><span>{entry.titleParts ? entry.titleParts.map(part => <span className="home-explore-word" key={part}>{t(part)}</span>) : t(entry.title)}</span></h3>
+                  {entry.description && <p>{t(entry.description)}</p>}
                 </div>
-                <span className="home-explore-link-arrow" aria-hidden="true">{entry.external ? '↗' : '→'}</span>
+                <span className="home-explore-link-arrow" aria-hidden="true">{t(entry.external ? '↗' : '→')}</span>
               </a>
             </BorderGlow>;
           })}
           <BorderGlow {...borderGlowProps} borderRadius={16} className="home-explore-entry-frame home-explore-entry-frame--media">
             <article className="home-explore-media-card" aria-labelledby="home-media-title">
               <ExploreModuleIcon kind="media" icon={RiBroadcastLine} />
-              <h3 id="home-media-title"><span><span className="home-explore-word">零一</span><span className="home-explore-word">自媒体</span></span></h3>
-              <p>记录学习、实践与日常</p>
-              <div className="home-explore-socials" aria-label="零一自媒体平台">
+              <h3 id="home-media-title"><span><span className="home-explore-word">{t("零一")}</span><span className="home-explore-word">{t("自媒体")}</span></span></h3>
+              <p>{t("记录学习、实践与日常")}</p>
+              <div className="home-explore-socials" aria-label={t("零一自媒体平台")}>
                 {mediaChannels.map(channel => {
                   const Platform = channel.href ? 'a' : 'span';
                   return <Platform key={channel.id} className="home-explore-social" href={channel.href || undefined}
                     target={channel.href ? '_blank' : undefined} rel={channel.href ? 'noopener noreferrer' : undefined}
-                    role={channel.href ? undefined : 'img'} aria-label={channel.href ? `${channel.title}主页（新窗口）` : channel.title}>
+                    role={channel.href ? undefined : 'img'} aria-label={channel.href ? t("{0}主页（新窗口）", [channel.title]) : t(channel.title)}>
                     <SocialIcon platform={channel.id} />
                   </Platform>;
                 })}
@@ -120,14 +124,14 @@ export default function ExploreSection({ borderGlowProps, knowledgeUrl, onItemCl
             <BorderGlow key={group.id} {...borderGlowProps} borderRadius={16} className={`home-explore-folder-frame${openFolder === group.id ? ' is-open' : ''}`}>
               <article className="home-explore-folder-card">
                 <header className="home-explore-card-heading">
-                  <p className="home-explore-card-kicker">{group.label}</p>
-                  <h3>{group.title}</h3>
+                  <p className="home-explore-card-kicker">{t(group.label)}</p>
+                  <h3>{t(group.title)}</h3>
                 </header>
                 <div className="home-explore-folder-viewport" ref={node => { folderViewportRefs.current[index] = node; }}>
                   <div className="home-explore-folder-space">
                     <ViewportMount className="home-explore-folder-mount" minHeight={196 * folderLayouts[index].size}>
                     <Suspense fallback={<LoadingSlot />}>
-                    <Folder label={group.title} items={group.items} size={folderLayouts[index].size} color="#141416" paperColor="#f2f2f0" theme={theme} intro stationary peek
+                    <Folder label={t(group.title)} items={group.items} size={folderLayouts[index].size} color="#141416" paperColor="#f2f2f0" theme={theme} intro stationary peek
                       documentScale={folderLayouts[index].documentScale} documentOffsetX={folderLayouts[index].documentOffsetX}
                       open={openFolder === group.id} onOpenChange={open => setOpenFolder(open ? group.id : null)} onItemClick={onItemClick} />
                     </Suspense>

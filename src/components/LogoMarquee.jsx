@@ -1,3 +1,4 @@
+import { useLanguage } from '../Language';
 /** Partner marks use the footer's LogoLoop for matching motion and interaction. */
 import { useMemo, useState } from 'react';
 import LogoLoop from '../LogoLoop';
@@ -9,6 +10,7 @@ import './LogoMarquee.css';
 import LogoArtwork from './LogoArtwork';
 
 function PartnerMark({ logo }) {
+  const { t } = useLanguage();
   const { theme } = useTheme();
   const [failedSource, setFailedSource] = useState(null);
   const name = logo.name || logo.alt || '';
@@ -35,7 +37,7 @@ function PartnerMark({ logo }) {
         <ResponsiveImage eager className="logo-marquee__image" src={source} alt="" width={logo.width || 120} height={logo.height || 36} draggable={false}
           style={imageStyle} onError={() => setFailedSource(source)} />
       ))}
-      {(!hasImage || logo.showName) && <span className="logo-marquee__name">{name}</span>}
+      {(!hasImage || logo.showName) && <span className="logo-marquee__name">{t(name)}</span>}
     </span>
   );
 }
@@ -45,12 +47,13 @@ export default function LogoMarquee({
   className = '',
   ariaLabel = '合作生态伙伴',
 }) {
+  const { t } = useLanguage();
   const list = Array.isArray(logos) ? logos : partners;
   const marks = useMemo(() => list.map(logo => ({
-    title: logo.href ? `${logo.name || logo.alt} 官网（新窗口）` : logo.name || logo.alt || '',
+    title: logo.href ? t('{0} 官网（新窗口）', [logo.name || logo.alt]) : t(logo.name || logo.alt || ''),
     href: logo.href,
     node: <PartnerMark logo={logo} />,
-  })), [list]);
+  })), [list, t]);
   const rows = Array.from({ length: 3 }, (_, index) => marks.slice(
     Math.ceil(index * marks.length / 3),
     Math.ceil((index + 1) * marks.length / 3),
@@ -58,7 +61,7 @@ export default function LogoMarquee({
 
   if (!marks.length) return null;
   return (
-    <div className={`logo-marquee${className ? ` ${className}` : ''}`} role="group" aria-label={ariaLabel}>
+    <div className={`logo-marquee${className ? ` ${className}` : ''}`} role="group" aria-label={t(ariaLabel)}>
     {rows.map((row, index) => <LogoLoop
       key={index}
       logos={row}
@@ -69,7 +72,7 @@ export default function LogoMarquee({
       hoverSpeed={0}
       scaleOnHover
       fadeOut
-      ariaLabel={`${ariaLabel}，第${index + 1}行`}
+      ariaLabel={t("{0}，第{1}行", [ariaLabel, index + 1])}
       tabIndex={0}
       className="logo-marquee__row"
     />)}

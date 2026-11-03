@@ -1,3 +1,4 @@
+import { useLanguage } from './Language';
 import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
@@ -36,7 +37,7 @@ const FlexCarousel = lazy(() => import('./FlexCarousel'));
 const PRODUCT_NAME = '零一 AI 日新社';
 const PRESIDENT = pioneers.find(member => member.name === '零一扬');
 const SLOGAN = '从零到一，让技术进步成为每个人的机会';
-const SLOGAN_EN = 'From Zero to One, Turning Technology into Opportunity for Everyone';
+const SLOGAN_EN = 'From zero to one, turning technology into opportunity for everyone';
 const LEARNING_WIKI_URL = 'https://scn96l2kzmbn.feishu.cn/wiki/DDaiw0qKoifo7jkd2H2c9mxhnYe';
 const JOIN_QR_ITEMS = {
   qq: { image: joinQr, title: '零一 QQ 社团群', downloadName: '零一AI日新社-QQ社团群.png' },
@@ -63,6 +64,12 @@ const FOOTER_LOGOS = [
   { node: <span className="home-footer-brand-mark"><ResponsiveImage eager src="/images/qq-logo.png" alt="" width={48} height={48} /></span>, title: 'QQ', href: 'https://qun.qq.com/universal-share/share?ac=1&authKey=Y6PHDoQm%2BSNy%2Bdr0SJTyHZ7Vt2jQfwQCR6sidHUatABcMNltCtupL24cigSRxTYc&busi_data=eyJncm91cENvZGUiOiI5NjY2NTQ2MzMiLCJ0b2tlbiI6IllLUmVXNXM4WS8zMG1MRHlGeFFkUUd4M0R1ZG8wekpXMVB1a0N2dkhubVp6KzF5b2xOVjRKakxFZHQ4Q3dCRFQiLCJ1aW4iOiIxNzg1ODY3NzkyIn0%3D&data=-Yz2JZMQgTAM5BkEf9Vrw9lDLH6BkX2nFl4-tH8ska8WC6OQPqpmTcvM5f24z7x5jSg--p3b18JBNtQeMn3Tzg&svctype=4&tempid=h5_group_info' },
 ];
 export default function App() {
+  const { t, locale } = useLanguage();
+  useEffect(() => { document.title = t('零一 AI 日新社｜01AIClub'); }, [t]);
+  useLayoutEffect(() => {
+    const frame = requestAnimationFrame(() => ScrollTrigger.refresh());
+    return () => cancelAnimationFrame(frame);
+  }, [locale]);
   const borderGlowProps = BORDER_GLOW_PROPS;
   const pageRef = useRef(null);
   const scrollTweenRef = useRef(null);
@@ -327,7 +334,7 @@ export default function App() {
 
   return (
     <div ref={pageRef} className="homepage" id="top" onClickCapture={handleInternalLinkClick}>
-      <a className="skip-link" href="#introduction">跳到主要内容</a>
+      <a className="skip-link" href="#introduction">{t("跳到主要内容")}</a>
 
       <SiteBackground />
 
@@ -342,7 +349,7 @@ export default function App() {
                 <span>AI CLUB</span>
               </p>
 
-              <h1 id="hero-title" className="echo-viewport title-echo" aria-label={PRODUCT_NAME} tabIndex="-1">
+              <h1 id="hero-title" className="echo-viewport title-echo" aria-label={t(PRODUCT_NAME)} tabIndex="-1">
                 <span className="echo-scale">
                   <EchoText {...ECHO_TEXT_PROPS} className="hero-wordmark" color="var(--site-wordmark)" tint={null} style={{ '--wordmark-image': `url("${clubWordmark}")` }}>
                     <span className="hero-wordmark__shape" aria-hidden="true" />
@@ -352,45 +359,37 @@ export default function App() {
 
               <p className="echo-viewport slogan-echo">
                 <span className="echo-scale">
-                  <EchoText {...ECHO_TEXT_PROPS} text={SLOGAN} />
+                  <EchoText {...ECHO_TEXT_PROPS} text={t(SLOGAN)} />
                 </span>
               </p>
-              <p className="echo-viewport slogan-echo slogan-english" lang="en">
+              <p className="echo-viewport slogan-echo slogan-english" lang="en" hidden={locale === 'en'}>
                 <span className="echo-scale">
-                  <EchoText {...ECHO_TEXT_PROPS} text={SLOGAN_EN} />
+                  <EchoText {...ECHO_TEXT_PROPS} text={t(SLOGAN_EN)} />
                 </span>
               </p>
 
               <div className="hero-lower">
                 <div className="hero-meta-row">
-                  <a className="hero-license-link" href="#about">成立于 · 2026.09.01</a>
+                  <a className="hero-license-link" href="#about">{t("成立于 · 2026.09.01")}</a>
                 </div>
 
                 <div className="hero-proof">
-                  <p className="hero-proof-meta">
-                    学习新范式 · 开源共建 · 公益教学 · 实践探索
-                  </p>
+                  <p className="hero-proof-meta">{t("学习新范式 · 开源共建 · 公益教学 · 实践探索")}</p>
                 </div>
 
                 <div className="hero-actions">
                   <SpecularButton
                     className="hero-button"
                     onClick={() => scrollToSection('about')}
-                  >
-                    关于我们
-                  </SpecularButton>
+                  >{t("关于我们")}</SpecularButton>
                   <SpecularButton
                     className="hero-button"
                     onClick={() => scrollToSection('directions')}
-                  >
-                    我们在做什么
-                  </SpecularButton>
+                  >{t("我们在做什么")}</SpecularButton>
                   <SpecularButton
                     className="hero-button"
                     onClick={() => scrollToSection('join')}
-                  >
-                    加入我们
-                  </SpecularButton>
+                  >{t("加入我们")}</SpecularButton>
                 </div>
               </div>
             </div>
@@ -399,31 +398,25 @@ export default function App() {
 
         <div className="home-sections">
           <section className="home-section home-trust-section" id="about" aria-labelledby="about-title">
-            <h2 className="home-flow-title" id="about-title" tabIndex="-1">
-              关于我们
-            </h2>
+            <h2 className="home-flow-title" id="about-title" tabIndex="-1">{t("关于我们")}</h2>
 
             <BorderGlow {...borderGlowProps} className="home-trust-glow">
               <div className="home-trust-panel">
                 <div className="home-trust-intro">
-                  <h3 className="home-trust-subtitle">{SLOGAN}</h3>
+                  <h3 className="home-trust-subtitle">{t(SLOGAN)}</h3>
 
                   <div className="home-about-block">
-                    <p className="home-about-lead"><strong>这里是「零一 AI 日新社｜01 AI Club」！</strong></p>
+                    <p className="home-about-lead"><strong>{t("这里是「零一 AI 日新社｜01 AI Club」！")}</strong></p>
                     <blockquote className="home-about-quote">
-                      <p>一个面向 AI 探索者、向全社会开放的交流社区、共创社团与开源知识库。</p>
-                      <p>「零一 AI 日新社」成立于 2026 年 9 月 1 日，我是社长，<a className="home-about-president" href={`./?page=pioneers&member=${encodeURIComponent(PRESIDENT.id)}`} aria-label="查看社长零一扬的领航先锋介绍"><ResponsiveImage src={PRESIDENT.photo} alt="" width="28" height="28" fit="cover" /><span>{PRESIDENT.name}</span></a>！</p>
+                      <p>{t("一个面向 AI 探索者、向全社会开放的交流社区、共创社团与开源知识库。")}</p>
+                      <p>{t("「零一 AI 日新社」成立于 2026 年 9 月 1 日，我是社长，")}<span className="home-about-signature"><a className="home-about-president" href={`./?page=pioneers&member=${encodeURIComponent(PRESIDENT.id)}`} aria-label={t("查看社长零一扬的领航先锋介绍")}><ResponsiveImage src={PRESIDENT.photo} alt="" width="28" height="28" fit="cover" /><span>{t(PRESIDENT.name)}</span></a>{locale === 'en' ? '.' : '！'}</span></p>
                     </blockquote>
                   </div>
 
                   <div className="home-about-block">
-                    <p className="home-about-lead"><strong>我们成立社团的初心，是探索一种能在真实世界中落地的“大学｜学习新范式”！</strong></p>
+                    <p className="home-about-lead"><strong>{t("我们成立社团的初心，是探索一种能在真实世界中落地的“大学｜学习新范式”！")}</strong></p>
                     <blockquote className="home-about-quote">
-                      <p>
-                        我们不把绩点和考试视为大学成长的全部，而是选择在实践中不断成长，不断进步。<br />
-                        我们以 公益教学 为核心，希望帮助每一位真正想学习 AI 的同学找到起点，<br />
-                        在交流与实践中迈出第一步，完成属于自己的从零到一！
-                      </p>
+                      <p>{t("我们不把绩点和考试视为大学成长的全部，而是选择在实践中不断成长，不断进步。")}{locale === 'en' ? ' ' : <br />}{t("我们以 公益教学 为核心，希望帮助每一位真正想学习 AI 的同学找到起点，")}{locale === 'en' ? ' ' : <br />}{t("在交流与实践中迈出第一步，完成属于自己的从零到一！")}</p>
                     </blockquote>
                   </div>
 
@@ -435,10 +428,10 @@ export default function App() {
           <ExploreSection borderGlowProps={borderGlowProps} knowledgeUrl={LEARNING_WIKI_URL} />
 
           <section className="home-section home-business-section" id="business" aria-labelledby="business-title" tabIndex="-1">
-            <h2 className="home-flow-title" id="business-title">零一商业</h2>
+            <h2 className="home-flow-title" id="business-title">{t("零一商业")}</h2>
             <div className="home-business-intro">
-              <h3 className="home-business-lead">用 AI 解决真实问题，让技术创造社会价值。</h3>
-              <p>我们是福州零一极致智能科技有限公司！</p>
+              <h3 className="home-business-lead">{t("用 AI 解决真实问题，让技术创造社会价值。")}</h3>
+              <p>{t("我们是福州零一极致智能科技有限公司！")}</p>
             </div>
             <ViewportMount className="home-business-carousel" minHeight="var(--business-placeholder-height, 640px)">
               <Suspense fallback={<LoadingSlot />}>
@@ -452,7 +445,7 @@ export default function App() {
                 squeeze={0.2}
                 focusOnClick
                 captions
-                captionCredit="零一 AI 日新社"
+                captionCredit={t("零一 AI 日新社")}
                 captureWheel
               />
               </Suspense>
@@ -463,39 +456,38 @@ export default function App() {
 
           <section className="home-section home-cooperation-section home-partners-section" id="partners" aria-labelledby="partners-title" tabIndex="-1">
             <div className="home-partners-heading">
-              <h2 className="home-flow-title" id="partners-title">零一合作生态</h2>
-              <p className="home-cooperation-intro">创造力，就是把事物连接起来。</p>
+              <h2 className="home-flow-title" id="partners-title">{t("零一合作生态")}</h2>
+              <p className="home-cooperation-intro">{t("创造力，就是把事物连接起来。")}</p>
             </div>
             <div className="home-partners-row">
               <ViewportMount className="home-partners-marquee" minHeight={256}><LogoMarquee /></ViewportMount>
               <div className="home-cooperation-actions">
-                <SpecularButton href="https://scn96l2kzmbn.feishu.cn/wiki/X7h6wI8SCiAuZAkpYF2caNv7nTG" target="_blank" rel="noopener noreferrer" className="home-cooperation-link">
-                  关于零一合作生态 <span aria-hidden="true">↗</span>
+                <SpecularButton href="https://scn96l2kzmbn.feishu.cn/wiki/X7h6wI8SCiAuZAkpYF2caNv7nTG" target="_blank" rel="noopener noreferrer" className="home-cooperation-link">{t("关于零一合作生态 ")}<span aria-hidden="true">↗</span>
                 </SpecularButton>
               </div>
             </div>
           </section>
 
           <section className="home-section home-cooperation-section" id="cooperation" aria-labelledby="cooperation-title" tabIndex="-1">
-            <h2 className="home-flow-title" id="cooperation-title">零一高校分社</h2>
-            <p className="home-cooperation-intro">团结一切可以团结的力量！</p>
+            <h2 className="home-flow-title" id="cooperation-title">{t("零一高校分社")}</h2>
+            <p className="home-cooperation-intro">{t("团结一切可以团结的力量！")}</p>
             <BranchAtlas borderGlowProps={borderGlowProps} />
           </section>
 
           <section className="home-note" id="join" aria-labelledby="join-title" tabIndex="-1">
-            <h2 className="home-flow-title" id="join-title">欢迎加入零一 AI 日新社</h2>
-            <p className="home-join-slogan"><strong>从零到一，让技术进步成为每个人的机会！</strong></p>
-            <p className="home-join-slogan home-join-slogan-en" lang="en"><strong>{SLOGAN_EN}</strong></p>
+            <h2 className="home-flow-title" id="join-title">{t("欢迎加入零一 AI 日新社")}</h2>
+            <p className="home-join-slogan"><strong>{t("从零到一，让技术进步成为每个人的机会！")}</strong></p>
+            <p className="home-join-slogan home-join-slogan-en" lang="en" hidden={locale === 'en'}><strong>{t(SLOGAN_EN)}</strong></p>
             <div className="home-join-channels">
               <figure className="home-join-channel">
-                <button type="button" className="home-join-qr-button" aria-label="放大零一 QQ 社团群二维码" aria-haspopup="dialog"
+                <button type="button" className="home-join-qr-button" aria-label={t("放大零一 QQ 社团群二维码")} aria-haspopup="dialog"
                   onClick={event => openQr(event, JOIN_QR_ITEMS.qq)}>
                 <BorderGlow {...borderGlowProps} className="home-join-qr-glow">
                   <div className="home-join-qr-media">
                     <ResponsiveImage
                       className="home-join-qr"
                       src={joinQr}
-                      alt="零一 AI 日新社 QQ 群二维码"
+                      alt={t("零一 AI 日新社 QQ 群二维码")}
                       width="640"
                       height="640"
                       loading="lazy"
@@ -504,17 +496,17 @@ export default function App() {
                   </div>
                 </BorderGlow>
                 </button>
-                <figcaption>零一 QQ 社团群</figcaption>
+                <figcaption>{t("零一 QQ 社团群")}</figcaption>
               </figure>
               <figure className="home-join-channel">
-                <button type="button" className="home-join-qr-button" aria-label="放大零一微信公众号二维码" aria-haspopup="dialog"
+                <button type="button" className="home-join-qr-button" aria-label={t("放大零一微信公众号二维码")} aria-haspopup="dialog"
                   onClick={event => openQr(event, JOIN_QR_ITEMS.official)}>
                 <BorderGlow {...borderGlowProps} className="home-join-qr-glow">
                   <div className="home-join-qr-media home-join-official-qr">
                     <ResponsiveImage
                       className="home-join-qr home-join-qr--wechat"
                       src={wechatChannel.qr}
-                      alt="零一 AI 日新社微信公众号二维码"
+                      alt={t("零一 AI 日新社微信公众号二维码")}
                       width="430"
                       height="430"
                       loading="lazy"
@@ -533,17 +525,17 @@ export default function App() {
                   </div>
                 </BorderGlow>
                 </button>
-                <figcaption>「零一 AI 日新社」公众号</figcaption>
+                <figcaption>{t("「零一 AI 日新社」公众号")}</figcaption>
               </figure>
               <figure className="home-join-channel" id="join-contact">
-                <button type="button" className="home-join-qr-button" aria-label="放大商务合作微信二维码" aria-haspopup="dialog"
+                <button type="button" className="home-join-qr-button" aria-label={t("放大商务合作微信二维码")} aria-haspopup="dialog"
                   onClick={event => openQr(event, JOIN_QR_ITEMS.contact)}>
                 <BorderGlow {...borderGlowProps} className="home-join-qr-glow">
                   <div className="home-join-qr-media home-join-personal-qr">
                     <ResponsiveImage
                       className="home-join-qr home-join-qr--wechat"
                       src="/images/join-lingyiyang-wechat.jpg"
-                      alt="商务合作联系零一扬的微信二维码"
+                      alt={t("商务合作联系零一扬的微信二维码")}
                       width="888"
                       height="1131"
                       loading="lazy"
@@ -552,10 +544,10 @@ export default function App() {
                   </div>
                 </BorderGlow>
                 </button>
-                <figcaption>商务合作联系：零一扬</figcaption>
+                <figcaption>{t("商务合作联系：零一扬")}</figcaption>
               </figure>
             </div>
-            {qrError && <p role="alert">{qrError}</p>}
+            {qrError && <p role="alert">{t(qrError)}</p>}
           </section>
         </div>
       </main>
@@ -564,10 +556,10 @@ export default function App() {
       <footer className="home-footer">
         <div className="home-footer-inner">
           <div className="home-footer-brand">
-            <strong>零一 AI 日新社｜01 AI Club</strong>
+            <strong>{t("零一 AI 日新社｜01 AI Club")}</strong>
             <p>
-              {SLOGAN}<br />
-              <span className="home-footer-english" lang="en">{SLOGAN_EN}</span>
+              {t(SLOGAN)}<br />
+              <span className="home-footer-english" lang="en" hidden={locale === 'en'}>{t(SLOGAN_EN)}</span>
             </p>
           </div>
           <ViewportMount className="home-footer-logo-loop" minHeight={64}>
@@ -580,26 +572,19 @@ export default function App() {
             hoverSpeed={0}
             scaleOnHover
             fadeOut
-            ariaLabel="社团与社交平台"
+            ariaLabel={t("社团与社交平台")}
           />
           </ViewportMount>
         </div>
 
         <ShutterWordmark />
         <div className="home-footer-copyright">
-          <span>版权所有 © 2026 零一 AI 日新社</span>
-          <span className="home-footer-credit">
-            官网设计与制作：<a className="home-about-president" href={`./?page=pioneers&member=${encodeURIComponent(PRESIDENT.id)}`} aria-label="查看官网设计与制作者零一扬的领航先锋介绍"><ResponsiveImage src={PRESIDENT.photo} alt="" width="28" height="28" fit="cover" /><span>{PRESIDENT.name}</span></a>
+          <span>{t("版权所有 © 2026 零一 AI 日新社")}</span>
+          <span className="home-footer-credit">{t("官网设计与制作：")}<a className="home-about-president" href={`./?page=pioneers&member=${encodeURIComponent(PRESIDENT.id)}`} aria-label={t("查看官网设计与制作者零一扬的领航先锋介绍")}><ResponsiveImage src={PRESIDENT.photo} alt="" width="28" height="28" fit="cover" /><span>{t(PRESIDENT.name)}</span></a>
           </span>
-          <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">
-            地图数据 © OpenStreetMap 贡献者
-          </a>
-          <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">
-            ICP备案号：闽ICP备2026024313号-3
-          </a>
-          <a href="https://beian.mps.gov.cn/#/query/webSearch?code=35011102351280" target="_blank" rel="noopener noreferrer">
-            闽公网安备35011102351280号
-          </a>
+          <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">{t("地图数据 © OpenStreetMap 贡献者")}</a>
+          <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">{t("ICP备案号：闽ICP备2026024313号-3")}</a>
+          <a href="https://beian.mps.gov.cn/#/query/webSearch?code=35011102351280" target="_blank" rel="noopener noreferrer">{t("闽公网安备35011102351280号")}</a>
         </div>
       </footer>
     </div>

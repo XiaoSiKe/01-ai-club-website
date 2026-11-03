@@ -1,5 +1,6 @@
 import StaggeredMenu from '../StaggeredMenu';
 import { ThemeToggle, useTheme } from '../Theme';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const HOME_ITEMS = [
   { label: '首页', ariaLabel: '返回首页', link: '#top' },
@@ -29,7 +30,7 @@ export default function SiteNavigation({ standalone = false }) {
       logoUrl={theme === 'light' ? '/images/club-logo-black.svg' : '/images/club-logo-white.svg'}
       logoHref={standalone ? './#top' : '#top'}
       accentColor="var(--site-ink)"
-      headerActions={<ThemeToggle />}
+      headerActions={<><LanguageSwitcher /><ThemeToggle /></>}
       isFixed
     />
   );

@@ -1,3 +1,4 @@
+import { useLanguage } from '../Language';
 import { useEffect, useState } from 'react';
 import UniqueLoading from './UniqueLoading';
 import { startupImageSources } from './heroImages';
@@ -53,6 +54,7 @@ async function prepareImages(sources) {
 }
 
 export default function StartupGate({ loadPage, homepage, projectId }) {
+  const { t } = useLanguage();
   const [Page, setPage] = useState(null);
   const [failed, setFailed] = useState(false);
   useEffect(() => {
@@ -74,11 +76,11 @@ export default function StartupGate({ loadPage, homepage, projectId }) {
   if (Page) return <Page projectId={projectId} />;
   return <main className="project-loading startup-loading" aria-busy={!failed} data-startup-state={failed ? 'error' : 'loading'}>
     <div className="startup-loading__content">
-      <UniqueLoading text={failed ? '加载遇到问题' : '正在准备首屏'} />
+      <UniqueLoading text={t(failed ? '加载遇到问题' : '正在准备首屏')} />
       {failed && <>
-        <p className="startup-loading__title">加载遇到问题</p>
-        <p className="startup-loading__hint" role="alert">请检查网络连接，再试一次。</p>
-        <button className="startup-loading__retry" onClick={() => window.location.reload()}>重新加载</button>
+        <p className="startup-loading__title">{t("加载遇到问题")}</p>
+        <p className="startup-loading__hint" role="alert">{t("请检查网络连接，再试一次。")}</p>
+        <button className="startup-loading__retry" onClick={() => window.location.reload()}>{t("重新加载")}</button>
       </>}
     </div>
   </main>;

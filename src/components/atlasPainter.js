@@ -151,9 +151,10 @@ export function createAtlasPainter(canvas, atlas) {
       for (const item of geometry.localLabels) {
         if (named.has(item.name) || contextLabels.length >= (width < 500 ? 7 : 16)) continue;
         if (item.kind === 'road' && /^(service|footway|path|steps|cycleway|construction|proposed)/.test(item.class)) continue;
+        const label = options.translate ? options.translate(item.name) : item.name;
         const fontSize = item.kind === 'campus' ? 12 : 11;
         context.font = `400 ${fontSize}px -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif`;
-        const textWidth = context.measureText(item.name).width;
+        const textWidth = context.measureText(label).width;
         if (item.kind === 'road' && item.span*scale < textWidth+24) continue;
         const angle = item.kind === 'road' || item.kind === 'water' && item.span ? item.angle : 0;
         const x = item.point[0]*scale+dx, y = item.point[1]*scale+dy;
@@ -168,9 +169,9 @@ export function createAtlasPainter(canvas, atlas) {
         context.globalAlpha = opacity.local;
         context.strokeStyle = p.bg;
         context.lineWidth = 4;
-        context.strokeText(item.name,0,0);
+        context.strokeText(label,0,0);
         context.fillStyle = p.quiet;
-        context.fillText(item.name,0,0);
+        context.fillText(label,0,0);
         context.restore();
         occupied.push(box);
         named.add(item.name);
