@@ -13,6 +13,7 @@ export const partners = [
   { id: 'dewu', href: 'https://www.dewu.com/', name: '得物', src: '/images/partners/dewu.ico', artwork: { width: 64, height: 64, cutout: true, backdropThreshold: .6, adaptNeutral: true }, width: 32, height: 32, showName: true },
   { id: 'workbuddy', href: 'https://www.workbuddy.cn/', name: 'workbuddy', src: '/images/partners/workbuddy.svg', width: 32, height: 32, showName: true },
   { id: 'minkesong', name: '闽客松', src: '/images/partners/minkesong.png', invertOnDark: true, width: 118, height: 49.56, offsetY: -5 },
+  { id: 'shenkesong', name: '深客松', src: '/images/partners/shenkesong.png', darkBrightness: 1.15, width: 129.6, height: 46.386 },
   { id: 'adventure-x', href: 'https://www.adventure-x.cn/zh/', name: 'Adventure X', src: '/images/partners/adventure-x.png', invertOnLight: true, width: 210, height: 32.66 },
   { id: 'nextstep', href: 'https://portal.nextstep.org.cn/', name: 'NextStep', src: '/images/partners/nextstep.svg', darkSrc: '/images/partners/nextstep-white.svg', width: 210, height: 24.48 },
   { id: 'emerge', name: 'Emerge', src: '/images/partners/emerge.svg', darkSrc: '/images/partners/emerge-white.svg', width: 144, height: 36.24 },

@@ -88,6 +88,18 @@ display-only because no official destinations were supplied.
   backgrounds and black version on light backgrounds. No destination was
   supplied, so the mark remains display-only.
 
+- **深客松 — `shenkesong.png` / `shenkesong-white.png`:** user-supplied
+  transparent PNG wordmarks from `深客松logo定稿(1).rar`, added 2026-11-03.
+  Website originals preserve `深客松logo1.png` (blue/purple with a green accent)
+  and `深客松logo3.png` (white) byte-for-byte at 7139 × 2555px. Displayed at
+  129.6 × 46.386px before the shared scale (10% smaller than the first
+  integration), preserving the original blue/purple and green colors in both
+  light and dark themes at the user's request. Dark mode applies a 1.15×
+  brightness filter for visibility. The supplied white version is
+  retained as an original asset. Lossless WebP display variants
+  preserve transparency. No destination was supplied, so the mark remains
+  display-only.
+
 ## Original-color display (2026-11-02)
 
 Partner artwork has no added backing surface, outline, border or plate. Color
