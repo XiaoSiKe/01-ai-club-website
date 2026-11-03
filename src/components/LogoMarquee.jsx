@@ -51,8 +51,10 @@ export default function LogoMarquee({
     href: logo.href,
     node: <PartnerMark logo={logo} />,
   })), [list]);
-  const midpoint = Math.ceil(marks.length / 2);
-  const rows = [marks.slice(0, midpoint), marks.slice(midpoint)].filter(row => row.length);
+  const rows = Array.from({ length: 3 }, (_, index) => marks.slice(
+    Math.ceil(index * marks.length / 3),
+    Math.ceil((index + 1) * marks.length / 3),
+  )).filter(row => row.length);
 
   if (!marks.length) return null;
   return (
@@ -61,7 +63,7 @@ export default function LogoMarquee({
       key={index}
       logos={row}
       speed={90}
-      direction={index === 0 ? 'left' : 'right'}
+      direction={index % 2 === 0 ? 'left' : 'right'}
       logoHeight={64}
       gap={48}
       hoverSpeed={0}
