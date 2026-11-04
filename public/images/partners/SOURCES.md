@@ -53,11 +53,13 @@ display-only because no official destinations were supplied.
   https://assets.workbuddy.cn/web/workbuddy/7e170c91f6fb3aa5720dd4381254492d08bf980c/assets/logo.svg
   The accompanying display name uses the user-supplied lowercase spelling.
 
-- **闽客松 — `minkesong.png`:** the transparent monochrome version supplied
-  by the earlier logo preparation is restored at the user's request on
-  2026-11-02. Displayed at 118 × 49.56px, offset upward 5px before the shared
-  scale; black on light backgrounds and white on dark backgrounds. The color
-  cutout and original supplied photograph remain preserved as earlier assets.
+- **闽客松 — `minkesong-color.png`:** the previously prepared transparent
+  color cutout is restored at the user's request on 2026-11-04. The original
+  blue/cyan gradients are retained in both light and dark themes, without
+  inversion or recoloring. Fits within the existing 118 × 49.56px display box
+  at its original proportions, offset upward 5px before the shared scale.
+  Lossless WebP display variants are reused. The monochrome version and
+  original supplied photograph remain preserved as earlier assets.
 
 - **Adventure X — `adventure-x.png`:** user-supplied transparent white logo,
   added 2026-11-01. Original 1646 × 256px PNG preserved byte-for-byte.
@@ -121,6 +123,17 @@ display-only because no official destinations were supplied.
   padding. The black version appears on light backgrounds and the supplied
   white version on dark backgrounds. Lossless WebP display variants preserve
   transparency. No destination was supplied, so the mark remains display-only.
+
+- **中源黑客松 — `zhongyuan.svg`:** original horizontal SVG exported from the
+  user-supplied Figma file on 2026-11-04, preserved byte-for-byte at
+  1845 × 1080px. Source:
+  https://www.figma.com/design/IZVi0amZZSJBvOoRKadw6F/?node-id=1-146
+  (`LOGO 黑底`). The existing `LogoArtwork` viewport crops outer padding to
+  `39 231 1732 575`; its source-pixel alpha filter removes the black backdrop
+  without changing the green artwork. Neutral white ink becomes black only
+  in the light theme. Displayed at 182.4 × 60.553px before the shared scale
+  (5% smaller than the first integration, at the user's request).
+  No official destination was supplied, so the mark remains display-only.
 
 ## Original-color display (2026-11-02)
 
