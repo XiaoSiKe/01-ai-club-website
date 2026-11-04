@@ -156,8 +156,9 @@ pixels are retained; only neutral ink changes for theme contrast. China Mobile
 and DuMate have vector variants changing neutral gray/black to white while
 preserving blue/green/purple colors. Huawei's alpha mask changes only lettering
 at x>=80 to white on dark backgrounds, leaving its original red emblem intact.
-Trae and 得物 remove dark favicon backgrounds through the same source-pixel
-alpha filter as Linkathon. Failed images fall back to their actual partner name.
+Trae's favicon and 得物's official navigation mark remove their dark backgrounds
+through the same source-pixel alpha filter as Linkathon. Failed images fall
+back to their actual partner name.
 
 Footer 飞书 and QQ render their transparent original images. The navigation,
 footer and closing club emblem use the existing transparent club SVG exports;
