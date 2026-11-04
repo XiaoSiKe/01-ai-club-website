@@ -63,17 +63,16 @@ display-only because no official destinations were supplied.
   https://assets.workbuddy.cn/web/workbuddy/7e170c91f6fb3aa5720dd4381254492d08bf980c/assets/logo.svg
   The accompanying display name uses the user-supplied lowercase spelling.
 
-- **闽客松 — `minkesong-color.png`:** the previously prepared transparent
-  color cutout is restored at the user's request on 2026-11-04. The original
-  blue/cyan gradients are retained in both light and dark themes, without
-  inversion or recoloring. A `62 64 1596 793` viewport trims outer transparent
-  padding and displays the original proportions at 128 × 63.6px, offset upward
-  5px before the shared scale. This replaces the former 118 × 49.56px box,
-  whose padding made the colored artwork appear noticeably undersized.
-  Dark mode applies a 1.15× brightness adjustment, matching 深客松's existing
-  treatment, to keep the original blue/cyan hues visible against dark surfaces.
-  Lossless WebP display variants are reused. The monochrome version and
-  original supplied photograph remain preserved as earlier assets.
+- **闽客松 — `minkesong-bright.png`:** user-supplied latest blue/cyan bright
+  version from `闽客松Logo-最新版-蓝青提亮-SVG-PNG.zip`, added 2026-11-04.
+  The 1388 × 602px transparent PNG is preserved byte-for-byte. The supplied
+  SVG embeds that identical PNG rather than vector paths, so the website uses
+  the PNG with lossless WebP display variants. Both themes display the supplied
+  colors directly, without additional brightness, inversion or recoloring.
+  The new file already has tight bounds, so the previous crop is removed.
+  Displayed at 128 × 55.52px, preserving its new proportions, offset upward
+  5px before the shared scale. Earlier color, monochrome and photographic
+  assets remain preserved; the user's source archive is unchanged.
 
 - **Adventure X — `adventure-x.png`:** user-supplied transparent white logo,
   added 2026-11-01. Original 1646 × 256px PNG preserved byte-for-byte.
