@@ -37,17 +37,27 @@ display-only because no official destinations were supplied.
   https://now.bdstatic.com/store/v2/d33e0f5/dumate-portal/7724021/static/svg/dumate-wordmark.96cd8019.svg
 - **Trae — `trae.png`:** favicon referenced by https://www.trae.cn/ . Asset:
   https://lf-cdn.trae.com.cn/obj/trae-com-cn/trae_website_prod_cn/favicon.png
-  The accompanying display name uses the user-supplied casing, Trae.
+  The accompanying display name uses the user-supplied casing, Trae. As of
+  2026-11-04, a `7 11 34 26` viewport removes outer padding and displays the
+  original green emblem at 42 × 32.12px before the shared scale, correcting
+  the undersized artwork inside its former 32px square.
 - **华为 — `huawei.png`:** original logo referenced by https://www.huawei.com/en .
   Asset: https://www.huawei.com/-/media/hcomponent-header/1.0.1.20260908162100/component/img/huawei_logo.png
 - **Linkathon — `linkathon-original.jpg`:** the user's original JPEG is preserved
   byte-for-byte. An SVG viewport crops only the outer padding to
   `150 205 1135 720`. A source-pixel alpha filter removes the near-black backdrop
   while retaining the colored dots; neutral white ink changes to black only
-  in the light theme.
-- **得物 — `dewu.ico`:** the 64px icon referenced by the official homepage
-  https://www.dewu.com/ at https://www.dewu.com/static/favicon.ico, displayed
-  alongside the supplied Chinese brand name.
+  in the light theme. Display size is 96 × 60.9px before the shared scale,
+  increased from 72 × 45.7px on 2026-11-04 to balance the small vertical lockup.
+- **得物 — `dewu.png`:** original 120 × 120px PNG used by the official homepage
+  navigation at https://www.dewu.com/ , verified 2026-11-04. Asset:
+  https://h5static.dewucdn.com/node-common/2b06036c-45e4-11eb-e923-918dc63592df-120-120.png
+  The website copy is preserved byte-for-byte. A `12 32 96 56` viewport shows
+  the official inner wordmark at 64 × 37.33px before the shared scale; the
+  existing source-pixel alpha filter removes its black backdrop and switches
+  neutral ink for theme contrast. The redundant live-text name is removed.
+  The earlier `dewu.ico` is a genuine official favicon, retained as an original
+  asset; its 64px resolution and duplicated name were unsuitable for this row.
 - **workbuddy — `workbuddy.svg`:** original icon referenced by the official site,
   https://www.workbuddy.cn/ . Asset:
   https://assets.workbuddy.cn/web/workbuddy/7e170c91f6fb3aa5720dd4381254492d08bf980c/assets/logo.svg
@@ -56,8 +66,12 @@ display-only because no official destinations were supplied.
 - **闽客松 — `minkesong-color.png`:** the previously prepared transparent
   color cutout is restored at the user's request on 2026-11-04. The original
   blue/cyan gradients are retained in both light and dark themes, without
-  inversion or recoloring. Fits within the existing 118 × 49.56px display box
-  at its original proportions, offset upward 5px before the shared scale.
+  inversion or recoloring. A `62 64 1596 793` viewport trims outer transparent
+  padding and displays the original proportions at 128 × 63.6px, offset upward
+  5px before the shared scale. This replaces the former 118 × 49.56px box,
+  whose padding made the colored artwork appear noticeably undersized.
+  Dark mode applies a 1.15× brightness adjustment, matching 深客松's existing
+  treatment, to keep the original blue/cyan hues visible against dark surfaces.
   Lossless WebP display variants are reused. The monochrome version and
   original supplied photograph remain preserved as earlier assets.
 
