@@ -53,11 +53,13 @@ display-only because no official destinations were supplied.
   https://assets.workbuddy.cn/web/workbuddy/7e170c91f6fb3aa5720dd4381254492d08bf980c/assets/logo.svg
   The accompanying display name uses the user-supplied lowercase spelling.
 
-- **闽客松 — `minkesong.png`:** the transparent monochrome version supplied
-  by the earlier logo preparation is restored at the user's request on
-  2026-11-02. Displayed at 118 × 49.56px, offset upward 5px before the shared
-  scale; black on light backgrounds and white on dark backgrounds. The color
-  cutout and original supplied photograph remain preserved as earlier assets.
+- **闽客松 — `minkesong-color.png`:** the previously prepared transparent
+  color cutout is restored at the user's request on 2026-11-04. The original
+  blue/cyan gradients are retained in both light and dark themes, without
+  inversion or recoloring. Fits within the existing 118 × 49.56px display box
+  at its original proportions, offset upward 5px before the shared scale.
+  Lossless WebP display variants are reused. The monochrome version and
+  original supplied photograph remain preserved as earlier assets.
 
 - **Adventure X — `adventure-x.png`:** user-supplied transparent white logo,
   added 2026-11-01. Original 1646 × 256px PNG preserved byte-for-byte.
