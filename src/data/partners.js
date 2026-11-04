@@ -12,7 +12,7 @@ export const partners = [
   { id: 'linkathon', name: 'Linkathon', src: '/images/partners/linkathon-original.jpg', width: 96, height: 60.9, artwork: { viewBox: '150 205 1135 720', width: 1400, height: 1280, cutout: true, adaptNeutral: true } },
   { id: 'dewu', href: 'https://www.dewu.com/', name: '得物', src: '/images/partners/dewu.png', artwork: { viewBox: '12 32 96 56', width: 120, height: 120, cutout: true, backdropThreshold: .6, adaptNeutral: true }, width: 64, height: 37.33 },
   { id: 'workbuddy', href: 'https://www.workbuddy.cn/', name: 'workbuddy', src: '/images/partners/workbuddy.svg', width: 32, height: 32, showName: true },
-  { id: 'minkesong', name: '闽客松', src: '/images/partners/minkesong-color.png', crop: { viewBox: '62 64 1596 793', width: 1736, height: 906 }, darkBrightness: 1.15, width: 128, height: 63.6, offsetY: -5 },
+  { id: 'minkesong', name: '闽客松', src: '/images/partners/minkesong-bright.png', width: 128, height: 55.52, offsetY: -5 },
   { id: 'shenkesong', name: '深客松', src: '/images/partners/shenkesong.png', darkBrightness: 1.15, width: 129.6, height: 46.386 },
   { id: 'hackflows', name: 'HackFlows', src: '/images/partners/hackflows.png', darkSrc: '/images/partners/hackflows-dark.png', crop: { viewBox: '52 52 1064 118', width: 1168, height: 222 }, width: 192, height: 21.29 },
   { id: 'fluxtech-nankesong', name: 'FluxTech 南客松', src: '/images/partners/fluxtech-nankesong.png', darkSrc: '/images/partners/fluxtech-nankesong-dark.png', width: 210, height: 54.94 },
