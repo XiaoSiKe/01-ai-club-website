@@ -16,6 +16,7 @@ export const partners = [
   { id: 'shenkesong', name: '深客松', src: '/images/partners/shenkesong.png', darkBrightness: 1.15, width: 129.6, height: 46.386 },
   { id: 'hackflows', name: 'HackFlows', src: '/images/partners/hackflows.png', darkSrc: '/images/partners/hackflows-dark.png', crop: { viewBox: '52 52 1064 118', width: 1168, height: 222 }, width: 192, height: 21.29 },
   { id: 'fluxtech-nankesong', name: 'FluxTech 南客松', src: '/images/partners/fluxtech-nankesong.png', darkSrc: '/images/partners/fluxtech-nankesong-dark.png', width: 210, height: 54.94 },
+  { id: 'zhongyuan', name: '中源黑客松', src: '/images/partners/zhongyuan.svg', artwork: { viewBox: '39 231 1732 575', width: 1845, height: 1080, cutout: true, adaptNeutral: true }, width: 182.4, height: 60.553 },
   { id: 'adventure-x', href: 'https://www.adventure-x.cn/zh/', name: 'Adventure X', src: '/images/partners/adventure-x.png', invertOnLight: true, width: 210, height: 32.66 },
   { id: 'nextstep', href: 'https://portal.nextstep.org.cn/', name: 'NextStep', src: '/images/partners/nextstep.svg', darkSrc: '/images/partners/nextstep-white.svg', width: 210, height: 24.48 },
   { id: 'emerge', name: 'Emerge', src: '/images/partners/emerge.svg', darkSrc: '/images/partners/emerge-white.svg', width: 144, height: 36.24 },

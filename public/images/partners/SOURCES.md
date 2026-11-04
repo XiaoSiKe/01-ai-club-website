@@ -122,6 +122,17 @@ display-only because no official destinations were supplied.
   white version on dark backgrounds. Lossless WebP display variants preserve
   transparency. No destination was supplied, so the mark remains display-only.
 
+- **中源黑客松 — `zhongyuan.svg`:** original horizontal SVG exported from the
+  user-supplied Figma file on 2026-11-04, preserved byte-for-byte at
+  1845 × 1080px. Source:
+  https://www.figma.com/design/IZVi0amZZSJBvOoRKadw6F/?node-id=1-146
+  (`LOGO 黑底`). The existing `LogoArtwork` viewport crops outer padding to
+  `39 231 1732 575`; its source-pixel alpha filter removes the black backdrop
+  without changing the green artwork. Neutral white ink becomes black only
+  in the light theme. Displayed at 182.4 × 60.553px before the shared scale
+  (5% smaller than the first integration, at the user's request).
+  No official destination was supplied, so the mark remains display-only.
+
 ## Original-color display (2026-11-02)
 
 Partner artwork has no added backing surface, outline, border or plate. Color
