@@ -30,6 +30,55 @@ function browser(t) {
 }
 const image = root => ({ closest: () => root });
 
+test('loop copies prepare together and stay ready across the seam without loading other images', t => {
+  const env = browser(t), root = {}, nodes = [image(root), image(root), image(root)], states = [];
+  const stops = nodes.map((node, i) => env.observe(node, { source: i < 2 ? '/portrait.webp' : '/distant.webp',
+    update: value => { states[i] = value.ready; } }));
+  nodes.forEach(node => env.size(node));
+  env.observer(undefined, 600).intersect(root, true);
+  assert.deepEqual(states, [false, false, false]);
+  env.observer(root, 320).intersect(nodes[0], true);
+  assert.deepEqual(states, [true, true, false], 'prepare the offscreen equivalent before the loop wraps');
+  env.observer(root, 640).intersect(nodes[1], true);
+  env.observer(root, 320).intersect(nodes[1], true);
+  env.observer(root, 320).intersect(nodes[0], false);
+  env.observer(root, 640).intersect(nodes[0], false);
+  assert.deepEqual(states, [true, true, false], 'crossing the seam keeps both copies bound');
+  env.observer(root, 320).intersect(nodes[1], false);
+  env.observer(root, 640).intersect(nodes[1], false);
+  assert.deepEqual(states, [false, false, false], 'release when every copy leaves the warm margin');
+  stops.forEach(stop => stop());
+});
+
+test('shared loop sources still release offscreen and in background, independently of other walls', t => {
+  const env = browser(t), root = {}, otherRoot = {}, nodes = [image(root), image(root), image(otherRoot)], states = [];
+  nodes.forEach((node, i) => env.observe(node, { source: '/portrait.webp', update: value => { states[i] = value.ready; } }));
+  nodes.forEach(node => env.size(node));
+  const roots = env.observer(undefined, 600);
+  roots.intersect(root, true); roots.intersect(otherRoot, true);
+  env.observer(root, 320).intersect(nodes[0], true);
+  assert.deepEqual(states, [true, true, false]);
+  env.visible(false); assert.deepEqual(states, [false, false, false]);
+  env.visible(true); assert.deepEqual(states, [true, true, false]);
+  roots.intersect(root, false); assert.deepEqual(states, [false, false, false]);
+  roots.intersect(root, true); assert.deepEqual(states, [true, true, false]);
+});
+
+test('removing the near copy releases its distant peers and ignores late callbacks', t => {
+  const env = browser(t), root = {}, nodes = [image(root), image(root)]; let state, removedCalls = 0;
+  const stop = env.observe(nodes[0], { source: '/portrait.webp', update: () => removedCalls++ });
+  env.observe(nodes[1], { source: '/portrait.webp', update: value => { state = value.ready; } });
+  nodes.forEach(node => env.size(node));
+  env.observer(undefined, 600).intersect(root, true);
+  env.observer(root, 320).intersect(nodes[0], true);
+  assert.equal(state, true);
+  stop(); assert.equal(state, false);
+  const calls = removedCalls;
+  env.observer(root, 320).intersect(nodes[0], true);
+  assert.equal(removedCalls, calls);
+  assert.equal(state, false);
+});
+
 test('small loop artwork stays loaded across horizontal clipping and releases with its row', t => {
   const env = browser(t), root = {}, node = image(root); let state;
   const stop = env.observe(node, { eager: true, update: value => { state = value; } }); t.after(stop);

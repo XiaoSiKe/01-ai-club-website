@@ -29,6 +29,10 @@
   box-sizing: border-box;
 }
 
+/* Reserve the page gutter when a dialog locks scrolling, so closing it does
+   not resize the walls and reset their measured loop positions. */
+html { scrollbar-gutter: stable; }
+
 html,
 body {
   min-width: 320px;

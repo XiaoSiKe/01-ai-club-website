@@ -188,7 +188,7 @@ function bringIntoView(card) {
 	const vertical = track.classList.contains("dtr-track");
 	const expanded = vertical && card.closest('.dtr')?.hasAttribute('data-mobile-columns') ? card.querySelector('.dtr-panel') : card;
 	const r = expanded.getBoundingClientRect();
-	// Start from where the track is right now (it may still be easing back).
+	// Start from the current offset, including an unfinished card reveal.
 	const now = getComputedStyle(track).translate;
 	const parts = !now || now === "none" ? ["0", "0"] : now.split(" ");
 	let x = parseFloat(parts[0]) || 0;
@@ -203,10 +203,28 @@ function bringIntoView(card) {
 	}
 	track.style.translate = Math.round(x) + "px " + Math.round(y) + "px";
 }
-/** Lets the track ease back into its loop once focus moves on. */
+/** Fold the reveal offset into the loop, so closing never pulls the wall back. */
 function releaseNudge(card) {
 	const track = card.closest(".dtr-track, .dtr-strip-track");
-	if (track) track.style.translate = "";
+	if (!track) return;
+	const animation = track.getAnimations().find(item => item.animationName === 'dtr-up' || item.animationName === 'dtr-down');
+	const duration = Number(animation?.effect?.getTiming().duration);
+	const distance = track.getBoundingClientRect().height / 2;
+	const nudge = parseFloat(getComputedStyle(track).translate.split(' ')[1]) || 0;
+	if (!animation || !(duration > 0) || !(distance > 0) || !nudge) {
+		track.style.translate = "";
+		return;
+	}
+	const direction = track.parentElement.dataset.dir === 'down' ? 1 : -1;
+	const next = (Number(animation.currentTime) || 0) + nudge / distance * duration * direction;
+	const previousTransition = track.style.transition;
+	track.style.transition = 'none';
+	animation.currentTime = (next % duration + duration) % duration;
+	track.style.translate = '';
+	// Commit the equivalent position before restoring transitions. This also
+	// handles closing while the reveal offset is still easing into place.
+	getComputedStyle(track).translate;
+	track.style.transition = previousTransition;
 }
 function Portrait(props) {
   const { t, locale, formatDate } = useLanguage();

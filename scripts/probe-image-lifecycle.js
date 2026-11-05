@@ -1,5 +1,5 @@
 /* Run through CDP on a fresh homepage. Hover must not decode full-size photos;
- * one lightbox owns one selected image, and closing/offscreen removes sources. */
+ * closing releases the full image, while nearby wall thumbnails stay warm. */
 async () => {
   const frames = async count => { for (let i = 0; i < count; i++) await new Promise(requestAnimationFrame); };
   const mount = document.querySelector('.research-section__wall');
@@ -38,6 +38,6 @@ async () => {
   const noBrokenImages = [...document.images].every(image => !image.hasAttribute('src') || !image.complete || image.naturalWidth > 0);
   return { hoverRequests: hoverRequests.map(entry => entry.name), lightboxReady, previewReleased,
     coveredWallSources, lightboxReleased, wallRestored, offscreenSources, noBrokenImages,
-    pass: hoverRequests.length === 0 && lightboxReady && previewReleased && coveredWallSources === 0
+    pass: hoverRequests.length === 0 && lightboxReady && previewReleased && coveredWallSources > 0
       && lightboxReleased && wallRestored && offscreenSources === 0 && noBrokenImages };
 }

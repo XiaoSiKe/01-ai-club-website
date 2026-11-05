@@ -49,11 +49,11 @@ const DEFAULT_ITEMS = [];
 const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const columnFactor = (index, variance) => 1 + variance * (((index * 0.6180339887 + 0.35) % 1) * 2 - 1);
 
-function WallImage({ item, active }) {
+function WallImage({ item }) {
   const { t } = useLanguage();
   const [failed, setFailed] = useState(false);
   return failed ? <span className="drift-wall__fallback" role="img" aria-label={t(item.title)}>{t(item.title || '图片暂不可用')}</span> :
-    <ResponsiveImage src={item.image} active={active} alt={t(item.title || '')} draggable={false} onError={() => setFailed(true)} />;
+    <ResponsiveImage src={item.image} alt={t(item.title || '')} draggable={false} onError={() => setFailed(true)} />;
 }
 
 export default function DriftWall({
@@ -319,7 +319,7 @@ export default function DriftWall({
       }
     }}
     onClick={event => { if (event.detail === 0) openTile(event.currentTarget); }}>
-      <span className="drift-wall__inner"><WallImage item={item} active={!selectedItem} /><span className="drift-wall__overlay" aria-hidden="true" /></span>
+      <span className="drift-wall__inner"><WallImage item={item} /><span className="drift-wall__overlay" aria-hidden="true" /></span>
       <BorderGlow as="span" className="media-edge-glow drift-wall__glow" backgroundColor="transparent" borderRadius={radius} glowRadius={24} glowIntensity={2.1} />
   </button>;
 
