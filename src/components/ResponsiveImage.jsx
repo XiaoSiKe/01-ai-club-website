@@ -9,7 +9,7 @@ export default function ResponsiveImage({ src, active = true, eager = false, max
   useEffect(() => {
     if (!active) { setCandidate(undefined); return undefined; }
     let previous = Symbol('uninitialized');
-    return observeImage(ref.current, { eager, update: item => {
+    return observeImage(ref.current, { source: src, eager, update: item => {
       const source = item.ready && item.width > 0 && item.height > 0
         ? imageSource(src, item.width, item.height, Math.min(window.devicePixelRatio || 1, maxDpr), fit)
         : undefined;
@@ -19,8 +19,8 @@ export default function ResponsiveImage({ src, active = true, eager = false, max
     } });
   }, [src, active, eager, maxDpr, fit]);
 
-  // Keep a bounded warm margin for reverse scrolling. Hidden tabs, covered
-  // walls and images beyond that margin still release their decoded pixels.
+  // Keep a bounded warm margin for reverse scrolling and closing previews.
+  // Hidden tabs and images whose copies all leave that margin release sources.
   return <img {...imageDimensions(src)} {...props} ref={ref}
     src={active && candidate?.original === src ? candidate.source : undefined}
     decoding={decoding} loading="eager" data-image-managed="" />;

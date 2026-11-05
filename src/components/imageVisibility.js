@@ -4,46 +4,52 @@ const groups = new Map();
 const images = new Map();
 let sizes, roots;
 
-function publish(item) {
-  const allowed = !document.hidden && item.group.visible;
-  item.ready = allowed && (item.eager || item.near || (item.ready && item.retained));
-  item.update({ ready: item.ready, width: item.width, height: item.height });
+function publish(asset) {
+  const allowed = !document.hidden && asset.group.visible;
+  const members = [...asset.items];
+  asset.ready = allowed && members.some(item => item.eager || item.near || (asset.ready && item.retained));
+  // Loop copies share one image. Prepare their equivalent frames together so
+  // wrapping or absorbing a focus offset never exposes an unloaded duplicate.
+  members.forEach(item => item.update({ ready: asset.ready, width: item.width, height: item.height }));
 }
 
 function refresh() {
-  images.forEach(publish);
+  groups.forEach(group => group.assets.forEach(publish));
 }
 
 function setup() {
   sizes = new ResizeObserver(entries => {
     // ResizeObserver supplies layout sizes without one synchronous layout read
     // per portrait. Only source changes reach React.
+    const changed = new Set();
     entries.forEach(entry => {
       const item = images.get(entry.target);
       if (!item) return;
       item.width = entry.contentRect.width;
       item.height = entry.contentRect.height;
-      publish(item);
+      changed.add(item.asset);
     });
+    changed.forEach(publish);
   });
   roots = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       const group = groups.get(entry.target);
       if (!group) return;
       group.visible = entry.isIntersecting;
-      group.items.forEach(publish);
+      group.assets.forEach(publish);
     });
   }, { rootMargin: '600px' });
   document.addEventListener('visibilitychange', refresh);
 }
 
-export function observeImage(node, { eager = false, update }) {
+export function observeImage(node, { source, eager = false, update }) {
   if (!sizes) setup();
   const root = node.closest('[data-image-viewport]');
   let group = groups.get(root);
   if (!group) {
-    group = { items: new Set(), visible: !root };
+    group = { items: new Set(), assets: new Map(), visible: !root };
     const observer = (field, margin) => new IntersectionObserver(entries => {
+      const changed = new Set();
       entries.forEach(entry => {
         const item = images.get(entry.target);
         if (!item || item.group !== group) return;
@@ -51,15 +57,25 @@ export function observeImage(node, { eager = false, update }) {
         // Callback ordering is unspecified. Being inside the smaller preload
         // margin also guarantees retention until the larger observer reports.
         if (field === 'near' && item.near) item.retained = true;
-        publish(item);
+        changed.add(item.asset);
       });
+      changed.forEach(publish);
     }, { root, rootMargin: `${margin}px` });
     group.load = observer('near', root ? 320 : 500);
     group.retain = observer('retained', root ? 640 : 1000);
     groups.set(root, group);
     if (root) roots.observe(root);
   }
-  const item = { group, update, eager, near: false, retained: false, ready: false, width: 0, height: 0 };
+  // Only copies inside the same moving frame share readiness. Ordinary images
+  // and separate walls keep independent loading and release boundaries.
+  const key = root && source ? source : node;
+  let asset = group.assets.get(key);
+  if (!asset) {
+    asset = { group, items: new Set(), ready: false };
+    group.assets.set(key, asset);
+  }
+  const item = { group, asset, update, eager, near: false, retained: false, width: 0, height: 0 };
+  asset.items.add(item);
   images.set(node, item);
   group.items.add(item);
   group.load.observe(node);
@@ -74,6 +90,9 @@ export function observeImage(node, { eager = false, update }) {
     sizes.unobserve(node);
     images.delete(node);
     group.items.delete(item);
+    asset.items.delete(item);
+    if (!asset.items.size) group.assets.delete(key);
+    else publish(asset);
     if (!group.items.size) {
       group.load.disconnect();
       group.retain.disconnect();

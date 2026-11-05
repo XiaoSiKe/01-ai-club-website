@@ -20,5 +20,5 @@ export const partners = [
   { id: 'adventure-x', href: 'https://www.adventure-x.cn/zh/', name: 'Adventure X', src: '/images/partners/adventure-x.png', invertOnLight: true, width: 210, height: 32.66 },
   { id: 'nextstep', href: 'https://portal.nextstep.org.cn/', name: 'NextStep', src: '/images/partners/nextstep.svg', darkSrc: '/images/partners/nextstep-white.svg', width: 210, height: 24.48 },
   { id: 'emerge', name: 'Emerge', src: '/images/partners/emerge.svg', darkSrc: '/images/partners/emerge-white.svg', width: 144, height: 36.24 },
-  { id: 'codeland', href: 'https://gocodeland.cn/', name: '上岛计划 CodeLand', src: '/images/partners/codeland.svg', darkSrc: '/images/partners/codeland-dark.svg', width: 182.4, height: 29.5165 },
+  { id: 'codeland', href: 'https://gocodeland.cn/', name: '上岛计划 CodeLand', src: '/images/partners/codeland.svg', darkSrc: '/images/partners/codeland-dark.svg', width: 173.28, height: 28.040675 },
 ];

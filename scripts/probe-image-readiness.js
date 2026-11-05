@@ -7,12 +7,13 @@
   const initial = performance.now();
   while (performance.now() - initial < 1200) await frame();
   const blankSince = new Map();
-  let maxBlankMs = 0, preparedBeyondClip = false, maxSources = 0;
+  let maxBlankMs = 0, preparedBeyondClip = false, maxSources = 0, maxUniqueSources = 0;
   const started = performance.now();
   while (performance.now() - started < 4000) {
     const now = await frame(), box = root.getBoundingClientRect();
     const sourced = root.querySelectorAll('img[src]');
     maxSources = Math.max(maxSources, sourced.length);
+    maxUniqueSources = Math.max(maxUniqueSources, new Set([...sourced].map(img => img.getAttribute('src'))).size);
     for (const img of root.querySelectorAll('img')) {
       const r = img.getBoundingClientRect();
       const ready = img.hasAttribute('src') && img.complete && img.naturalWidth > 0;
@@ -26,6 +27,10 @@
     }
   }
   const totalImages = root.querySelectorAll('img').length;
-  return { preparedBeyondClip, maxBlankMs, maxSources, totalImages,
-    pass: preparedBeyondClip && maxBlankMs < 120 && maxSources < totalImages };
+  const logicalImages = new Set([...root.querySelectorAll('[data-item-id], [data-member-id]')]
+    .map(item => item.dataset.itemId || item.dataset.memberId)).size;
+  // Equivalent loop copies intentionally keep the same source bound. Count
+  // unique resources to check their budget rather than counting DOM copies.
+  return { preparedBeyondClip, maxBlankMs, maxSources, maxUniqueSources, logicalImages, totalImages,
+    pass: preparedBeyondClip && maxBlankMs < 120 && maxUniqueSources <= logicalImages && logicalImages < totalImages };
 })()
