@@ -160,6 +160,17 @@ display-only because no official destinations were supplied.
   the destination https://gocodeland.cn/; the logo opens it in a new tab.
   The user's source archive remains unchanged.
 
+- **R7社区 — `r7-community.png`:** user-supplied transparent artwork from
+  `R7社区【Logo】.zip` → `R7社区/R7社区-透明抠图.png`, added 2026-11-05.
+  The 799 × 712px PNG is preserved byte-for-byte. Both themes retain the
+  original silver metallic texture, red edge light and R7 LAB lettering,
+  without inversion, recoloring or an added backdrop. Displayed at
+  71.82 × 64px before the shared scale, preserving its proportions. Lossless
+  WebP display variants reduce the download size. The supplied reconstructed
+  SVG is not used because it differs from the original artwork. No official
+  destination was supplied, so the mark remains display-only. The source
+  archive remains unchanged.
+
 ## Original-color display (2026-11-02)
 
 Partner artwork has no added backing surface, outline, border or plate. Color

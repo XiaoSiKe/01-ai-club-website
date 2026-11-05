@@ -21,4 +21,5 @@ export const partners = [
   { id: 'nextstep', href: 'https://portal.nextstep.org.cn/', name: 'NextStep', src: '/images/partners/nextstep.svg', darkSrc: '/images/partners/nextstep-white.svg', width: 210, height: 24.48 },
   { id: 'emerge', name: 'Emerge', src: '/images/partners/emerge.svg', darkSrc: '/images/partners/emerge-white.svg', width: 144, height: 36.24 },
   { id: 'codeland', href: 'https://gocodeland.cn/', name: '上岛计划 CodeLand', src: '/images/partners/codeland.svg', darkSrc: '/images/partners/codeland-dark.svg', width: 173.28, height: 28.040675 },
+  { id: 'r7-community', name: 'R7社区', src: '/images/partners/r7-community.png', width: 71.82, height: 64 },
 ];
