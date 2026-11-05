@@ -148,6 +148,18 @@ display-only because no official destinations were supplied.
   (5% smaller than the first integration, at the user's request).
   No official destination was supplied, so the mark remains display-only.
 
+- **上岛计划 CodeLand — `codeland.svg` / `codeland-dark.svg`:** user-supplied
+  horizontal vector wordmarks from `上岛计划CodeLand_Logo使用规范(1).zip`,
+  added 2026-11-05. Website copies preserve
+  `CodeLand横版Logo/svg/CodeLand横版Logo【主色】.svg` and
+  `CodeLand横版Logo/svg/CodeLand横版Logo【反白】.svg` byte-for-byte.
+  Displayed at 182.4 × 29.5165px before the shared scale (5% smaller than the
+  first integration, at the user's request), preserving proportions
+  and the original coral slash. Light backgrounds use the supplied dark ink;
+  dark backgrounds use the supplied off-white ink. The source guide supplies
+  the destination https://gocodeland.cn/; the logo opens it in a new tab.
+  The user's source archive remains unchanged.
+
 ## Original-color display (2026-11-02)
 
 Partner artwork has no added backing surface, outline, border or plate. Color

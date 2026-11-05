@@ -98,7 +98,7 @@ export default function BranchAtlas({ borderGlowProps }) {
   if (view !== 'china') crumbs.push({ view: 'fujian', label: '福建' });
   if (local) crumbs.push({ view: currentCity, label: cityById[currentCity].name });
   if (selected) crumbs.push({ view, label: selected.shortName });
-  const title = selected?.school || (view === 'china' ? '从福建出发，连接更多高校' : view === 'fujian' ? '福建' : cityById[view]?.name);
+  const title = selected?.school || (view === 'china' ? '福建：梦开始的地方' : view === 'fujian' ? '福建' : cityById[view]?.name);
   const foundedLabel = date => locale === 'en' ? formatDate(date) : date.split('-').map(Number).join('.');
   const schoolButton = branch => (
     <button type="button" key={branch.id} className={`branch-atlas__school-row${selected?.id === branch.id ? ' is-selected' : ''}`} onClick={follow(`school:${branch.id}`)} onPointerEnter={() => setHovered(branch.id)} onPointerLeave={() => setHovered(null)} onFocus={() => setHovered(branch.id)} onBlur={() => setHovered(null)} aria-label={t("查看{0}{1}", [branch.school, branch.role])} aria-describedby={`${id}-founded-${branch.id}${branch.leader ? ` ${id}-leader-${branch.id}` : ''}`}>
