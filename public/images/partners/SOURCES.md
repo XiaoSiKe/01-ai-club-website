@@ -165,7 +165,8 @@ display-only because no official destinations were supplied.
   The 799 × 712px PNG is preserved byte-for-byte. Both themes retain the
   original silver metallic texture, red edge light and R7 LAB lettering,
   without inversion, recoloring or an added backdrop. Displayed at
-  71.82 × 64px before the shared scale, preserving its proportions. Lossless
+  64.638 × 57.6px before the shared scale (10% smaller than the initial
+  integration, at the user's request), preserving its proportions. Lossless
   WebP display variants reduce the download size. The supplied reconstructed
   SVG is not used because it differs from the original artwork. No official
   destination was supplied, so the mark remains display-only. The source
