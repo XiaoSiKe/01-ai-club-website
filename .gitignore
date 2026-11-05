@@ -20,3 +20,6 @@ preview-*.png
 .workbuddy/
 output/
 tmp/
+
+# 本地验收截图保留在磁盘，不纳入源码仓库
+deliverables/验收截图/

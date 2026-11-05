@@ -2,6 +2,8 @@
 
 零一 AI 日新社（01AIClub）是一个以公益教学为核心的 AI 兴趣社团、知识库与交流社区，面向 AI 初学者、转专业探索者和愿意参与开源实践的同学。
 
+社团简称统一为「零一」。后续官网文案、品牌介绍、素材说明及项目文档中的简称均使用「零一」；正式全称为「零一 AI 日新社」。执行规则见 [AGENTS.md](./AGENTS.md)。
+
 - 正式域名：<https://club.01aiedu.com>
 - 所属标识：AI CLUB · 福州大学
 - 成立时间：2026 年 9 月 1 日
@@ -113,8 +115,10 @@ GitHub 的 `Website checks` 会在每个 PR 及 main 更新时，使用 `.nvmrc`
 
 ```text
 .
+├── deliverables/           # 品牌素材、旗帜与历史字标方案，见目录内索引
 ├── deploy/                 # 云效、Nginx、TLS 与原子发布脚本
-├── docs/                   # 运维文档
+├── docs/                   # 运维与图片性能文档
+├── output/                 # 本地原图备份、印刷 PDF 与申报材料（不提交 Git）
 ├── public/                 # 静态资源与自定义域名文件
 ├── scripts/                # 构建清单、产物校验和只读运维工具
 ├── src/
@@ -134,6 +138,12 @@ GitHub 的 `Website checks` 会在每个 PR 及 main 更新时，使用 `.nvmrc`
 ├── CONTRIBUTING.md         # 贡献流程与质量要求
 └── DEPLOYMENT.md           # 域名和部署说明
 ```
+
+交付文件按品牌素材、旗帜和历史方案归类，入口见 [交付文件索引](./deliverables/README.md)。`deliverables/验收截图/` 集中保留本机历史上线验收记录，不提交 Git；Logo 与字标方案中的配套效果图随交付包保留。
+
+`output/image-originals/` 保存压缩前原图，其中 `branch-assets/` 保存早期校园图片备份，`partner-logos/` 保存合作伙伴原始 Logo；`output/pdf/` 保存分社旗帜印刷文件。`output/社团申报材料/` 保存申报文件，`历史草稿/` 与 `制作资料/` 分别保留早期草稿和对应制作源码、模板记录。
+
+`tmp/` 仅用于可清理的临时产物，任务完成后及时清空；`dist/` 为可重新构建的产物，需要预览或打包时运行 `npm run build` 生成。不要仅因文件位于 `output/` 或被 Git 忽略就删除原图、草稿和制作资料。
 
 关于我们正文在 `src/App.jsx` 维护，包含社团介绍、成立说明、学习新范式与公益教学、长期共建邀请四组内容。Mentor 入口位于“我们在做什么”，独立展示页使用 TeamShowcase 的错落头像与联动名单。
 
