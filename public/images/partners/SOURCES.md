@@ -172,6 +172,17 @@ display-only because no official destinations were supplied.
   destination was supplied, so the mark remains display-only. The source
   archive remains unchanged.
 
+- **原子公社 AtomHub — `atomhub.svg`:** traced on 2026-11-06 from the
+  user-supplied `原子公社(1).zip` → `原子公社/黑字.png` using VTracer 0.6.12.
+  Pure spline paths, with no embedded raster. Transparent padding is excluded
+  using the source bounds `279 307 975 356`. Binary tracing removes minor edge
+  speckles; this is a reconstructed vector, not an original brand vector.
+  Displayed at 157.5 × 57.51px before the shared scale, 10% smaller in both
+  dimensions than the initial integration. The existing dark-theme inversion
+  renders the black vector white. No destination was supplied, so it remains
+  display-only. Both original PNGs are retained in
+  `output/image-originals/partner-logos/atomhub/`.
+
 ## Original-color display (2026-11-02)
 
 Partner artwork has no added backing surface, outline, border or plate. Color
