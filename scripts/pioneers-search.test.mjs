@@ -40,10 +40,15 @@ test('founders link to the corresponding branch and retain their independent joi
   assert.equal(eug.founding.href, './?branch=fit#cooperation');
   const quanzhou = pioneers.find(member => member.id === 'qwq2008123-star');
   assert.equal(quanzhou.founding.href, './?branch=qzoi#cooperation');
+  const spark = pioneers.find(member => member.id === 'Sparkfengtu');
+  assert.equal(spark.joinedAt, '2026-10-21');
+  assert.deepEqual(spark.founding, {
+    date: '2026-10-22', name: '闽江分社', href: './?branch=mju#cooperation',
+  });
   const wu = pioneers.find(member => member.id === 'wu-yaohui');
   assert.equal(wu.founding, null);
   assert.equal(wu.joinedAt, '2026-10-30');
   assert.equal(wu.href, 'https://github.com/1302707875wu');
-  assert.equal(pioneers.filter(member => member.founding).length, 6);
+  assert.equal(pioneers.filter(member => member.founding).length, 7);
   assert(pioneers.every(member => /^2026-\d{2}-\d{2}$/.test(member.joinedAt)));
 });
