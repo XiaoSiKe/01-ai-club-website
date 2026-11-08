@@ -460,7 +460,7 @@ export default function App() {
               <p className="home-cooperation-intro">{t("创造力，就是把事物连接起来。")}</p>
             </div>
             <div className="home-partners-row">
-              <ViewportMount className="home-partners-marquee" minHeight={256}><LogoMarquee /></ViewportMount>
+              <ViewportMount className="home-partners-marquee" minHeight={583.6}><LogoMarquee /></ViewportMount>
               <div className="home-cooperation-actions">
                 <SpecularButton href="https://scn96l2kzmbn.feishu.cn/wiki/X7h6wI8SCiAuZAkpYF2caNv7nTG" target="_blank" rel="noopener noreferrer" className="home-cooperation-link">{t("关于零一合作生态 ")}<span aria-hidden="true">↗</span>
                 </SpecularButton>

@@ -183,6 +183,19 @@ display-only because no official destinations were supplied.
   display-only. Both original PNGs are retained in
   `output/image-originals/partner-logos/atomhub/`.
 
+## 英语口语协会（2026-11-08）
+
+- `oral-english-association.png`：基于用户提供的 528 × 192px 白底图片，
+  使用 imagegen 制作的 2078 × 757px 透明展示版。中英文字样为
+  “英语口语协会 / Oral English Association”。生成处理可能带来细微轮廓、
+  色彩和边缘差异，不是官方矢量母版。用户原图完整保存在
+  `output/image-originals/partner-logos/oral-english-association/original.png`，
+  并收录于交付 ZIP。
+- 网站使用无损 WebP 尺寸变体；`oral-english-association-dark.svg` 内嵌
+  320px WebP，并以 alpha 蒙版将文字改为白色，保留彩色图标。
+  两种主题均无背景底板，显示尺寸为 133.11 × 48.492px（统一缩放前）。
+  未提供官网地址，因此仅展示标识。
+
 ## Original-color display (2026-11-02)
 
 Partner artwork has no added backing surface, outline, border or plate. Color

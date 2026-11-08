@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import LogoLoop from '../LogoLoop';
 import ResponsiveImage from './ResponsiveImage';
 import { imageSource } from './imageSource';
-import { partners } from '../data/partners';
+import { partnerCategories, partners } from '../data/partners';
 import { useTheme } from '../Theme';
 import './LogoMarquee.css';
 import LogoArtwork from './LogoArtwork';
@@ -42,40 +42,58 @@ function PartnerMark({ logo }) {
   );
 }
 
-export default function LogoMarquee({
-  logos = partners,
-  className = '',
-  ariaLabel = '合作生态伙伴',
-}) {
+export default function LogoMarquee() {
   const { t } = useLanguage();
-  const list = Array.isArray(logos) ? logos : partners;
-  const marks = useMemo(() => list.map(logo => ({
-    title: logo.href ? t('{0} 官网（新窗口）', [logo.name || logo.alt]) : t(logo.name || logo.alt || ''),
-    href: logo.href,
-    node: <PartnerMark logo={logo} />,
-  })), [list, t]);
-  const rows = Array.from({ length: 3 }, (_, index) => marks.slice(
-    Math.ceil(index * marks.length / 3),
-    Math.ceil((index + 1) * marks.length / 3),
-  )).filter(row => row.length);
+  const groups = useMemo(() => partnerCategories.map(category => {
+    const marks = partners.filter(logo => logo.category === category.id).map(logo => ({
+      title: logo.href ? t('{0} 官网（新窗口）', [logo.name]) : t(logo.name),
+      href: logo.href,
+      node: <PartnerMark logo={logo} />,
+    }));
+    const splitAt = Math.ceil(marks.length / 2);
+    const rows = category.id === 'university' || marks.length < 2
+      ? [marks]
+      : [marks.slice(0, splitAt), marks.slice(splitAt)];
+    return { ...category, marks, rows };
+  }).filter(group => group.marks.length), [t]);
 
-  if (!marks.length) return null;
   return (
-    <div className={`logo-marquee${className ? ` ${className}` : ''}`} role="group" aria-label={t(ariaLabel)}>
-    {rows.map((row, index) => <LogoLoop
-      key={index}
-      logos={row}
-      speed={90}
-      direction={index % 2 === 0 ? 'left' : 'right'}
-      logoHeight={64}
-      gap={48}
-      hoverSpeed={0}
-      scaleOnHover
-      fadeOut
-      ariaLabel={t("{0}，第{1}行", [ariaLabel, index + 1])}
-      tabIndex={0}
-      className="logo-marquee__row"
-    />)}
+    <div className="logo-marquee">
+      {groups.map(({ id, title, marks, rows }) => (
+        <section key={id} aria-labelledby={`partner-category-${id}`}>
+          <h3 id={`partner-category-${id}`} className="logo-marquee__heading">{t(title)}</h3>
+          {marks.length === 1 ? (
+            <div className="logo-marquee__single logo-loop-scale">
+              {marks[0].href ? (
+                <a className="logo-loop-item" href={marks[0].href} target="_blank" rel="noopener noreferrer" aria-label={marks[0].title}>
+                  {marks[0].node}
+                </a>
+              ) : (
+                <span className="logo-loop-item" role="img" aria-label={marks[0].title}>{marks[0].node}</span>
+              )}
+            </div>
+          ) : (
+            <div className="logo-marquee__rows">
+              {rows.map((row, index) => (
+                <LogoLoop
+                  key={index}
+                  logos={row}
+                  speed={90}
+                  direction={index % 2 === 0 ? 'left' : 'right'}
+                  logoHeight={64}
+                  gap={48}
+                  hoverSpeed={0}
+                  scaleOnHover
+                  fadeOut
+                  ariaLabel={rows.length > 1 ? t('{0}，第{1}行', [t(title), index + 1]) : title}
+                  tabIndex={0}
+                  className="logo-marquee__row"
+                />
+              ))}
+            </div>
+          )}
+        </section>
+      ))}
     </div>
   );
 }
