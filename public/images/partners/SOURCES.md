@@ -17,6 +17,7 @@ with `noopener noreferrer`. Unconfirmed destinations remain display-only.
 | workbuddy | https://www.workbuddy.cn/ |
 | Adventure X | https://www.adventure-x.cn/zh/ |
 | NextStep | https://portal.nextstep.org.cn/ |
+| 大湾区黑客松 BayHack | https://bayhack.cn/ |
 
 MoneyAI's own Fuzhou hackathon at https://join.moneyai.top/ identifies
 MoneyAI-Agents and links back to `moneyai.top`. NextStep's official portal is
@@ -195,6 +196,14 @@ display-only because no official destinations were supplied.
   320px WebP，并以 alpha 蒙版将文字改为白色，保留彩色图标。
   两种主题均无背景底板，显示尺寸为 133.11 × 48.492px（统一缩放前）。
   未提供官网地址，因此仅展示标识。
+
+## 大湾区黑客松 BayHack（2026-11-09）
+
+- 用户提供的原始压缩包归档于
+  `output/image-originals/partner-logos/bayhack/大湾区黑客松BayHack【Logo】.zip`。
+  `bayhack.png` 取自压缩包中的黑字 `-01.png`，
+  `bayhack-dark.png` 取自白字 `-02.png`。两版均裁去外围透明留白，
+  保留 5132 × 984px 的原始标识像素，网站使用无损 WebP 尺寸变体。
 
 ## Original-color display (2026-11-02)
 
