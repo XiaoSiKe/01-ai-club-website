@@ -39,10 +39,15 @@ const roster = [
   ['张荣晖', '福州大学', 'likezz-rh', null, '2026-10-29'],
   ['郑鑫尧', '泉州海洋学院', 'qwq2008123-star', null, '2026-10-30'],
   ['吴耀辉', '福建农林大学', '1302707875wu', 'wu-yaohui', '2026-10-30'],
+  ['李金龙', '福州大学', null, 'li-jinlong'],
+  ['曾楚淇', '福建理工大学', null, 'zeng-chuqi'],
+  ['王俊皓', '福州理工学院', 'JIENENer'],
+  ['郑瀚', '福州理工大学', 'Zhenghan816'],
+  ['陈日杰', '泉州海洋职业学院', null, 'chen-rijie'],
+  ['林含悦', '福州大学', 'midmoon-fox'],
 ];
 
-// Fifth column: joining date in YYYY-MM-DD format, supplied and corrected
-// by the user on 2026-10-30. This explicit roster supersedes Git-derived dates.
+// Fifth column: user-confirmed joining date in YYYY-MM-DD format, when supplied.
 export const pioneers = roster.map(([name, university, github, memberId, joinedAt]) => {
   const suppliedPhoto = memberPortraits[name];
   const foundedBranch = branches.find(branch => branch.leader?.name === name);
