@@ -20,6 +20,7 @@ export const partners = [
   { id: 'adventure-x', category: 'hackathon', href: 'https://www.adventure-x.cn/zh/', name: 'Adventure X', src: '/images/partners/adventure-x.png', invertOnLight: true, width: 210, height: 32.66 },
   { id: 'nextstep', category: 'hackathon', href: 'https://portal.nextstep.org.cn/', name: 'NextStep', src: '/images/partners/nextstep.svg', darkSrc: '/images/partners/nextstep-white.svg', width: 210, height: 24.48 },
   { id: 'emerge', category: 'hackathon', name: 'Emerge', src: '/images/partners/emerge.svg', darkSrc: '/images/partners/emerge-white.svg', width: 144, height: 36.24 },
+  { id: 'bayhack', category: 'hackathon', href: 'https://bayhack.cn/', name: '大湾区黑客松 BayHack', src: '/images/partners/bayhack.png', darkSrc: '/images/partners/bayhack-dark.png', width: 210, height: 40.27 },
   { id: 'codeland', category: 'community', href: 'https://gocodeland.cn/', name: '上岛计划 CodeLand', src: '/images/partners/codeland.svg', darkSrc: '/images/partners/codeland-dark.svg', width: 173.28, height: 28.040675 },
   { id: 'atomhub', category: 'community', name: '原子公社 AtomHub', src: '/images/partners/atomhub.svg', invertOnDark: true, width: 157.5, height: 57.51 },
   { id: 'r7-community', category: 'community', name: 'R7社区', src: '/images/partners/r7-community.png', width: 64.638, height: 57.6 },
