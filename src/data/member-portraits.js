@@ -34,4 +34,10 @@ export const memberPortraits = {
   '吴浩然': '/images/pioneers/wu-haoran.jpg',
   '张荣晖': '/images/pioneers/zhang-ronghui.jpg',
   '郑鑫尧': '/images/pioneers/zheng-xinyao.jpg',
+  '李金龙': '/images/pioneers/li-jinlong.jpg',
+  '曾楚淇': '/images/pioneers/zeng-chuqi.jpg',
+  '王俊皓': '/images/pioneers/wang-junhao.png',
+  '郑瀚': '/images/pioneers/zheng-han.png',
+  '陈日杰': '/images/pioneers/chen-rijie.png',
+  '林含悦': '/images/pioneers/lin-hanyue.png',
 };
