@@ -431,7 +431,7 @@ export default function App() {
             <h2 className="home-flow-title" id="business-title">{t("零一商业")}</h2>
             <div className="home-business-intro">
               <h3 className="home-business-lead">{t("用 AI 解决真实问题，让技术创造社会价值。")}</h3>
-              <p>{t("我们是福州零一极致智能科技有限公司！")}</p>
+              <p>{t("我们是福州零一先锋智能科技有限公司！")}</p>
             </div>
             <ViewportMount className="home-business-carousel" minHeight="var(--business-placeholder-height, 640px)">
               <Suspense fallback={<LoadingSlot />}>

@@ -18,6 +18,7 @@ with `noopener noreferrer`. Unconfirmed destinations remain display-only.
 | Adventure X | https://www.adventure-x.cn/zh/ |
 | NextStep | https://portal.nextstep.org.cn/ |
 | 大湾区黑客松 BayHack | https://bayhack.cn/ |
+| 去探索 | https://qutansuo.cn/ |
 
 MoneyAI's own Fuzhou hackathon at https://join.moneyai.top/ identifies
 MoneyAI-Agents and links back to `moneyai.top`. NextStep's official portal is
@@ -204,6 +205,15 @@ display-only because no official destinations were supplied.
   `bayhack.png` 取自压缩包中的黑字 `-01.png`，
   `bayhack-dark.png` 取自白字 `-02.png`。两版均裁去外围透明留白，
   保留 5132 × 984px 的原始标识像素，网站使用无损 WebP 尺寸变体。
+
+## 去探索与语冰（2026-11-11）
+
+- **去探索 — `qutansuo.png`** 取自 https://qutansuo.cn/ 的中文导航字标，
+  原图地址为 https://qutansuo.cn/brand/qutansuo-wordmark.png 。裁去外围透明留白后为
+  482 × 133px，深色背景使用原始白色标识，浅色背景使用反色。用户提供的
+  `qutansuo.com.cn` 返回备案拦截页，Logo 链接指向可访问的 `qutansuo.cn`。
+- **语冰 — `yubing.png`** 取自用户提供的 `“语冰”视觉(1).zip` 中的
+  `语冰logo去背景.png`。裁去外围透明留白后为 541 × 221px，两种主题均保留原始渐变色。
 
 ## Original-color display (2026-11-02)
 
