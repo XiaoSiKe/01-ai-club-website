@@ -24,6 +24,8 @@ export const partners = [
   { id: 'codeland', category: 'community', href: 'https://gocodeland.cn/', name: '上岛计划 CodeLand', src: '/images/partners/codeland.svg', darkSrc: '/images/partners/codeland-dark.svg', width: 173.28, height: 28.040675 },
   { id: 'atomhub', category: 'community', name: '原子公社 AtomHub', src: '/images/partners/atomhub.svg', invertOnDark: true, width: 157.5, height: 57.51 },
   { id: 'r7-community', category: 'community', name: 'R7社区', src: '/images/partners/r7-community.png', width: 64.638, height: 57.6 },
+  { id: 'qutansuo', category: 'community', href: 'https://qutansuo.cn/', name: '去探索', src: '/images/partners/qutansuo.png', invertOnLight: true, width: 144, height: 39.73 },
+  { id: 'yubing', category: 'community', name: '语冰', src: '/images/partners/yubing.png', width: 122, height: 49.84 },
   { id: 'oral-english-association', category: 'university', name: '英语口语协会', src: '/images/partners/oral-english-association.png', darkSrc: '/images/partners/oral-english-association-dark.svg', width: 133.11, height: 48.492 },
 ];
 
