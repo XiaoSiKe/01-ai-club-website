@@ -9,9 +9,9 @@ import './theme.css';
 const pageId = new URLSearchParams(window.location.search).get('page');
 const projectId = new URLSearchParams(window.location.search).get('project');
 const pages = {
-  architecture: () => import('./ArchitecturePage'),
   research: () => import('./ResearchPage'),
   mentors: () => import('./MentorsPage'),
+  leadership: () => import('./LeadershipPage'),
   pioneers: () => import('./PioneersPage'),
 };
 const homepage = !Object.hasOwn(pages, pageId) && projectId === null;

@@ -70,6 +70,10 @@ export const pioneers = roster.map(([name, university, github, memberId, joinedA
 });
 
 export function searchPioneers(query, translate = value => value) {
+  return searchRosterMembers(pioneers, query, translate);
+}
+
+export function searchRosterMembers(members, query, translate = value => value) {
   const name = query.trim().normalize('NFKC').toLocaleLowerCase();
-  return name ? pioneers.filter(member => `${localizedSearchText(member.name)} ${translate(member.name)}`.normalize('NFKC').toLocaleLowerCase().includes(name)) : [];
+  return name ? members.filter(member => `${localizedSearchText(member.name)} ${translate(member.name)}`.normalize('NFKC').toLocaleLowerCase().includes(name)) : [];
 }

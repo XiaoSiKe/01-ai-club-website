@@ -30,7 +30,8 @@
   const criticalImageLoaded = Boolean(logo?.complete && logo.naturalWidth && logo.currentSrc);
   const ready = performance.getEntriesByName('site:first-screen-ready').at(-1);
   const preparedPhotos = resources.filter(entry => entry.name.includes('/assets/images/activity-'));
-  const firstScreenPrepared = ready?.detail.images === 13 && preparedPhotos.length === 12
+  const tunnelPhotoCount = document.querySelectorAll('.tunnel-hero__card').length;
+  const firstScreenPrepared = tunnelPhotoCount > 0 && ready?.detail.images === tunnelPhotoCount + 1 && preparedPhotos.length === tunnelPhotoCount
     && preparedPhotos.every(entry => entry.responseEnd <= ready.startTime);
   const photoRequestSpreadMs = preparedPhotos.length
     ? Math.max(...preparedPhotos.map(entry => entry.startTime)) - Math.min(...preparedPhotos.map(entry => entry.startTime)) : Infinity;

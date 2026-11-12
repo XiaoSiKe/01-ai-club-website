@@ -9,6 +9,7 @@
 ## Logo 素材包命名
 
 - 新交付的 Logo ZIP 统一命名为「名称【Logo】.zip」，例如「R7社区【Logo】.zip」。
+- Logo ZIP 成品直接交付到 `~/Documents/零一扬/零一 AI 日新社/零一合作品牌图标大全/`。
 
 ## 工作产物及时清理
 

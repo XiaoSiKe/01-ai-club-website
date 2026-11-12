@@ -18,46 +18,43 @@ const LIGHT_PALETTE = {
   ground: '#f4f4f4', deep: '#e5e5e5', hot: '#c2c2c2', glow: '#ffffff',
   ink: '#202020', shadow: '#141414', mid: '#8c8c8c', highlight: '#f5f5f5',
 };
-const LABELS = {
-  team: '领航先锋成员肖像墙',
-  memberLink: 'GitHub 主页',
-};
-
-export default function PioneersPage() {
+export function PeopleRosterPage({ members, heading, pageTitle, skipLabel, rosterLabel, searchLabels, className = '', columns = 4, tabletColumns, portraitScale, repeatWithinColumn }) {
   const { t } = useLanguage();
   const { theme } = useTheme();
   const mobile = useMediaQuery('(max-width: 699px)');
   const [searchTarget, setSearchTarget] = useState(null);
   const requestedMember = new URLSearchParams(window.location.search).get('member');
-  const targetMemberId = searchTarget?.id || (pioneers.some(member => member.id === requestedMember) ? requestedMember : null);
-  const initialMemberId = pioneers.find(member => member.name === '零一扬')?.id;
+  const targetMemberId = searchTarget?.id || (members.some(member => member.id === requestedMember) ? requestedMember : null);
+  const initialMemberId = members.find(member => member.name === '零一扬')?.id;
 
   useEffect(() => {
     const previousTitle = document.title;
-    document.title = t('领航先锋 · 零一 AI 日新社');
+    document.title = t(pageTitle);
     return () => { document.title = previousTitle; };
-  }, [t]);
+  }, [t, pageTitle]);
 
   return (
-    <main className="pioneers-page">
+    <main className={className ? `pioneers-page ${className}` : 'pioneers-page'}>
       <SiteBackground />
-      <a className="pioneers-page__skip" href="#pioneers-roster">{t("跳到领航先锋")}</a>
+      <a className="pioneers-page__skip" href="#pioneers-roster">{t(skipLabel)}</a>
       <SiteNavigation standalone />
       <div id="pioneers-roster" className="pioneers-page__roster" tabIndex={-1}>
         <DuotoneTeamRoster
-          members={pioneers}
+          members={members}
           titleAs="h1"
-          title={t("领航\n先锋")}
+          title={t(heading)}
           eyebrow={<BrandTitle text={t("零一 AI 日新社｜01 AI CLUB")} />}
           renderTitleLine={line => <BrandTitle text={t(line)} />}
-          titleControls={<PioneerSearch onSelect={id => setSearchTarget(previous => ({ id, request: (previous?.request || 0) + 1 }))} />}
+          titleControls={<PioneerSearch members={members} labels={searchLabels} onSelect={id => setSearchTarget(previous => ({ id, request: (previous?.request || 0) + 1 }))} />}
           preset="mono"
           palette={theme === 'light' ? LIGHT_PALETTE : DARK_PALETTE}
-          columns={4}
-          mobileColumns={mobile ? 4 : 0}
+          columns={columns}
+          tabletColumns={tabletColumns}
+          mobileColumns={mobile ? columns : 0}
           mobileWallScale={0.7}
+          repeatWithinColumn={repeatWithinColumn}
           driftSeconds={7.2}
-          cardScale={mobile ? 0.9 : 0.99}
+          cardScale={portraitScale ?? (mobile ? 0.9 : 0.99)}
           speedMultiplier={mobile ? 1.75329 : 1.928619}
           targetMemberId={targetMemberId}
           targetRequestId={searchTarget?.request || 0}
@@ -67,10 +64,15 @@ export default function PioneersPage() {
           stretch={1}
           uppercase={false}
           grain={false}
-          labels={LABELS}
+          labels={{ team: rosterLabel, memberLink: 'GitHub 主页' }}
           clickFollowsLink={false}
         />
       </div>
     </main>
   );
+}
+
+export default function PioneersPage() {
+  return <PeopleRosterPage members={pioneers} heading={'领航\n先锋'} pageTitle="领航先锋 · 零一 AI 日新社"
+    skipLabel="跳到领航先锋" rosterLabel="领航先锋成员肖像墙" />;
 }

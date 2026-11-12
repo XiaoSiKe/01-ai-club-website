@@ -1,6 +1,7 @@
 // Motion values, springs and projection follow the user's supplied component.
 import { motion, useTransform, useReducedMotion, useMotionValue, useSpring } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import { useLanguage } from '../../Language';
 import { activityPhotos } from '../../data/activity-photos';
 import BorderGlow, { clearBorderGlow, updateBorderGlow } from '../../BorderGlow';
 import ResponsiveImage from '../ResponsiveImage';
@@ -39,6 +40,7 @@ function useCameraParallax(enabled) {
 }
 
 function TunnelCard({ card, progress, pointer, total, stage, reduce, onOpen }) {
+  const { t } = useLanguage();
   const staggerSpan = 0.55;
   const start = (card.index / total) * (1 - staggerSpan);
   const end = start + staggerSpan;
@@ -58,7 +60,9 @@ function TunnelCard({ card, progress, pointer, total, stage, reduce, onOpen }) {
   const z = useTransform(localProgress, [0, 1], [farZ, nearZ]);
   const opacity = useTransform(localProgress, [0, 0.18, 0.82, 0.98], [0, 1, 1, 0]);
   const visibility = useTransform(localProgress, value => value > .001 && value < .98 ? 'visible' : 'hidden');
-  const cardWidth = tunnelCardWidth(stage.width);
+  const cardWidth = tunnelCardWidth(stage.width, card.item);
+  const photoLabel = [card.item.title || card.item.alt, card.item.organization]
+    .filter(Boolean).map(label => t(label)).join(' · ');
   const baseX = card.angleCos * (stage.width * card.radiusFactorX);
   const baseY = card.angleSin * (stage.height * card.radiusFactorY);
   const panStrength = stage.isMobile ? 20 : 45;
@@ -69,7 +73,7 @@ function TunnelCard({ card, progress, pointer, total, stage, reduce, onOpen }) {
   });
 
   return <motion.button type="button" className="tunnel-hero__card"
-    aria-label={`查看照片 ${card.index + 1}：${card.item.title || card.item.alt}`} aria-haspopup="dialog"
+    aria-label={t('查看照片 {0}：{1}', [card.index + 1, photoLabel])} aria-haspopup="dialog"
     onClick={event => onOpen(card.item, event.currentTarget)}
     style={{ width: cardWidth, aspectRatio: `${card.item.width} / ${card.item.height}`, transform, opacity, visibility, zIndex: card.index + 1 }}>
     <div className="tunnel-hero__card-inner">

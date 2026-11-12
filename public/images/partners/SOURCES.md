@@ -215,6 +215,12 @@ display-only because no official destinations were supplied.
 - **语冰 — `yubing.png`** 取自用户提供的 `“语冰”视觉(1).zip` 中的
   `语冰logo去背景.png`。裁去外围透明留白后为 541 × 221px，两种主题均保留原始渐变色。
 
+## 福州 AI 共学社与 FZU 薄肌俱乐部（2026-11-12）
+
+- **福州 AI 共学社**使用用户提供的 520 × 151px JPG，经 VTracer 0.6.12 分色描摹为透明 SVG。官网在「社区合作伙伴」展示 `fuzhou-ai-learning.svg`，深色主题使用 `fuzhou-ai-learning-dark.svg`，英文副标改用浅色。
+- **FZU 薄肌俱乐部**使用用户提供的 1279 × 1618px JPG，经 VTracer 0.6.12 分色描摹为透明 SVG。官网在「高校合作伙伴」展示树形图标 `fzu-lean-club.svg` 及俱乐部名称，完整图文标识收录于交付 ZIP。
+- 原图保存在 `output/image-originals/partner-logos/` 下对应目录。两项官网标识均为展示项。
+
 ## Original-color display (2026-11-02)
 
 Partner artwork has no added backing surface, outline, border or plate. Color

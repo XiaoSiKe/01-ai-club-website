@@ -69,3 +69,13 @@
 }
 
 @media (max-width: 640px) { .pioneers-page { --pioneers-header-clearance: 88px; } }
+
+.leadership-page .dtr-wall {
+  column-gap: 6px;
+  /* Move the two saved column gaps to the outer edges to retain portrait widths. */
+  padding-inline: calc(clamp(8px, 1cqw, 16px) + 8px) calc(var(--dtr-pad) + 8px);
+}
+
+@media (max-width: 699px) {
+  .leadership-page .dtr-wall { column-gap: 3px; padding-inline: 21px; }
+}
