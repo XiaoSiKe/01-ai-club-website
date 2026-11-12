@@ -2,7 +2,8 @@ const albumUrl = id => `https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzYzNzg5Mj
 
 export const learningFolderItems = [
   { id: 'thinking', title: '零一文章', href: albumUrl('4707060559798894592') },
-  { id: 'experience', title: '零一大学', href: albumUrl('4739814244253466626') }
+  { id: 'experience', title: '零一大学', href: albumUrl('4739814244253466626') },
+  { id: 'partnerships', title: '零一合作', href: albumUrl('4769373749131640836') }
 ];
 
 export const practiceFolderItems = [

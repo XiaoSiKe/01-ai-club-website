@@ -29,7 +29,7 @@ const documentItems = (items, categories, t, locale) => items.map((item, index) 
 export default function ExploreSection({ borderGlowProps, knowledgeUrl, onItemClick }) {
   const { t, locale } = useLanguage();
   const folderGroups = useMemo(() => {
-    const learningItems = documentItems(learningFolderItems, ['文章 · 观点', '大学 · 成长'], t, locale);
+    const learningItems = documentItems(learningFolderItems, ['文章 · 观点', '大学 · 成长', '合作 · 共建'], t, locale);
     const practiceItems = documentItems(practiceFolderItems, ['黑客松 · 创造', '沙龙 · 交流', '商业 · 产品', '科研 · 竞赛', '日常 · 耍起'], t, locale);
     return [
       { id: 'learn', title: '从零到一', label: '学习与分享', items: learningItems },
