@@ -1,15 +1,26 @@
+.home-partners-marquee {
+  --partner-logo-row-height: 80px;
+  min-width: 0;
+  /* Reserve five logo rows plus category headings and gaps before mounting. */
+  min-height: calc(5 * var(--partner-logo-row-height) + 183.6px);
+}
 .logo-marquee { --partner-logo-scale: 1.05; display: grid; gap: 36px; width: 100%; min-width: 0; }
 .logo-marquee > section { min-width: 0; }
 .logo-marquee__heading { margin: 0 0 4px; color: var(--site-ink); font-size: clamp(14.58px, 1.458vw, 17.496px); font-weight: 650; line-height: 32px; }
-.logo-marquee__single { --logo-loop-height: 64px; display: flex; align-items: center; min-height: 80px; }
+.logo-marquee__single { --logo-loop-height: 64px; display: flex; align-items: center; min-height: var(--partner-logo-row-height); }
 .logo-marquee__rows { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.8px; }
+.logo-marquee .logo-marquee__row { height: var(--partner-logo-row-height); }
 .logo-marquee__row:focus-visible { outline: 2px solid currentColor; outline-offset: 6px; border-radius: 6px; }
 .logo-marquee a.logo-loop-item:focus-visible { color: var(--site-ink); outline-color: var(--site-ink); }
 .logo-marquee__mark { display: inline-flex; align-items: center; justify-content: center; gap: calc(10px * var(--partner-logo-scale)); min-height: calc(64px * var(--partner-logo-scale)); color: var(--site-ink, #f5f5f5); white-space: nowrap; }
 .logo-marquee__image { display: block; flex: 0 0 auto; max-width: calc(210px * var(--partner-logo-scale)); max-height: calc(64px * var(--partner-logo-scale)); object-fit: contain; user-select: none; -webkit-user-drag: none; }
 .logo-marquee__name { display: block; font-family: inherit; font-size: calc(22px * var(--partner-logo-scale)); font-weight: 650; line-height: 1.2; letter-spacing: -.02em; }
 @media (max-width: 600px) {
+  .home-partners-marquee { --partner-logo-row-height: 56px; }
+  .logo-marquee { --partner-logo-scale: .588; }
   .logo-marquee .logo-loop-group { gap: 32px; padding-right: 32px; }
+  .logo-marquee .logo-loop-item { height: 44px; }
+  .logo-marquee a.logo-loop-item { min-width: 44px; }
 }
 html[data-theme='light'] .logo-marquee__mark--white-artwork img { filter: invert(1); }
 html:not([data-theme='light']) .logo-marquee__mark--black-artwork img { filter: invert(1); }

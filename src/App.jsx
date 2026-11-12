@@ -3,6 +3,8 @@ import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useRef, useSta
 import { gsap } from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { FiBarChart2, FiBriefcase, FiLayers } from 'react-icons/fi';
+import { RiCodeSSlashLine } from 'react-icons/ri';
 import { SiGithub, SiX } from 'react-icons/si';
 import SiteBackground from './components/SiteBackground';
 import ViewportMount from './components/ViewportMount';
@@ -39,6 +41,12 @@ const PRESIDENT = pioneers.find(member => member.name === '零一扬');
 const SLOGAN = '从零到一，让技术进步成为每个人的机会';
 const SLOGAN_EN = 'From zero to one, turning technology into opportunity for everyone';
 const LEARNING_WIKI_URL = 'https://scn96l2kzmbn.feishu.cn/wiki/DDaiw0qKoifo7jkd2H2c9mxhnYe';
+const RECRUITMENT_DEPARTMENTS = [
+  { name: '零一技术部', icon: RiCodeSSlashLine },
+  { name: '零一运营部', icon: FiBarChart2 },
+  { name: '零一商务部', icon: FiBriefcase },
+  { name: '零一组织部', icon: FiLayers },
+];
 const JOIN_QR_ITEMS = {
   qq: { image: joinQr, title: '零一 QQ 社团群', downloadName: '零一AI日新社-QQ社团群.png' },
   official: { image: wechatChannel.qr, title: '零一 AI 日新社微信公众号', downloadName: '零一AI日新社-微信公众号.png' },
@@ -408,13 +416,13 @@ export default function App() {
                   <div className="home-about-block">
                     <p className="home-about-lead"><strong>{t("这里是「零一 AI 日新社｜01 AI Club」！")}</strong></p>
                     <blockquote className="home-about-quote">
-                      <p>{t("一个面向 AI 探索者、向全社会开放的交流社区、共创社团与开源知识库。")}</p>
+                      <p>{t("一个面向 AI 探索者、向全社会开放的共创社区。")}</p>
                       <p>{t("「零一 AI 日新社」成立于 2026 年 9 月 1 日，我是社长，")}<span className="home-about-signature"><a className="home-about-president" href={`./?page=pioneers&member=${encodeURIComponent(PRESIDENT.id)}`} aria-label={t("查看社长零一扬的领航先锋介绍")}><ResponsiveImage src={PRESIDENT.photo} alt="" width="28" height="28" fit="cover" /><span>{t(PRESIDENT.name)}</span></a>{locale === 'en' ? '.' : '！'}</span></p>
                     </blockquote>
                   </div>
 
                   <div className="home-about-block">
-                    <p className="home-about-lead"><strong>{t("我们成立社团的初心，是探索一种能在真实世界中落地的“大学｜学习新范式”！")}</strong></p>
+                    <p className="home-about-lead"><strong>{t("我们成立社区的初心，是探索一种能在真实世界中落地的“大学｜学习新范式”！")}</strong></p>
                     <blockquote className="home-about-quote">
                       <p>{t("我们不把绩点和考试视为大学成长的全部，而是选择在实践中不断成长，不断进步。")}{locale === 'en' ? ' ' : <br />}{t("我们以 公益教学 为核心，希望帮助每一位真正想学习 AI 的同学找到起点，")}{locale === 'en' ? ' ' : <br />}{t("在交流与实践中迈出第一步，完成属于自己的从零到一！")}</p>
                     </blockquote>
@@ -460,7 +468,7 @@ export default function App() {
               <p className="home-cooperation-intro">{t("创造力，就是把事物连接起来。")}</p>
             </div>
             <div className="home-partners-row">
-              <ViewportMount className="home-partners-marquee" minHeight={583.6}><LogoMarquee /></ViewportMount>
+              <ViewportMount className="home-partners-marquee"><LogoMarquee /></ViewportMount>
               <div className="home-cooperation-actions">
                 <SpecularButton href="https://scn96l2kzmbn.feishu.cn/wiki/X7h6wI8SCiAuZAkpYF2caNv7nTG" target="_blank" rel="noopener noreferrer" className="home-cooperation-link">{t("关于零一合作生态 ")}<span aria-hidden="true">↗</span>
                 </SpecularButton>
@@ -472,6 +480,22 @@ export default function App() {
             <h2 className="home-flow-title" id="cooperation-title">{t("零一高校分社")}</h2>
             <p className="home-cooperation-intro">{t("团结一切可以团结的力量！")}</p>
             <BranchAtlas borderGlowProps={borderGlowProps} />
+          </section>
+
+          <section className="home-section" id="recruitment" aria-labelledby="recruitment-title" tabIndex="-1">
+            <h2 className="home-flow-title" id="recruitment-title">{t("零一团队招募")}</h2>
+            <p className="home-recruitment-intro">{t("充满热情的人，能够让世界变得更好。")}</p>
+            <ul className="home-recruitment-departments" role="list">
+              {RECRUITMENT_DEPARTMENTS.map(({ name, icon: Icon }) => (
+                <BorderGlow key={name} as="li" {...borderGlowProps} borderRadius={16} className="home-recruitment-department">
+                  <Icon aria-hidden="true" focusable="false" />
+                  <span>{t(name)}</span>
+                </BorderGlow>
+              ))}
+            </ul>
+            <SpecularButton href="https://scn96l2kzmbn.feishu.cn/wiki/C06Pw29bDiA6I2kZy7ecsbcZnag" target="_blank" rel="noopener noreferrer" className="home-recruitment-plan">
+              {t("零一团队招募计划")}<span aria-hidden="true">↗</span>
+            </SpecularButton>
           </section>
 
           <section className="home-note" id="join" aria-labelledby="join-title" tabIndex="-1">

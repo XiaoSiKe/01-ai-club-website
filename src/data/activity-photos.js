@@ -1,7 +1,15 @@
-// User-provided activity photos, in the original upload order.
+// Newly featured photos come first, in the order supplied by the user.
 // User-supplied captions: title is displayed first; organization follows below
 // and may include a series suffix after ｜.
 export const activityPhotos = [
+  { id: 'activity-13', src: '/images/activity-photos/activity-13-kaiwu-group.jpg', width: 540, height: 960, alt: '开物·福州高校黑客松「零一」合照',
+    title: '开物·福州高校黑客松', organization: '「零一」合照' },
+  { id: 'activity-14', src: '/images/activity-photos/activity-14-kaiwu-venue.jpg', width: 720, height: 960, alt: '开物·福州高校黑客松比赛现场',
+    title: '开物·福州高校黑客松', organization: '比赛现场' },
+  { id: 'activity-15', src: '/images/activity-photos/activity-15-kaiwu-speech.jpg', width: 720, height: 960, alt: '开物·福州高校黑客松社长零一扬演讲',
+    title: '开物·福州高校黑客松', organization: '社长零一扬演讲' },
+  { id: 'activity-16', src: '/images/activity-photos/activity-16-kaiwu-venue.jpg', width: 720, height: 960, alt: '开物·福州高校黑客松比赛现场',
+    title: '开物·福州高校黑客松', organization: '比赛现场' },
   { id: 'activity-01', src: '/images/activity-photos/activity-01.jpg', width: 960, height: 442, alt: '零一 AI 日新社室内活动合影',
     organization: '零一沙龙｜AI项目锐评会', title: '是自嗨玩具？还是商业产品？带上你的项目来锐评！' },
   { id: 'activity-02', src: '/images/activity-photos/activity-02.jpg', width: 960, height: 960, alt: '室内围桌交流活动现场拼图',

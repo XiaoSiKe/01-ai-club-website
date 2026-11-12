@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { inflateSync } from 'node:zlib';
 import { imageSource } from '../src/components/imageSource.js';
+import { tunnelCardWidth } from '../src/components/heroImages.js';
 import { pioneers } from '../src/data/pioneers.js';
 import { businesses } from '../src/data/business.js';
 import { activityPhotos } from '../src/data/activity-photos.js';
@@ -76,24 +77,25 @@ const textureBytes = businesses.reduce((sum, item) => {
   return sum + bytes(imageSource(item.src, edge, edge, 1.5));
 }, 0);
 assert.ok(textureBytes <= 5 * 480 * 480 * 4, 'Carousel texture budget exceeded.');
-// Desktop tunnel cards are at most 270px wide. Keep a 480px step so their
-// existing 1.5x sampling target never jumps straight from 320px to 640px.
+// Keep the tunnel at 1.5x sampling while limiting the longest edge of tall cards.
 for (const photo of activityPhotos) {
   assert.ok(assets[photo.src].variants.some(variant => Math.max(variant.width, variant.height) === 480), photo.id);
-  const selected = variants.get(imageSource(photo.src, 270, 270 * photo.height / photo.width, 1.5));
+  const width = tunnelCardWidth(1500, photo);
+  const selected = variants.get(imageSource(photo.src, width, width * photo.height / photo.width, 1.5));
   assert.ok(Math.max(selected.width, selected.height) <= 480, photo.id);
-  assert.ok(selected.width >= 270 * 1.5, `${photo.id}: tunnel sampling target`);
+  assert.ok(selected.width >= width * 1.5 - 1, `${photo.id}: tunnel sampling target`);
 }
 // Intermediate sizes must retain the same sampling density while fitting a
 // smaller decoded-pixel budget on both high-DPR phones and desktop screens.
-for (const [width, budget] of [[148.2, 2_100_000], [259.2, 6_400_000], [270, 6_600_000]]) {
+for (const [viewportWidth, budget] of [[390, 3_400_000], [1440, 9_000_000], [1500, 9_200_000]]) {
   const selected = activityPhotos.map(photo => {
+    const width = tunnelCardWidth(viewportWidth, photo);
     const variant = variants.get(imageSource(photo.src, width, width * photo.height / photo.width, 1.5));
     assert.ok(variant.width >= width * 1.5 - 1, `${photo.id}: preserve tunnel density at ${width}px`);
     return variant;
   });
   assert.ok(selected.reduce((sum, image) => sum + image.width * image.height * 4, 0) <= budget,
-    `Tunnel decoded-pixel budget exceeded at ${width}px.`);
+    `Tunnel decoded-pixel budget exceeded at ${viewportWidth}px viewport width.`);
 }
 for (const pioneer of pioneers) {
   assert.ok(bytes(imageSource(pioneer.photo, 80, 100, 1.5)) <= 128 * 128 * 4, `${pioneer.name}: small portrait budget`);

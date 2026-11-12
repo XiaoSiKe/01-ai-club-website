@@ -107,7 +107,7 @@ export function initials(name) {
 * so a drifting loop never shows a gap. Repeats are flagged `dup` and are
 * hidden from assistive tech. Open roles are spread through the deck.
 */
-export function dealColumns(count, roleCount, columns, minPerColumn) {
+export function dealColumns(count, roleCount, columns, minPerColumn, repeatWithinColumn = false) {
 	const cols = Math.max(1, Math.floor(columns) || 1);
 	const deck = [];
 	for (let i = 0; i < count; i++) deck.push({
@@ -129,6 +129,18 @@ export function dealColumns(count, roleCount, columns, minPerColumn) {
 		dup: false
 	}));
 	if (!deck.length) return out;
+	if (repeatWithinColumn) {
+		for (const column of out) {
+			const originalCount = column.length;
+			if (!originalCount) continue;
+			// Complete each cycle so the same portrait order continues across the seam.
+			const loopCount = Math.ceil(minPerColumn / originalCount) * originalCount;
+			for (let i = originalCount; i < loopCount; i++) {
+				column.push({ ...column[i % originalCount], dup: true });
+			}
+		}
+		return out;
+	}
 	// Pad from the far end of the column furthest away, so a repeat never sits
 	// level with the same face in the next column.
 	for (let c = 0; c < cols; c++) {
@@ -164,11 +176,11 @@ export function fitTitleSize(available, widestAt100, stretch, min, max) {
 	const size = available / (widestAt100 * (stretch > 0 ? stretch : 1)) * 100;
 	return Math.max(min, Math.min(max, Math.floor(size * 10) / 10));
 }
-/** Layout for a container width: a strip on phones, 2 columns on tablets. */
-export function layoutFor(width, columns) {
+/** Layout for a container width: a strip on phones, two columns by default on tablets. */
+export function layoutFor(width, columns, tabletColumns = 2) {
 	if (width > 0 && width < 700) return 0;
 	const wanted = Math.max(2, Math.min(4, Math.round(columns) || 3));
-	if (width > 0 && width < 1e3) return 2;
+	if (width > 0 && width < 1e3) return tabletColumns;
 	return wanted;
 }
 export function splitLines(title) {
@@ -239,8 +251,9 @@ function Portrait(props) {
 	const member = slot.kind === "member" ? slot.member : null;
 	const milestoneDate = member?.founding?.date || member?.joinedAt;
 	const role = slot.kind === "role" ? slot.role : null;
-	const craft = member ? member.university || "" : role ? role.craft || labels.hiring : "";
-	const label = member ? [t(member.name), t(member.university)].filter(Boolean).join(' · ') : role ? labels.openRole + ": " + role.title : "";
+	const memberSubtitle = member?.role || member?.university;
+	const craft = member ? memberSubtitle || "" : role ? role.craft || labels.hiring : "";
+	const label = member ? [t(member.name), t(memberSubtitle)].filter(Boolean).join(' · ') : role ? labels.openRole + ": " + role.title : "";
 	const photo = member && member.photo && !failed ? member.photo : "";
 	const originalColor = member?.photoPlaceholder === false;
 	const href = member ? member.href : role ? role.href : undefined;
@@ -284,7 +297,7 @@ function Portrait(props) {
           </div>}
       </div>
       <span className="dtr-chip" aria-hidden="true">
-        {member ? <><strong>{t(member.name)}</strong><span>{t(member.university)}</span></> : craft}
+        {member ? <><strong>{t(member.name)}</strong><span>{t(memberSubtitle)}</span></> : craft}
       </span>
       <button ref={hitRef} type="button" className="dtr-hit" tabIndex={hidden ? -1 : 0} aria-label={t(label)} aria-expanded={hidden ? undefined : on} aria-controls={panelId} onFocus={(e) => {
 		// Pointer focus is handled by hover and tap; keyboard focus unfolds here.
@@ -324,7 +337,7 @@ function Portrait(props) {
 		close();
 	}}>
         <p className="dtr-name">{t(member ? member.name : role ? role.title : "")}</p>
-        {member || role && role.note ? <p className="dtr-roleline">{t(member ? member.university : role ? role.note : "")}</p> : null}
+        {member || role && role.note ? <p className="dtr-roleline">{t(member ? memberSubtitle : role ? role.note : "")}</p> : null}
         {href ? <a href={href} target="_blank" rel="noopener noreferrer" aria-label={member ? t("{0} 的 GitHub 主页（新窗口）", [member.name]) : undefined} tabIndex={hidden || !on ? -1 : 0}>
             {t(linkLabel)} <span aria-hidden="true">↗</span>
           </a> : null}
@@ -337,7 +350,7 @@ function Portrait(props) {
       </div>
     </div>;
 }
-export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles = [], eyebrow = "Meet", title = "The\ncrew", intro = "", cta = null, secondaryCta = null, preset = "ember", palette, columns = 3, mobileRows = 1, mobileColumns = 0, mobileWallScale = 1, driftSeconds = 9, cardScale = 1, speedMultiplier = 1, drift = true, height = "100svh", fontFamily = DISPLAY_STACK, stretch = 1.16, uppercase = true, grain = true, labels, className = "", onMemberSelect, clickFollowsLink = true, targetMemberId = null, targetRequestId = 0, initialMemberId = null, titleAs: Title = "h2", renderTitleLine = null, titleControls = null }) {
+export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles = [], eyebrow = "Meet", title = "The\ncrew", intro = "", cta = null, secondaryCta = null, preset = "ember", palette, columns = 3, tabletColumns, mobileRows = 1, mobileColumns = 0, mobileWallScale = 1, driftSeconds = 9, cardScale = 1, speedMultiplier = 1, drift = true, repeatWithinColumn = false, height = "100svh", fontFamily = DISPLAY_STACK, stretch = 1.16, uppercase = true, grain = true, labels, className = "", onMemberSelect, clickFollowsLink = true, targetMemberId = null, targetRequestId = 0, initialMemberId = null, titleAs: Title = "h2", renderTitleLine = null, titleControls = null }) {
   const { t, locale } = useLanguage();
 	const pal = resolvePalette(preset, palette);
 	const text = {
@@ -376,13 +389,14 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 	const copies = still ? [0] : [0, 1];
 	const rowCount = Math.max(1, Math.round(mobileRows));
 	const [minPer, setMinPer] = React.useState(4);
-	const plan = React.useMemo(() => dealColumns(members.length, openRoles.length, cols || rowCount, cols && !still ? minPer : 0), [
+	const plan = React.useMemo(() => dealColumns(members.length, openRoles.length, cols || rowCount, cols && !still ? minPer : 0, repeatWithinColumn), [
 		members.length,
 		openRoles.length,
 		cols,
 		rowCount,
 		minPer,
-		still
+		still,
+		repeatWithinColumn
 	]);
 	const slotFor = (e, prefix) => e.kind === "role" ? {
 		key: prefix,
@@ -403,7 +417,7 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 		if (!root || !copy || !head) return;
 		const fit = () => {
 			const w = root.getBoundingClientRect().width;
-			const next = mobileColumns > 0 && w < 700 ? mobileColumns : layoutFor(w, columns);
+			const next = mobileColumns > 0 && w < 700 ? mobileColumns : layoutFor(w, columns, tabletColumns);
 			setCols((c) => c === next ? c : next);
 			const spans = head.querySelectorAll(".dtr-line > span");
 			let widest = 0;
@@ -426,11 +440,12 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 			if (next > 0) {
 				const wall = root.querySelector('.dtr-wall');
 				const wallStyle = wall && getComputedStyle(wall);
-				const gap = parseFloat(wallStyle?.columnGap) || 14;
+				const columnGap = parseFloat(wallStyle?.columnGap) || 14;
+				const rowGap = parseFloat(wallStyle?.rowGap) || 14;
 				const wallW = wall ? wall.getBoundingClientRect().width - parseFloat(wallStyle.paddingLeft) - parseFloat(wallStyle.paddingRight) : w * .58;
-				const referenceHeight = (wallW - gap * (next - 1)) / next * (4 / 3);
-				const cardH = referenceHeight * cardScale + gap;
-				setStepRatio(cardH / (referenceHeight + gap));
+				const referenceHeight = (wallW - columnGap * (next - 1)) / next * (4 / 3);
+				const cardH = referenceHeight * cardScale + rowGap;
+				setStepRatio(cardH / (referenceHeight + rowGap));
 				const need = Math.max(3, Math.ceil(h / Math.max(80, cardH)));
 				setMinPer((m) => m === need ? m : need);
 			}
@@ -446,6 +461,7 @@ export default function DuotoneTeamRoster({ members = EMPTY_MEMBERS, openRoles =
 		return () => ro.disconnect();
 	}, [
 		columns,
+		tabletColumns,
 		mobileColumns,
 		mobileWallScale,
 		cardScale,

@@ -8,7 +8,7 @@ import SocialIcon from './SocialIcon';
 import ExploreModuleIcon, { ExploreBookIcon } from './ExploreModuleIcon';
 import { LoadingSlot } from './UniqueLoading';
 import { socialChannels } from '../data/social';
-import { RiUserStarLine, RiFlag2Line, RiCompass3Line, RiGraduationCapLine, RiBroadcastLine, RiUserAddLine } from 'react-icons/ri';
+import { RiUserStarLine, RiFlag2Line, RiTeamLine, RiCompass3Line, RiChat3Line, RiGraduationCapLine, RiBroadcastLine, RiOrganizationChart, RiUserAddLine } from 'react-icons/ri';
 import './ExploreSection.css';
 const Folder = lazy(() => import('./Folder'));
 const mediaChannels = socialChannels.filter(channel => channel.id !== 'channels');
@@ -67,14 +67,36 @@ export default function ExploreSection({ borderGlowProps, knowledgeUrl, onItemCl
     return () => observer.disconnect();
   }, []);
 
-  const entries = [
+  const peopleEntries = [
     { id: 'mentor', icon: RiUserStarLine, title: '启航导师', description: '站在巨人的肩膀上', href: './?page=mentors', label: '认识启航导师' },
-    { id: 'pioneers', icon: RiFlag2Line, title: '领航先锋', description: '我们相信，满怀热情的人能让世界变得更好', href: './?page=pioneers', label: '认识领航先锋' },
+    { id: 'leadership', icon: RiFlag2Line, title: '领军团队', description: '我们要改变世界', href: './?page=leadership', label: '认识领军团队' },
+    { id: 'pioneers', icon: RiTeamLine, title: '领航先锋', description: '当海盗，比加入海军更好', href: './?page=pioneers', label: '认识领航先锋' },
+  ];
+  const resourceEntries = [
     { id: 'compass', icon: RiCompass3Line, title: '零一大学指南针', titleParts: ['零一大学', '指南针'], description: '大学生活与成长导航', href: 'https://compass.01aiedu.com/', label: '打开零一大学指南针（新窗口）', external: true },
     { id: 'knowledge', icon: ExploreBookIcon, title: '开源知识库', description: '让想法流动起来', href: knowledgeUrl, label: '零一开源知识库（新窗口）', external: true },
-    { id: 'branches', icon: RiGraduationCapLine, title: '零一高校分社', titleParts: ['零一', '高校分社'], description: '团结一切可以团结的力量', href: '#cooperation', label: '探索零一高校分社' },
-    { id: 'architecture', icon: RiUserAddLine, title: '加入零一', description: '从零到一，让技术进步成为每个人的机会', href: '#join', label: '加入零一，查看加入我们' },
+    { id: 'feedback', icon: RiChat3Line, title: '建言献策', description: '批评与自我批评', href: 'https://scn96l2kzmbn.feishu.cn/wiki/GIh6woke5ilTbikyNNrcIUPdnJg', label: '建言献策（新窗口）', external: true },
   ];
+  const branchesEntry = { id: 'branches', icon: RiGraduationCapLine, title: '零一高校分社', titleParts: ['零一', '高校分社'], description: '团结一切可以团结的力量', href: '#cooperation', label: '探索零一高校分社' };
+  const teamEntries = [
+    { id: 'architecture', icon: RiOrganizationChart, title: '战略与架构', description: '简单，有时比复杂更难', href: 'https://scn96l2kzmbn.feishu.cn/wiki/Pw4FwagW6iPaVqkzyeNc7rRSnub', label: '战略与架构（新窗口）', external: true },
+    { id: 'join', icon: RiUserAddLine, title: '加入零一', description: '充满热情的人，能够让世界变得更好', href: '#recruitment', label: '加入零一，查看团队招募' },
+  ];
+
+  const renderEntry = entry => (
+    <BorderGlow key={entry.id} {...borderGlowProps} borderRadius={16} className={`home-explore-entry-frame home-explore-entry-frame--${entry.id}`}>
+      <a className={`home-explore-link home-explore-link--${entry.id}`} href={entry.href}
+        aria-label={t(entry.label)} target={entry.external ? '_blank' : undefined}
+        rel={entry.external ? 'noopener noreferrer' : undefined}>
+        <ExploreModuleIcon kind={entry.id} icon={entry.icon} />
+        <div className="home-explore-link-copy">
+          <h3><span>{entry.titleParts ? entry.titleParts.map(part => <span className="home-explore-word" key={part}>{t(part)}</span>) : t(entry.title)}</span></h3>
+          {entry.description && <p>{t(entry.description)}</p>}
+        </div>
+        <span className="home-explore-link-arrow" aria-hidden="true">↗</span>
+      </a>
+    </BorderGlow>
+  );
 
   return (
     <section className="home-section home-how-section" id="directions" aria-labelledby="directions-title">
@@ -85,38 +107,29 @@ export default function ExploreSection({ borderGlowProps, knowledgeUrl, onItemCl
 
       <div className="home-explore-bento">
         <nav className="home-explore-links" aria-label={t("探索入口")}>
-          {entries.map(entry => {
-            const Icon = entry.icon;
-            return <BorderGlow key={entry.id} {...borderGlowProps} borderRadius={16} className={`home-explore-entry-frame home-explore-entry-frame--${entry.id}`}>
-              <a className={`home-explore-link home-explore-link--${entry.id}`} href={entry.href}
-                aria-label={t(entry.label)} target={entry.external ? '_blank' : undefined}
-                rel={entry.external ? 'noopener noreferrer' : undefined} data-external={entry.external || undefined}>
-                <ExploreModuleIcon kind={entry.id} icon={Icon} />
-                <div className="home-explore-link-copy">
-                  <h3><span>{entry.titleParts ? entry.titleParts.map(part => <span className="home-explore-word" key={part}>{t(part)}</span>) : t(entry.title)}</span></h3>
-                  {entry.description && <p>{t(entry.description)}</p>}
+          <div className="home-explore-people">{peopleEntries.map(renderEntry)}</div>
+          <div className="home-explore-resources">{resourceEntries.map(renderEntry)}</div>
+          <div className="home-explore-bottom">
+            {renderEntry(branchesEntry)}
+            {teamEntries.map(renderEntry)}
+            <BorderGlow {...borderGlowProps} borderRadius={16} className="home-explore-entry-frame home-explore-entry-frame--media">
+              <article className="home-explore-media-card" aria-labelledby="home-media-title">
+                <ExploreModuleIcon kind="media" icon={RiBroadcastLine} />
+                <h3 id="home-media-title"><span><span className="home-explore-word">{t("零一")}</span><span className="home-explore-word">{t("自媒体")}</span></span></h3>
+                <p>{t("记录学习、实践与日常")}</p>
+                <div className="home-explore-socials" aria-label={t("零一自媒体平台")}>
+                  {mediaChannels.map(channel => {
+                    const Platform = channel.href ? 'a' : 'span';
+                    return <Platform key={channel.id} className="home-explore-social" href={channel.href || undefined}
+                      target={channel.href ? '_blank' : undefined} rel={channel.href ? 'noopener noreferrer' : undefined}
+                      role={channel.href ? undefined : 'img'} aria-label={channel.href ? t("{0}主页（新窗口）", [channel.title]) : t(channel.title)}>
+                      <SocialIcon platform={channel.id} />
+                    </Platform>;
+                  })}
                 </div>
-                <span className="home-explore-link-arrow" aria-hidden="true">{t(entry.external ? '↗' : '→')}</span>
-              </a>
-            </BorderGlow>;
-          })}
-          <BorderGlow {...borderGlowProps} borderRadius={16} className="home-explore-entry-frame home-explore-entry-frame--media">
-            <article className="home-explore-media-card" aria-labelledby="home-media-title">
-              <ExploreModuleIcon kind="media" icon={RiBroadcastLine} />
-              <h3 id="home-media-title"><span><span className="home-explore-word">{t("零一")}</span><span className="home-explore-word">{t("自媒体")}</span></span></h3>
-              <p>{t("记录学习、实践与日常")}</p>
-              <div className="home-explore-socials" aria-label={t("零一自媒体平台")}>
-                {mediaChannels.map(channel => {
-                  const Platform = channel.href ? 'a' : 'span';
-                  return <Platform key={channel.id} className="home-explore-social" href={channel.href || undefined}
-                    target={channel.href ? '_blank' : undefined} rel={channel.href ? 'noopener noreferrer' : undefined}
-                    role={channel.href ? undefined : 'img'} aria-label={channel.href ? t("{0}主页（新窗口）", [channel.title]) : t(channel.title)}>
-                    <SocialIcon platform={channel.id} />
-                  </Platform>;
-                })}
-              </div>
-            </article>
-          </BorderGlow>
+              </article>
+            </BorderGlow>
+          </div>
         </nav>
 
         <div className="home-explore-folders">

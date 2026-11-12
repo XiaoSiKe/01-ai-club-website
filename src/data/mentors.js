@@ -1,8 +1,8 @@
 // Names, biographies and matching portraits supplied by the user.
 export const mentors = [
   {
-    id: 'lin-jie', name: '林杰', role: '福州福瑞智联创始人', image: '/images/mentors/lin-jie.jpg',
-    description: 'MoneyAI Agent 创始人，\n曾发起福州首届“AI 造物黑客松”。',
+    id: 'lin-dekun', name: '林德坤', role: '福州大学计算机与大数据学院副教授', image: '/images/mentors/lin-dekun.jpg',
+    description: '中国科学院大学博士',
   },
   {
     id: 'liu-yang', name: '刘洋', role: '某省政府数据智囊团成员', image: '/images/mentors/liu-yang.jpg',
