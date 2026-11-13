@@ -13,6 +13,12 @@
 >
 > From Zero to One, Turning Technology into Opportunity for Everyone
 
+## 参与官网维护
+
+欢迎提交文案修正、无障碍改进、Bug 修复和功能建议。发现问题可以[提交 Issue](https://github.com/XiaoSiKe/01-ai-club-website/issues/new)，也可以 [Fork 仓库](https://github.com/XiaoSiKe/01-ai-club-website/fork)，在自己的分支完成修改后向本仓库的 `main` 提交 Pull Request。
+
+请先阅读[贡献指南](./CONTRIBUTING.md)，了解本地验证和 PR 提交流程。
+
 ## 当前状态
 
 ### 闽江分社恢复（2026-11-06）
