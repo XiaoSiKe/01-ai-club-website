@@ -221,6 +221,10 @@ display-only because no official destinations were supplied.
 - **FZU 薄肌俱乐部**使用用户提供的 1279 × 1618px JPG，经 VTracer 0.6.12 分色描摹为透明 SVG。官网在「高校合作伙伴」展示树形图标 `fzu-lean-club.svg` 及俱乐部名称，完整图文标识收录于交付 ZIP。
 - 原图保存在 `output/image-originals/partner-logos/` 下对应目录。两项官网标识均为展示项。
 
+## JIKO（2026-11-17）
+
+- `jiko.png` 为用户提供的 `JIKO_透明背景_紧凑裁切 (1)_副本.png(1).zip` 中的 1515 × 476px 透明 PNG，原图逐字节保留。首页在「社区合作伙伴」中展示，浅色主题使用黑色原标，深色主题沿用现有反色样式。未提供官网地址，Logo 仅展示。
+
 ## Original-color display (2026-11-02)
 
 Partner artwork has no added backing surface, outline, border or plate. Color
