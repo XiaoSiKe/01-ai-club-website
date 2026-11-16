@@ -27,6 +27,7 @@ export const partners = [
   { id: 'qutansuo', category: 'community', href: 'https://qutansuo.cn/', name: '去探索', src: '/images/partners/qutansuo.png', invertOnLight: true, width: 144, height: 39.73 },
   { id: 'yubing', category: 'community', name: '语冰', src: '/images/partners/yubing.png', width: 122, height: 49.84 },
   { id: 'fuzhou-ai-learning', category: 'community', name: '福州 AI 共学社', src: '/images/partners/fuzhou-ai-learning.svg', darkSrc: '/images/partners/fuzhou-ai-learning-dark.svg', width: 168, height: 48.14 },
+  { id: 'jiko', category: 'community', name: 'JIKO', src: '/images/partners/jiko.png', invertOnDark: true, width: 150, height: 47.13 },
   { id: 'oral-english-association', category: 'university', name: '英语口语协会', src: '/images/partners/oral-english-association.png', darkSrc: '/images/partners/oral-english-association-dark.svg', width: 133.11, height: 48.492 },
   { id: 'fzu-lean-club', category: 'university', name: 'FZU薄肌俱乐部', src: '/images/partners/fzu-lean-club.svg', width: 52, height: 52, showName: true },
 ];
