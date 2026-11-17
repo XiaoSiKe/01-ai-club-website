@@ -227,9 +227,9 @@ display-only because no official destinations were supplied.
 
 ## 温州大学开源社与原子游创 AtomCraft（2026-11-17）
 
-- **温州大学开源社**使用用户提供的 256 × 256px JPG，原件打包为 `温州大学开源社【Logo】.zip`。官网在「高校合作伙伴」展示 `wzu-open-source-club.jpg` 和用户确认的全称。
-- **原子游创 AtomCraft**使用用户提供的 `原子游创【Logo】.zip`（原名 `LOGO(1).zip`）中的 `长LOGO.png`。官网在「社区合作伙伴」展示 `atomcraft.png`，保留 1806 × 724px 原图的配色和底色。
-- 两个网站源文件均原样保留，展示使用 WebP 尺寸变体。未提供官网地址，两个 Logo 均仅展示。
+- **温州大学开源社**由用户提供的 256 × 256px JPG 分色描摹。`wzu-open-source-club.svg` 保留圆标内的深蓝与轨道图案，圆形以外透明。官网在「高校合作伙伴」展示该 SVG 和用户确认的全称。
+- **原子游创 AtomCraft**由用户上传的 `LOGO(1).zip` 内 1806 × 724px 的 `长LOGO.png` 分色描摹。`atomcraft.svg` 去除白底并保留黑金标志；`atomcraft-dark.svg` 将文字换成白色。两个版本用于官网「社区合作伙伴」。
+- 三个 SVG 均由 VTracer 0.6.15 描摹，内部为矢量路径。素材库的两个交付 ZIP 仅收录对应的透明 SVG。未提供官网地址，两个 Logo 均仅展示。
 
 ## Original-color display (2026-11-02)
 
