@@ -225,6 +225,12 @@ display-only because no official destinations were supplied.
 
 - `jiko.png` 为用户提供的 `JIKO_透明背景_紧凑裁切 (1)_副本.png(1).zip` 中的 1515 × 476px 透明 PNG，原图逐字节保留。首页在「社区合作伙伴」中展示，浅色主题使用黑色原标，深色主题沿用现有反色样式。未提供官网地址，Logo 仅展示。
 
+## 温州大学开源社与原子游创 AtomCraft（2026-11-17）
+
+- **温州大学开源社**使用用户提供的 256 × 256px JPG，原件打包为 `温州大学开源社【Logo】.zip`。官网在「高校合作伙伴」展示 `wzu-open-source-club.jpg` 和用户确认的全称。
+- **原子游创 AtomCraft**使用用户提供的 `原子游创【Logo】.zip`（原名 `LOGO(1).zip`）中的 `长LOGO.png`。官网在「社区合作伙伴」展示 `atomcraft.png`，保留 1806 × 724px 原图的配色和底色。
+- 两个网站源文件均原样保留，展示使用 WebP 尺寸变体。未提供官网地址，两个 Logo 均仅展示。
+
 ## Original-color display (2026-11-02)
 
 Partner artwork has no added backing surface, outline, border or plate. Color
