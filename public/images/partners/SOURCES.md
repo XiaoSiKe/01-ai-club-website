@@ -231,6 +231,10 @@ display-only because no official destinations were supplied.
 - **原子游创 AtomCraft**由用户上传的 `LOGO(1).zip` 内 1806 × 724px 的 `长LOGO.png` 分色描摹。`atomcraft.svg` 去除白底并保留黑金标志；`atomcraft-dark.svg` 将文字换成白色。两个版本用于官网「社区合作伙伴」。
 - 三个 SVG 均由 VTracer 0.6.15 描摹，内部为矢量路径。素材库的两个交付 ZIP 仅收录对应的透明 SVG。未提供官网地址，两个 Logo 均仅展示。
 
+## 摩利创境 Molispark（2026-11-21）
+
+- `molispark.svg` 依据用户提供的 842 × 842px JPG 分色描摹，保留橙色中英文字标及橙黄圆环，背景透明。官网在「社区合作伙伴」沿用同一份矢量 Logo。官网地址待确认，Logo 仅展示。
+
 ## Original-color display (2026-11-02)
 
 Partner artwork has no added backing surface, outline, border or plate. Color

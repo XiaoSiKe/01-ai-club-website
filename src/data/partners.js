@@ -29,6 +29,7 @@ export const partners = [
   { id: 'fuzhou-ai-learning', category: 'community', name: '福州 AI 共学社', src: '/images/partners/fuzhou-ai-learning.svg', darkSrc: '/images/partners/fuzhou-ai-learning-dark.svg', width: 168, height: 48.14 },
   { id: 'jiko', category: 'community', name: 'JIKO', src: '/images/partners/jiko.png', invertOnDark: true, width: 150, height: 47.13 },
   { id: 'atomcraft', category: 'community', name: '原子游创 AtomCraft', src: '/images/partners/atomcraft.svg', darkSrc: '/images/partners/atomcraft-dark.svg', width: 152, height: 54.42 },
+  { id: 'molispark', category: 'community', name: '摩利创境 Molispark', src: '/images/partners/molispark.svg', width: 136, height: 49.95 },
   { id: 'oral-english-association', category: 'university', name: '英语口语协会', src: '/images/partners/oral-english-association.png', darkSrc: '/images/partners/oral-english-association-dark.svg', width: 133.11, height: 48.492 },
   { id: 'fzu-lean-club', category: 'university', name: 'FZU薄肌俱乐部', src: '/images/partners/fzu-lean-club.svg', width: 52, height: 52, showName: true },
   { id: 'wzu-open-source-club', category: 'university', name: '温州大学开源社', src: '/images/partners/wzu-open-source-club.svg', width: 52, height: 52, showName: true },
